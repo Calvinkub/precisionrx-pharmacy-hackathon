@@ -11,7 +11,8 @@ NMR Response Dashboard: NMR panel (left) + patient history and medications (righ
 ```bash
 uv sync
 uv run uvicorn app.main:app --port 8765   # open http://localhost:8765  (?case=1&visit=2 jumps to a case/visit)
-uv run pytest                              # engine + API tests
+uv run pytest                              # engine + API tests + eval gate
+uv run python -m eval.run_eval --sheet     # eval report → eval/report.md
 ```
 
 | Path | Content |
@@ -20,6 +21,7 @@ uv run pytest                              # engine + API tests
 | `app/evidence/` | `facts.yaml` (every output cites a fact id + source), `analytes.yaml` (NMR catalog: reference band, CVa, CVi) |
 | `app/static/` | Single-page UI; `sample_panel.csv` = upload example (visit 3 of case 1) |
 | `data/synthetic/` | 3 demo cases |
+| `eval/` | 45-case gold-standard eval set, runner, report, pharmacist review sheet |
 | `docs/` | Research notes behind the numbers (verify before pitching) |
 | [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) | Plan and status |
 

@@ -117,6 +117,24 @@ facts:
     url: "https://cpicpgx.org/guidelines/guideline-for-allopurinol-and-hla-b/"
     level: guideline
     verified: true
+  CPIC-CYP2C19-CLOP-IM-2022:
+    text: "CYP2C19 intermediate metabolizer, ACS/PCI: avoid standard-dose clopidogrel if possible; use prasugrel or ticagrelor at standard dose if no contraindication"
+    source: "CPIC guideline for CYP2C19 and clopidogrel (2022)"
+    url: "https://cpicpgx.org/guidelines/guideline-for-clopidogrel-and-cyp2c19/"
+    level: guideline
+    verified: false
+  LABEL-CBZ-HLA:
+    text: "Patients with ancestry in genetically at-risk populations should be screened for HLA-B*1502 prior to initiating carbamazepine"
+    source: "Tegretol (carbamazepine) US prescribing information, boxed warning"
+    url: "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=BasicSearch.process"
+    level: label
+    verified: false
+  ACR-2020-HLAB5801:
+    text: "Conditionally recommend HLA-B*58:01 testing before starting allopurinol in patients of Southeast Asian descent (e.g. Han Chinese, Korean, Thai) and African American patients"
+    source: "2020 American College of Rheumatology Guideline for the Management of Gout"
+    url: "https://pubmed.ncbi.nlm.nih.gov/32391934/"
+    level: guideline
+    verified: false
   LABEL-CLOP-PPI:
     text: "Clopidogrel: avoid concomitant use with omeprazole or esomeprazole"
     source: "Plavix (clopidogrel) US prescribing information"

@@ -41,9 +41,9 @@ Stack ที่ใช้: Python + FastAPI (engines + API) · หน้าเว
 | เทียบครั้งก่อนด้วย RCV (สารที่ไม่มี CVi → "ประเมินไม่ได้") | ✅ |
 | อัปโหลด CSV เป็นผลตรวจครั้งใหม่ | ✅ |
 | ปุ่ม Why? + fact chip แสดงแหล่ง | ✅ |
-| Test | ✅ 34 ผ่าน |
+| Test | ✅ 36 ผ่าน (รวม eval gate) |
 | Mock หน้าสั่งยา HIS (CDS Hooks) | ⏳ ยังไม่ทำ |
-| Eval set 30–50 เคส + harness | ⏳ ยังไม่ทำ |
+| Eval set 45 เคส + harness + review sheet | ✅ 45/45, omission 0, false flag 0, alert −70% (`eval/`) — รอเภสัชกรตรวจเฉลย |
 | Oncology module | ⏳ ยังไม่ทำ |
 | LLM summarizer + verifier | ⏳ ยังไม่ทำ |
 

@@ -32,7 +32,8 @@ class Finding:
     trace: list[str] = field(default_factory=list)
 
 
-PPIS = {"omeprazole", "esomeprazole", "lansoprazole", "pantoprazole", "rabeprazole"}
+PPIS = {"omeprazole", "esomeprazole", "lansoprazole", "pantoprazole", "rabeprazole", "dexlansoprazole"}
+CPIC_PPIS = {"omeprazole", "lansoprazole", "pantoprazole", "dexlansoprazole"}  # CPIC 2020 has no esomeprazole/rabeprazole recs
 
 # RCPT 2024 Table A1.1: (drug, min mg, max mg) -> intensity
 STATIN_INTENSITY = [
@@ -66,6 +67,14 @@ def pgx_findings(meds: list[Medication], pgx: dict[str, str]) -> list[Finding]:
             out.append(Finding(f"pgx-hlab1502-{drug}", "pgx", "stop", f"STOP — {drug}",
                                "HLA-B*15:02 positive: ห้ามใช้ (เสี่ยง SJS/TEN) เลือกยาอื่น",
                                ["CPIC-HLAB1502"], [f"ยา: {drug}", "HLA-B*15:02 = positive"]))
+        if drug in keys and "HLA-B*15:02" not in pheno:
+            out.append(Finding(f"pgx-untested-hlab1502-{drug}", "pgx", "action", f"{drug.capitalize()} — ยังไม่มีผล HLA-B*15:02",
+                               "ถ้าเพิ่งเริ่มหรือกำลังจะเริ่มยา ควรส่งตรวจ HLA-B*15:02 ก่อน (สิทธิ สปสช. ครอบคลุม)",
+                               ["LABEL-CBZ-HLA", "CPIC-HLAB1502"], [f"ยา: {drug}", "HLA-B*15:02 = ไม่มีผล"]))
+    if "allopurinol" in keys and "HLA-B*58:01" not in pheno:
+        out.append(Finding("pgx-untested-hlab5801", "pgx", "action", "Allopurinol — ยังไม่มีผล HLA-B*58:01",
+                           "คนไทย/เอเชียตะวันออกเฉียงใต้ ควรตรวจ HLA-B*58:01 ก่อนเริ่ม allopurinol",
+                           ["ACR-2020-HLAB5801", "CPIC-HLAB5801"], ["ยา: allopurinol", "HLA-B*58:01 = ไม่มีผล"]))
     if "allopurinol" in keys and pheno.get("HLA-B*58:01") == "positive":
         out.append(Finding("pgx-hlab5801", "pgx", "stop", "STOP — allopurinol",
                            "HLA-B*58:01 positive: ห้ามใช้ (เสี่ยง SCAR) เลือกยาอื่น",
@@ -83,7 +92,11 @@ def pgx_findings(meds: list[Medication], pgx: dict[str, str]) -> list[Finding]:
         out.append(Finding("pgx-cyp2c19-clop", "pgx", "action", "Clopidogrel — CYP2C19 poor metabolizer",
                            "CPIC 2022 (ACS/PCI): เลี่ยง clopidogrel ถ้าทำได้ ใช้ prasugrel หรือ ticagrelor ขนาดมาตรฐานถ้าไม่มีข้อห้าม",
                            ["CPIC-CYP2C19-CLOP-2022"], ["ยา: clopidogrel", "CYP2C19 = poor metabolizer"]))
-    for ppi in PPIS & keys.keys():
+    if "clopidogrel" in keys and cyp == "intermediate metabolizer":
+        out.append(Finding("pgx-cyp2c19-clop", "pgx", "action", "Clopidogrel — CYP2C19 intermediate metabolizer",
+                           "CPIC 2022 (ACS/PCI): เลี่ยง clopidogrel ขนาดมาตรฐานถ้าทำได้ ใช้ prasugrel หรือ ticagrelor ถ้าไม่มีข้อห้าม",
+                           ["CPIC-CYP2C19-CLOP-IM-2022"], ["ยา: clopidogrel", "CYP2C19 = intermediate metabolizer"]))
+    for ppi in sorted(CPIC_PPIS & keys.keys()):
         if cyp in {"ultrarapid metabolizer", "rapid metabolizer"}:
             out.append(Finding(f"pgx-cyp2c19-{ppi}", "pgx", "action", f"{ppi.capitalize()} — CYP2C19 {cyp}",
                                "CPIC: พิจารณาเพิ่มขนาดเริ่มต้นของ PPI ถ้ายังคุมอาการไม่ได้ (ถ้อยคำยังไม่ได้ตรวจกับต้นฉบับ)",
