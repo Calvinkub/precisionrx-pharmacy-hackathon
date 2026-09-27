@@ -1,0 +1,66 @@
+{
+ "id": "3",
+ "label": "เคส 3 · ชาย 34 ปี · จะสั่ง carbamazepine (HLA-B)",
+ "story": "โรคลมชัก แพทย์กำลังสั่ง carbamazepine ผล HLA-B*15:02 positive อยู่ในระบบผูกพันธุ์",
+ "profile": {
+  "age": 34,
+  "sex": "male",
+  "sbp": 122,
+  "weight_kg": 68,
+  "height_cm": 172,
+  "waist_cm": 82,
+  "smoker": false,
+  "diabetes": false,
+  "hypertension": false,
+  "family_history_dm": false,
+  "alcohol_drinks_per_day": 1,
+  "activity_min_week": 180
+ },
+ "meds": [
+  {
+   "drug": "carbamazepine",
+   "dose_mg": 400,
+   "pdc_pct": null,
+   "start_visit": null
+  }
+ ],
+ "pgx": {
+  "HLA-B*15:02": "positive"
+ },
+ "visits": [
+  {
+   "date": "2026-09-01",
+   "label": "ตรวจสุขภาพ",
+   "values": {
+    "lactate": 1.4,
+    "citrate": 0.068,
+    "creatinine": 62,
+    "albumin": 41,
+    "acetone": 13,
+    "bohb": 55,
+    "leucine": 110,
+    "isoleucine": 52,
+    "valine": 215,
+    "phenylalanine": 48,
+    "dha": 0.2,
+    "pufa_mufa": 1.7,
+    "apob": 0.82,
+    "apoa1": 1.48,
+    "ldl_p": 1150,
+    "s_ldl_p": 160,
+    "vldl_p": 130,
+    "hdl_p": 15.8,
+    "total_c": 4.6,
+    "ldl_c": 2.6,
+    "hdl_c": 1.35,
+    "non_hdl_c": 3.25,
+    "remnant_c": 0.65,
+    "tg": 1.1,
+    "glyca": 0.78,
+    "glucose": 5.0,
+    "bcaa": 350,
+    "omega3_pct": 4.3
+   }
+  }
+ ]
+}

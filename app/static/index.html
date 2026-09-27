@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PrecisionRx — NMR Response</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">Rx</span>
+      <div>
+        <h1>PrecisionRx</h1>
+        <p>NMR Response Dashboard · สำหรับเภสัชกร</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge-synth" title="ข้อมูลทั้งหมดในหน้านี้เป็นข้อมูลจำลอง ไม่ใช่ข้อมูลผู้ป่วยจริง">SYNTHETIC DATA · RUO</span>
+      <button id="themeBtn" class="icon-btn" aria-label="สลับธีม">◐</button>
+    </div>
+  </header>
+
+  <section class="casebar">
+    <label>เคสตัวอย่าง
+      <select id="caseSelect"></select>
+    </label>
+    <div id="visitTabs" class="visit-tabs" role="tablist"></div>
+    <label class="upload">
+      <input type="file" id="csvInput" accept=".csv">
+      <span>+ เพิ่มผลตรวจใหม่ (CSV)</span>
+    </label>
+    <a class="link" href="/static/sample_panel.csv" download>ตัวอย่างไฟล์ CSV</a>
+  </section>
+
+  <main class="grid">
+    <!-- LEFT: NMR -->
+    <section class="card nmr-card">
+      <div class="card-head">
+        <h2>① ผล NMR</h2>
+        <span id="visitMeta" class="muted"></span>
+      </div>
+      <div class="spectrum-wrap">
+        <canvas id="spectrum" height="190"></canvas>
+        <div class="spectrum-caption">
+          <span>¹H NMR spectrum (ภาพประกอบ สร้างจากค่าที่ lab คำนวณแล้ว — ระบบไม่ประมวล spectrum เอง)</span>
+          <span id="scanStatus" class="scan-status"></span>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-range"></i>ช่วงอ้างอิง</span>
+        <span><i class="sw sw-prev"></i>ครั้งก่อน</span>
+        <span><i class="dot st-normal"></i>ในช่วง</span>
+        <span><i class="dot st-high"></i>สูง</span>
+        <span><i class="dot st-low"></i>ต่ำ</span>
+      </div>
+      <div id="panel" class="panel"></div>
+    </section>
+
+    <!-- RIGHT: Profile form -->
+    <section class="card form-card">
+      <div class="card-head"><h2>② ข้อมูลผู้ป่วย</h2></div>
+      <form id="profileForm" autocomplete="off">
+        <fieldset>
+          <legend>ประวัติส่วนตัว</legend>
+          <div class="row3">
+            <label>อายุ (ปี)<input name="age" type="number" min="18" max="100" required></label>
+            <label>เพศ
+              <select name="sex"><option value="female">หญิง</option><option value="male">ชาย</option></select>
+            </label>
+            <label>SBP (mmHg)<input name="sbp" type="number" min="70" max="250"></label>
+          </div>
+          <div class="row3">
+            <label>น้ำหนัก (กก.)<input name="weight_kg" type="number" step="0.1"></label>
+            <label>ส่วนสูง (ซม.)<input name="height_cm" type="number" step="0.1"></label>
+            <label>รอบเอว (ซม.)<input name="waist_cm" type="number" step="0.1"></label>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" name="smoker"> สูบบุหรี่</label>
+            <label><input type="checkbox" name="diabetes"> เบาหวาน</label>
+            <label><input type="checkbox" name="hypertension"> ความดันสูง</label>
+            <label><input type="checkbox" name="family_history_dm"> พ่อแม่/พี่น้องเป็นเบาหวาน</label>
+          </div>
+          <div class="row2">
+            <label>แอลกอฮอล์ (ดื่มมาตรฐาน/วัน)<input name="alcohol_drinks_per_day" type="number" step="0.5" min="0"></label>
+            <label>ออกกำลังกาย (นาที/สัปดาห์)<input name="activity_min_week" type="number" min="0"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>ยาที่ใช้</legend>
+          <table class="meds">
+            <thead><tr><th>ยา</th><th>ขนาด (mg/วัน)</th><th>PDC %</th><th>เริ่มก่อนตรวจครั้งที่</th><th></th></tr></thead>
+            <tbody id="medRows"></tbody>
+          </table>
+          <button type="button" id="addMed" class="btn-ghost">+ เพิ่มยา</button>
+          <datalist id="drugList"></datalist>
+          <p class="hint">PDC = สัดส่วนวันที่มียากิน จากประวัติรับยา (≥ 80% ถือว่ากินสม่ำเสมอ)</p>
+        </fieldset>
+
+        <fieldset>
+          <legend>ผล PGx (ถ้ามี)</legend>
+          <div class="row2" id="pgxFields"></div>
+        </fieldset>
+
+        <button type="submit" class="btn-primary">ประเมิน →</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- RESULTS -->
+  <section id="results" class="results" hidden>
+    <div class="results-grid">
+      <section class="card">
+        <div class="card-head"><h2>③ ความเสี่ยงรายโรค</h2></div>
+        <div id="risks"></div>
+        <h3 class="sub">ปัจจัยเสริมจาก NMR <span class="muted">(ไม่รวมเข้าคะแนน)</span></h3>
+        <div id="nmrFactors"></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>เรื่องยา → คิวเภสัชกร</h2><span id="queueCount" class="muted"></span></div>
+        <div id="findings"></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>การดูแลตัวเอง</h2></div>
+        <div id="advice"></div>
+      </section>
+    </div>
+    <section class="card trend-card" id="trendCard" hidden>
+      <div class="card-head">
+        <h2>④ เทียบกับการตรวจครั้งก่อน</h2>
+        <span class="muted">ใช้ Reference Change Value (RCV) แยก "เปลี่ยนจริง" ออกจากความแปรปรวนปกติ</span>
+      </div>
+      <div id="trendSummary" class="trend-summary"></div>
+      <table class="trend">
+        <thead><tr><th>สาร</th><th class="num">ครั้งก่อน</th><th class="num">ครั้งนี้</th><th class="num">เปลี่ยน</th><th class="num">RCV</th><th>ผล</th></tr></thead>
+        <tbody id="trendRows"></tbody>
+      </table>
+    </section>
+  </section>
+
+  <footer class="foot">
+    ต้นแบบสำหรับ hackathon · ข้อมูลจำลองทั้งหมด · ไม่ใช่เครื่องมือวินิจฉัย ทุกคำแนะนำต้องผ่านเภสัชกร/แพทย์
+    · evidence snapshot <span id="snapshot"></span>
+  </footer>
+
+  <div id="factPop" class="fact-pop" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
