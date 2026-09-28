@@ -1,0 +1,13 @@
+---
+import Base from "../../layouts/Base.astro";
+import Queue from "../../components/Queue.svelte";
+---
+<Base title="คิวเภสัชกร" current="queue" description="คำเตือนที่แพทย์ override หรือทำตามคำแนะนำ รอเภสัชกรทบทวน">
+  <div class="container page narrow">
+    <header class="page-head">
+      <h1>คิวเภสัชกร</h1>
+      <p>คำเตือนที่แพทย์ตอบแล้วในหน้าสั่งยา — override ต้องมีเหตุผล และเภสัชกรทบทวนต่อ</p>
+    </header>
+    <Queue client:load />
+  </div>
+</Base>

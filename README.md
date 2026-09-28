@@ -10,19 +10,21 @@ NMR Response Dashboard: NMR panel (left) + patient history and medications (righ
 
 ```bash
 uv sync
-uv run uvicorn app.main:app --port 8765   # http://localhost:8765 (NMR dashboard, ?case=1&visit=2)
-                                           # http://localhost:8765/his (mock HIS ordering, ?hn=HN-0003&drug=clopidogrel&dose=75)
-                                           # http://localhost:8765/queue (pharmacist queue)
-uv run pytest                              # engine + API tests + eval gate
-uv run python -m eval.run_eval --sheet     # eval report → eval/report.md
+(cd web && npm install && npm run build)    # Astro UI → web/dist (served by FastAPI)
+uv run uvicorn app.main:app --port 8765     # http://localhost:8765
+uv run pytest                               # engine + API + CDS Hooks tests + eval gate
+uv run python -m eval.run_eval --sheet      # eval report → eval/report.md
 ```
+
+Pages: `/` overview · `/dashboard/?case=1&visit=2` NMR dashboard · `/his/?hn=HN-0003&drug=clopidogrel&dose=75` mock HIS ordering · `/queue/` pharmacist queue.
+UI dev with hot reload: run the Python server, then `cd web && npm run dev` (proxies `/api` and `/cds-services` to port 8765).
 
 | Path | Content |
 |---|---|
 | `app/engines/` | Deterministic engines: `risk.py` (Thai CV Risk, Thai diabetes score), `rcv.py`, `panel.py`, `nmr_factors.py`, `meds.py` (PGx, DDI, statin response, adherence), `lifestyle.py` |
 | `app/cds_hooks.py` | CDS Hooks service: discovery, `order-select`, `order-sign`, feedback → pharmacist queue |
 | `app/evidence/` | `facts.yaml` (every output cites a fact id + source), `analytes.yaml` (NMR catalog: reference band, CVa, CVi) |
-| `app/static/` | Single-page UI; `sample_panel.csv` = upload example (visit 3 of case 1) |
+| `web/` | Astro 7 + Svelte 5 UI (`src/pages`, `src/components`, `src/styles/global.css` tokens). `public/sample_panel.csv` = upload example |
 | `data/synthetic/` | 3 demo cases |
 | `eval/` | 45-case gold-standard eval set, runner, report, pharmacist review sheet |
 | `docs/` | Research notes behind the numbers (verify before pitching) |

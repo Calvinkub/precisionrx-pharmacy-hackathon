@@ -26,7 +26,7 @@
     + เช็ก adherence ก่อนสรุปว่ายาไม่ได้ผล
 ```
 
-Stack ที่ใช้: Python + FastAPI (engines + API) · หน้าเว็บ static (canvas + CSS ไม่มี library) · pytest
+Stack ที่ใช้: Python + FastAPI (engines + API) · UI = Astro 7 + Svelte 5 islands (`web/`) · pytest
 
 ### สถานะ (28 ก.ย. 2026)
 
@@ -42,6 +42,7 @@ Stack ที่ใช้: Python + FastAPI (engines + API) · หน้าเว
 | อัปโหลด CSV เป็นผลตรวจครั้งใหม่ | ✅ |
 | ปุ่ม Why? + fact chip แสดงแหล่ง | ✅ |
 | Test | ✅ 43 ผ่าน (รวม eval gate + CDS Hooks) |
+| UI ใหม่ด้วย Astro: หน้าภาพรวม + dashboard + HIS + คิว, light/dark, mobile, axe-core 0 violation ทั้ง 4 หน้า (WCAG 2.1 AA) | ✅ |
 | ตรวจถ้อยคำ guideline กับต้นฉบับ | ✅ ทุก fact ที่ระบบอ้าง `verified: true` (CPIC PDF, FDA label 2026, ACR 2020) |
 | Mock HIS หน้าสั่งยา + CDS Hooks service (order-select / order-sign / feedback) + คิวเภสัชกร | ✅ `/his`, `/queue` — เตือนเฉพาะที่เกิดจากคำสั่งใหม่, hard stop บล็อก sign, override ต้องมีเหตุผล |
 | Eval set 46 เคส + harness + review sheet | ✅ 46/46, omission 0, false flag 0, alert −71% (`eval/`) — รอเภสัชกรตรวจเฉลย |

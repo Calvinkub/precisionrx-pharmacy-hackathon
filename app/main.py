@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, UploadFile
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.assess import AssessIn, assess
@@ -15,23 +14,16 @@ ROOT = Path(__file__).resolve().parent
 CASES = ROOT.parent / "data" / "synthetic"
 
 app = FastAPI(title="PrecisionRx prototype (synthetic data only)")
+WEB = ROOT.parent / "web" / "dist"  # Astro build output (cd web && npm run build)
+EVAL = ROOT.parent / "eval" / "results.json"
 app.include_router(cds_router)
-app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
-@app.get("/")
-def index():
-    return FileResponse(ROOT / "static" / "index.html")
-
-
-@app.get("/his")
-def his():
-    return FileResponse(ROOT / "static" / "his.html")
-
-
-@app.get("/queue")
-def queue_page():
-    return FileResponse(ROOT / "static" / "queue.html")
+@app.get("/api/eval")
+def eval_summary():
+    if not EVAL.is_file():
+        raise HTTPException(404, "run: uv run python -m eval.run_eval")
+    return {"summary": json.loads(EVAL.read_text(encoding="utf-8"))["summary"]}
 
 
 @app.get("/api/his/patients")
@@ -75,3 +67,12 @@ def post_assess(req: AssessIn):
     if not req.visits:
         raise HTTPException(422, "ต้องมีผลตรวจอย่างน้อย 1 ครั้ง")
     return assess(req)
+
+
+# UI last so /api and /cds-services win. Falls back to a hint when the site is not built yet.
+if WEB.is_dir():
+    app.mount("/", StaticFiles(directory=WEB, html=True), name="web")
+else:
+    @app.get("/")
+    def not_built():
+        return {"error": "UI not built", "fix": "cd web && npm install && npm run build"}

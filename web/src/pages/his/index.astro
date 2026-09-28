@@ -1,0 +1,13 @@
+---
+import Base from "../../layouts/Base.astro";
+import His from "../../components/His.svelte";
+---
+<Base title="หน้าสั่งยา (HIS จำลอง)" current="his" description="ระบบโรงพยาบาลจำลอง — PrecisionRx เตือนผ่าน CDS Hooks ตอนสั่งยา">
+  <div class="container page">
+    <header class="page-head">
+      <h1>หน้าสั่งยา <span class="tag">HIS จำลอง</span></h1>
+      <p>PrecisionRx ทำงานเบื้องหลังผ่านมาตรฐาน CDS Hooks — เตือนเฉพาะเรื่องที่เกิดจากคำสั่งยาใหม่</p>
+    </header>
+    <His client:load />
+  </div>
+</Base>

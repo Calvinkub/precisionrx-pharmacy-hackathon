@@ -1,0 +1,21 @@
+{
+  "name": "precisionrx-web",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check && svelte-check --threshold warning"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^9.0.1",
+    "astro": "^7.3.5",
+    "svelte": "^5.57.1",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "svelte-check": "^4.7.6"
+  }
+}

@@ -2,3 +2,6 @@
 __pycache__/
 .venv/
 .pytest_cache/
+web/node_modules/
+web/dist/
+web/.astro/
