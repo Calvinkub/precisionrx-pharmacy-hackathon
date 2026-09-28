@@ -1,0 +1,46 @@
+# How regular medications shift NMR markers. Used to warn that a value reflects the drug, not the
+# untreated state. Only effects backed by a cited study; everything else is "no evidence in store".
+# direction: down | up | stable (expected NOT to move — a useful sanity check)
+drugs:
+  statin:
+    members: [atorvastatin, rosuvastatin, simvastatin, pitavastatin, pravastatin, fluvastatin]
+    label: "statin (ยาลดไขมัน)"
+    effects:
+      - {analytes: [ldl_c, apob, ldl_p, non_hdl_c, total_c], direction: down}
+      - {analytes: [remnant_c], direction: down, note: "ลดประมาณ 80% ของขนาดที่ LDL-C ลด"}
+      - {analytes: [tg], direction: down, note: "ลดเล็กน้อย (~25% ของขนาดที่ LDL-C ลด)"}
+      - {analytes: [bcaa, glucose, bohb], direction: stable, note: "ไม่ควรเปลี่ยน — ถ้าเปลี่ยนมาก ให้หาสาเหตุอื่น"}
+    interpretation: "ค่าไขมันที่ต่ำลงเป็นผลของยา ความเสี่ยงหัวใจก่อนรักษาสูงกว่าที่เห็น — ไม่ใช่เหตุผลให้หยุดยา"
+    fact_ids: [WURTZ-2016-STATIN]
+  metformin:
+    members: [metformin]
+    label: "metformin (ยาเบาหวาน)"
+    effects:
+      - {analytes: [glucose], direction: down}
+      - {analytes: [phenylalanine], direction: down, note: "หลักฐานอ่อน"}
+      - {analytes: [bcaa, lactate], direction: stable, note: "การศึกษา CAMERA ไม่พบการเปลี่ยนแปลง"}
+    interpretation: "น้ำตาลที่อ่านได้อยู่ภายใต้ยา BCAA ไม่ได้ถูก metformin ลดลง จึงยังใช้ดูความเสี่ยงได้"
+    fact_ids: [PREISS-2016-METFORMIN, HIRST-2012-METFORMIN]
+  fenofibrate:
+    members: [fenofibrate]
+    label: "fenofibrate (ยาลดไตรกลีเซอไรด์)"
+    effects:
+      - {analytes: [tg, vldl_p], direction: down}
+      - {analytes: [apob], direction: down, note: "ลดประมาณ 16% เมื่อใช้ร่วมกับ statin"}
+    interpretation: "TG และ VLDL ที่ต่ำลงเป็นผลของยา"
+    fact_ids: [CHAN-2010-FENOFIBRATE]
+  omega3:
+    members: [icosapent ethyl, omega-3, fish oil]
+    label: "omega-3 / icosapent ethyl"
+    effects:
+      - {analytes: [vldl_p, ldl_p, tg], direction: down}
+    interpretation: "อนุภาค VLDL และ LDL ที่ลดลงส่วนหนึ่งเป็นผลของยา"
+    fact_ids: [BALLANTYNE-2015-IPE]
+  glp1:
+    members: [semaglutide, liraglutide, dulaglutide]
+    label: "GLP-1 RA"
+    effects:
+      - {analytes: [glucose], direction: down}
+      - {analytes: [apob], direction: stable, note: "ช่วยให้ ApoB ไม่กลับขึ้นหลังลดน้ำหนัก (liraglutide)"}
+    interpretation: "น้ำตาลที่อ่านได้อยู่ภายใต้ยา"
+    fact_ids: [ENGELBRECHTSEN-2017-GLP1]

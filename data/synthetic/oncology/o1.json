@@ -1,0 +1,58 @@
+{
+ "id": "o1",
+ "label": "มะเร็งปอด EGFR+ · โรคลุกลามระหว่างใช้ erlotinib",
+ "patient": {
+  "age": 64,
+  "sex": "male",
+  "dx": "มะเร็งปอดชนิด adenocarcinoma ระยะที่ 4 · EGFR exon 19 deletion (ชิ้นเนื้อ ปี 2025)"
+ },
+ "story": "ใช้ erlotinib มา 18 เดือน CT ล่าสุดพบโรคลุกลาม แพทย์ส่งตรวจ ctDNA จากเลือดแทนการตัดชิ้นเนื้อซ้ำ และกิน omeprazole ประจำเพราะกรดไหลย้อน",
+ "meds": [
+  {
+   "drug": "erlotinib",
+   "dose_mg": 150,
+   "status": "current"
+  },
+  {
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "status": "current"
+  }
+ ],
+ "pgx": {},
+ "ctdna": {
+  "date": "2026-09-10",
+  "lab": "ห้องแล็บ liquid biopsy (จำลอง)",
+  "specimen": "พลาสมา (หลอด cfDNA)",
+  "variants": [
+   {
+    "gene": "EGFR",
+    "variant": "exon 19 deletion (E746_A750del)",
+    "vaf": 8.2,
+    "tier": "Tier I",
+    "lab_note": "driver เดิม"
+   },
+   {
+    "gene": "EGFR",
+    "variant": "T790M",
+    "vaf": 3.1,
+    "tier": "Tier I",
+    "lab_note": "กลไกดื้อยา EGFR TKI รุ่นแรก"
+   },
+   {
+    "gene": "DNMT3A",
+    "variant": "R882H",
+    "vaf": 1.2,
+    "tier": "Tier III",
+    "lab_note": ""
+   },
+   {
+    "gene": "BRCA2",
+    "variant": "c.5946delT (S1982fs)",
+    "vaf": 49.5,
+    "tier": "Tier II",
+    "lab_note": ""
+   }
+  ]
+ }
+}

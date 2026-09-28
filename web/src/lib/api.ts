@@ -27,11 +27,12 @@ export interface NmrDomain {
   id: string; title: string; what: string; status: "good" | "warning" | "serious" | "none"; status_label: string; headline: string;
   key: { id: string; abbr: string; name: string; unit: string; value: number; ref_low: number | null; ref_high: number | null;
          target: number | null; previous: number | null; pct_change: number | null; verdict: Verdict | null } | null;
-  out_of_range: string[]; fact_ids: string[];
+  out_of_range: string[]; fact_ids: string[]; drug_note: string | null; drugs: string[];
 }
 export interface Assessment {
   snapshot: string; nmr_summary: NmrDomain[]; risks: Risk[]; nmr_factors: NmrFactor[]; findings: Finding[];
   advice: Advice[]; trend: TrendRow[]; facts: Record<string, Fact>;
+  follow_up: { id: string; text: string; fact_ids: string[] }[];
 }
 
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {

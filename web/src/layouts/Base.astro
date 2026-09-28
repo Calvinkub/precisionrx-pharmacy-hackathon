@@ -4,13 +4,14 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
-  current?: "home" | "dashboard" | "his" | "queue";
+  current?: "home" | "dashboard" | "medications" | "care" | "cfdna";
 }
 const { title, description = "PrecisionRx — ต้นแบบระบบช่วยเภสัชกรตัดสินใจเรื่องยา (ข้อมูลจำลอง)", current } = Astro.props;
 const nav = [
-  { id: "dashboard", href: "/dashboard/", label: "ผลตรวจ" },
-  { id: "his", href: "/his/", label: "สั่งยา" },
-  { id: "queue", href: "/queue/", label: "คิวเภสัชกร" },
+  { id: "dashboard", href: "/dashboard/", label: "ผลตรวจ", carry: true },
+  { id: "medications", href: "/medications/", label: "ยาที่ใช้", carry: true },
+  { id: "care", href: "/care/", label: "ความเสี่ยงและการดูแล", carry: true },
+  { id: "cfdna", href: "/cfdna/", label: "cfDNA", carry: false },
 ];
 ---
 <!doctype html>
@@ -38,7 +39,7 @@ const nav = [
         <nav aria-label="เมนูหลัก">
           <ul>
             {nav.map((n) => (
-              <li><a href={n.href} aria-current={current === n.id ? "page" : undefined}>{n.label}</a></li>
+              <li><a href={n.href} data-carry={n.carry ? "" : undefined} aria-current={current === n.id ? "page" : undefined}>{n.label}</a></li>
             ))}
           </ul>
         </nav>
@@ -59,6 +60,17 @@ const nav = [
     </footer>
 
     <script>
+      // keep the selected case + visit when moving between report pages
+      const carry = () => {
+        const q = new URLSearchParams(location.search);
+        const c = q.get("case"), v = q.get("visit");
+        if (!c) return;
+        for (const a of document.querySelectorAll<HTMLAnchorElement>("a[data-carry]")) {
+          const u = new URL(a.href); u.searchParams.set("case", c); if (v) u.searchParams.set("visit", v); a.href = u.pathname + u.search;
+        }
+      };
+      carry();
+      window.addEventListener("casechange", carry);
       document.getElementById("theme-toggle")?.addEventListener("click", () => {
         const root = document.documentElement;
         const isDark = root.dataset.theme === "dark" ||

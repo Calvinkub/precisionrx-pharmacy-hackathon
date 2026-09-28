@@ -1,0 +1,18 @@
+{
+ "id": "o3",
+ "label": "มะเร็งปอดรายใหม่ · ctDNA ไม่พบ variant",
+ "patient": {
+  "age": 55,
+  "sex": "female",
+  "dx": "สงสัยมะเร็งปอดระยะลุกลาม รอผลชิ้นเนื้อ"
+ },
+ "story": "ส่ง ctDNA ระหว่างรอผลชิ้นเนื้อเพื่อหา driver mutation ให้เร็วขึ้น",
+ "meds": [],
+ "pgx": {},
+ "ctdna": {
+  "date": "2026-09-12",
+  "lab": "ห้องแล็บ liquid biopsy (จำลอง)",
+  "specimen": "พลาสมา (หลอด cfDNA)",
+  "variants": []
+ }
+}

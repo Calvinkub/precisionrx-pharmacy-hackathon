@@ -1,0 +1,11 @@
+---
+import Base from "../../layouts/Base.astro";
+import Medications from "../../components/Medications.svelte";
+---
+<Base title="ยาที่ใช้ประจำ" current="medications" description="ดึงรายการยาที่กินประจำจากประวัติรับยา และดูว่ายาแต่ละตัวเปลี่ยนค่าในเลือดอย่างไร">
+  <div class="container page">
+    <h1 class="title">ยาที่ใช้ประจำ</h1>
+    <Medications client:load />
+  </div>
+</Base>
+<style>.title { margin-bottom: 24px; }</style>

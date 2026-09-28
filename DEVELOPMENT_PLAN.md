@@ -44,9 +44,11 @@ Stack ที่ใช้: Python + FastAPI (engines + API) · UI = Astro 7 + Sve
 | Test | ✅ 43 ผ่าน (รวม eval gate + CDS Hooks) |
 | UI ใหม่ด้วย Astro: หน้าภาพรวม + dashboard + HIS + คิว, light/dark, mobile, axe-core 0 violation ทั้ง 4 หน้า (WCAG 2.1 AA) | ✅ |
 | ตรวจถ้อยคำ guideline กับต้นฉบับ | ✅ ทุก fact ที่ระบบอ้าง `verified: true` (CPIC PDF, FDA label 2026, ACR 2020) |
-| Mock HIS หน้าสั่งยา + CDS Hooks service (order-select / order-sign / feedback) + คิวเภสัชกร | ✅ `/his`, `/queue` — เตือนเฉพาะที่เกิดจากคำสั่งใหม่, hard stop บล็อก sign, override ต้องมีเหตุผล |
+| CDS Hooks service (API) | ✅ เก็บไว้เป็น API · หน้า HIS/คิวเภสัชกรถูกตัดออก (29 ก.ย. 2026) |
+| หน้ายาที่ใช้ประจำ: ดึงจากประวัติรับยา, PDC อัตโนมัติ, ยาแต่ละตัวเปลี่ยนค่า NMR อะไร และติดป้ายในผล NMR | ✅ `/medications/` |
+| หน้าความเสี่ยงและการดูแลตัวเอง (พิมพ์ได้) + นัดติดตาม | ✅ `/care/` |
 | Eval set 46 เคส + harness + review sheet | ✅ 46/46, omission 0, false flag 0, alert −71% (`eval/`) — รอเภสัชกรตรวจเฉลย |
-| Oncology module | ⏳ ยังไม่ทำ |
+| Oncology cfDNA module (CHIP, germline, ctDNA-negative, T790M, TKI+PPI, DPYD, UGT1A1) — ถ้อยคำตรวจกับฉลาก/CPIC แล้ว | ✅ `/cfdna/` 3 เคส |
 | LLM summarizer + verifier | ⏳ ยังไม่ทำ |
 
 **ข้อควรระวังที่ต้องพูดบนเวที:** ช่วงอ้างอิง NMR = UK Biobank P10–P90 (ไม่ใช่คนไทย ไม่ใช่ค่าทางคลินิก) · หลักฐาน NMR → โรค เป็นระดับ association · ค่า CVi ของ LDL-P/BCAA ยังหาไม่พบ · clopidogrel rule ใช้กับ ACS/PCI (ระบบยังไม่รู้ข้อบ่งใช้ — แสดงคำแนะนำแยกตามข้อบ่งใช้ในข้อความ) · ตัวเลขอ้างอิงทั้งหมดอยู่ใน `docs/`

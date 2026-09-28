@@ -18,16 +18,16 @@
  },
  "meds": [
   {
-   "drug": "simvastatin",
-   "dose_mg": 40,
-   "pdc_pct": 92,
-   "start_visit": 1
-  },
-  {
    "drug": "omeprazole",
    "dose_mg": 20,
-   "pdc_pct": 85,
+   "pdc_pct": 88.3,
    "start_visit": null
+  },
+  {
+   "drug": "simvastatin",
+   "dose_mg": 40,
+   "pdc_pct": 95.6,
+   "start_visit": 1
   }
  ],
  "pgx": {
@@ -102,6 +102,85 @@
     "bcaa": 498,
     "omega3_pct": 2.6
    }
+  }
+ ],
+ "dispensing": [
+  {
+   "date": "2026-03-14",
+   "drug": "simvastatin",
+   "dose_mg": 40,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนนอน"
+  },
+  {
+   "date": "2026-04-15",
+   "drug": "simvastatin",
+   "dose_mg": 40,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนนอน"
+  },
+  {
+   "date": "2026-05-17",
+   "drug": "simvastatin",
+   "dose_mg": 40,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนนอน"
+  },
+  {
+   "date": "2025-10-01",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2025-11-05",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2025-12-10",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2026-01-14",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2026-02-18",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2026-03-25",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2026-04-29",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
+  },
+  {
+   "date": "2026-06-03",
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "days_supply": 30,
+   "sig": "วันละ 1 เม็ด ก่อนอาหารเช้า"
   }
  ]
 }

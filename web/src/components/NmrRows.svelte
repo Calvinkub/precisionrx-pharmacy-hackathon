@@ -23,6 +23,7 @@
       <div class="what">
         <h3>{d.title}</h3>
         <p>{lead(d.headline)}{d.out_of_range.filter((a) => a !== k?.abbr).length ? ` · ค่าอื่นที่ควรดู: ${d.out_of_range.filter((a) => a !== k?.abbr).join(", ")}` : ""}</p>
+        {#if d.drug_note}<p class="drug"><span class="pill">ยา</span>{d.drug_note}</p>{/if}
       </div>
       {#if k}
         <p class="value"><span class="num">{fmt(k.value)}</span> <span class="unit">{k.unit}</span><span class="abbr">{k.abbr}</span></p>
@@ -67,6 +68,8 @@
   }
   .row:first-child { border-top: 1px solid var(--line); }
   .what p { font-size: 14px; color: var(--ink-3); margin-top: 2px; }
+  .what .drug { color: var(--ink-2); display: flex; gap: 8px; align-items: baseline; }
+  .pill { font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); flex: none; }
   .value { text-align: right; white-space: nowrap; }
   .value .num { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
   .unit { font-size: 13px; color: var(--ink-3); }

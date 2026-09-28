@@ -1,0 +1,9 @@
+---
+import Base from "../../layouts/Base.astro";
+import Care from "../../components/Care.svelte";
+---
+<Base title="ความเสี่ยงและการดูแลตัวเอง" current="care" description="สรุปความเสี่ยงรายโรคและสิ่งที่ควรทำ สำหรับคุยกับผู้ป่วย">
+  <div class="container page">
+    <Care client:load />
+  </div>
+</Base>

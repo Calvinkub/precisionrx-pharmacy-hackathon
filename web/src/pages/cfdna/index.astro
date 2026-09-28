@@ -1,0 +1,15 @@
+---
+import Base from "../../layouts/Base.astro";
+import Cfdna from "../../components/Cfdna.svelte";
+---
+<Base title="cfDNA มะเร็ง" current="cfdna" description="รวมผล ctDNA จากเลือด ยีนของผู้ป่วย และยาตีกันของยามะเร็ง ในรายงานเดียว">
+  <div class="container page">
+    <h1 class="title">cfDNA มะเร็ง</h1>
+    <p class="sub">รวมผล ctDNA จากเลือด ยีนของผู้ป่วยเองที่มีผลต่อยาเคมีบำบัด และยาตีกันของยามุ่งเป้า ไว้ในรายงานเดียวสำหรับทีมมะเร็ง</p>
+    <Cfdna client:load />
+  </div>
+</Base>
+<style>
+  .title { margin-bottom: 8px; }
+  .sub { color: var(--ink-2); max-width: 62ch; margin-bottom: 28px; }
+</style>

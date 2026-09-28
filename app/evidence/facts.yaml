@@ -213,3 +213,106 @@ facts:
     url: "https://pubmed.ncbi.nlm.nih.gov/26965542/"
     level: emerging
     verified: true
+  PREISS-2016-METFORMIN:
+    text: "Metformin (CAMERA trial, 18 months, NMR): tyrosine fell and alanine rose; phenylalanine fell (weaker evidence); no change in branched-chain amino acids or lactate"
+    source: "Preiss D et al. 2016 (CAMERA metabolomics)"
+    url: "https://pubmed.ncbi.nlm.nih.gov/26887663/"
+    level: emerging
+    verified: true
+  HIRST-2012-METFORMIN:
+    text: "Metformin monotherapy lowered HbA1c by 1.12% (95% CI 0.92–1.32) versus placebo"
+    source: "Hirst JA et al. Diabetes Care 2012;35:446 (meta-analysis)"
+    url: "https://pubmed.ncbi.nlm.nih.gov/22275444/"
+    level: guideline
+    verified: true
+  CHAN-2010-FENOFIBRATE:
+    text: "Fenofibrate added to a statin in type 2 diabetes: TG −23%, VLDL-TG −51%, ApoB −16%; large, medium and small VLDL particles −45%, −66% and −67% versus placebo"
+    source: "Chan DC et al. 2010"
+    url: "https://pubmed.ncbi.nlm.nih.gov/20649626/"
+    level: emerging
+    verified: true
+  BALLANTYNE-2015-IPE:
+    text: "Icosapent ethyl 4 g/day (ANCHOR) versus placebo: total VLDL-P −12.2%, large VLDL-P −46.4%, LDL-P −7.7%, small LDL-P −13.5%"
+    source: "Ballantyne CM et al. 2015"
+    url: "https://pubmed.ncbi.nlm.nih.gov/26073397/"
+    level: emerging
+    verified: true
+  ENGELBRECHTSEN-2017-GLP1:
+    text: "After diet-induced weight loss, ApoB stayed low over 1 year on liraglutide 1.2 mg, while it rose by 0.06 mmol/L with diet alone"
+    source: "Engelbrechtsen L et al. 2017"
+    url: "https://pubmed.ncbi.nlm.nih.gov/29259801/"
+    level: emerging
+    verified: true
+  DISPENSING-PDC:
+    text: "Regular medications and PDC are computed from dispensing records: overlapping supplies are shifted forward and days covered are divided by days in the window (up to 180 days)"
+    source: "Pharmacy Quality Alliance PDC method"
+    url: "https://www.pqaalliance.org/adherence-measures"
+    level: guideline
+    verified: true
+  LABEL-OSIMERTINIB-T790M:
+    text: "TAGRISSO is indicated for the treatment of adult patients with metastatic EGFR T790M mutation-positive NSCLC, as detected by an FDA-approved test, whose disease has progressed on or after EGFR TKI therapy (plasma or tumor)"
+    source: "TAGRISSO (osimertinib) US prescribing information §1.5, §2.2 (DailyMed, rev. 09/2026)"
+    url: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/5e81b4a7-b971-45e1-9c31-29cea8c87ce7.xml"
+    level: label
+    verified: true
+  LABEL-OSIMERTINIB-PPI:
+    text: "The exposure of osimertinib was not affected by concurrent administration of omeprazole; the label has no PPI restriction"
+    source: "TAGRISSO (osimertinib) US prescribing information §12.3"
+    url: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/5e81b4a7-b971-45e1-9c31-29cea8c87ce7.xml"
+    level: label
+    verified: true
+  LABEL-ERLOTINIB-PPI:
+    text: "Omeprazole decreased erlotinib AUC by 46% and Cmax by 61%. For proton pump inhibitors, avoid concomitant use if possible — separating doses may not eliminate the interaction. H2RA: take erlotinib 10 h after and at least 2 h before the next H2RA dose"
+    source: "TARCEVA (erlotinib) US prescribing information §2.4, §7, §12.3"
+    url: "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/021743s025lbl.pdf"
+    level: label
+    verified: true
+  LABEL-GEFITINIB-PPI:
+    text: "Avoid concomitant use of IRESSA with proton pump inhibitors, if possible. If required, take IRESSA 12 hours after the last dose or 12 hours before the next dose of the PPI; 6 hours after or before an H2RA or antacid"
+    source: "IRESSA (gefitinib) US prescribing information §7.1"
+    url: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/827d60e8-7e07-41b7-c28b-49ef1c4a5a41.xml"
+    level: label
+    verified: true
+  CPIC-DPYD-2017:
+    text: "DPYD activity score 1: reduce starting dose by 50% (Strong); 1.5: reduce by 25–50% (Moderate), then titrate; 0.5 or 0: avoid 5-fluorouracil and prodrug-based regimens (Strong)"
+    source: "CPIC guideline for fluoropyrimidines and DPYD (Amstutz et al. 2018), Table 2"
+    url: "https://files.cpicpgx.org/data/guideline/publication/fluoropyrimidines/2017/29152729.pdf"
+    level: guideline
+    verified: true
+  LABEL-DPYD-TESTING:
+    text: "Prior to initiating capecitabine / fluorouracil, test patients for genetic variants of DPYD unless immediate treatment is necessary; avoid in complete DPD deficiency (EMA 2020 gives the same advice)"
+    source: "XELODA (capecitabine) US prescribing information §2.1; fluorouracil boxed warning; EMA 30 Apr 2020"
+    url: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/e702d84d-7162-4751-bf37-d724cc7e45a5.xml"
+    level: label
+    verified: true
+  LABEL-IRINOTECAN-UGT1A1:
+    text: "Consider a reduction in the CAMPTOSAR starting dose by at least one level for patients homozygous or compound heterozygous for UGT1A1*28 and/or *6; closely monitor for neutropenia"
+    source: "CAMPTOSAR (irinotecan) US prescribing information (DailyMed, 05/2026)"
+    url: "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/e518dfc6-7e93-4fee-a66c-51e1ab71c056.xml"
+    level: label
+    verified: true
+  RAZAVI-2019-CHIP:
+    text: "Most cfDNA mutations (81.6% in controls, 53.2% in patients with cancer) had features of clonal hematopoiesis, mainly in DNMT3A, TET2, PPM1D and TP53 — matched white-blood-cell sequencing is needed"
+    source: "Razavi P et al. Nat Med 2019"
+    url: "https://pubmed.ncbi.nlm.nih.gov/31768066/"
+    level: emerging
+    verified: true
+  MANDELKER-2019-GERMLINE:
+    text: "A heterozygous germline pathogenic variant is expected at ~50% of alleles, including in tumour; variants in cancer-susceptibility genes (BRCA1/2, PALB2, mismatch-repair genes) need germline laboratory confirmation"
+    source: "Mandelker D et al. Ann Oncol 2019 (ESMO Precision Medicine Working Group)"
+    url: "https://pubmed.ncbi.nlm.nih.gov/31050713/"
+    level: guideline
+    verified: true
+  LABEL-CTDNA-NEGATIVE:
+    text: "A negative result from a plasma specimen does not assure that the tumor is negative for genomic findings; NSCLC patients negative in plasma should be reflexed to tissue testing if feasible"
+    source: "Guardant360 CDx FDA labeling (P200010/S008)"
+    url: "https://www.accessdata.fda.gov/cdrh_docs/pdf20/P200010S008C.pdf"
+    level: label
+    verified: true
+  LABEL-CTDNA-GERMLINE:
+    text: "If a reported alteration is suspected to be germline, confirmatory testing should be considered; a cfDNA test is not intended to replace germline testing"
+    source: "Guardant360 CDx FDA labeling (P200010/S008)"
+    url: "https://www.accessdata.fda.gov/cdrh_docs/pdf20/P200010S008C.pdf"
+    level: label
+    verified: true
+

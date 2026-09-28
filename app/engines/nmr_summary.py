@@ -6,6 +6,7 @@ ADA cut-points for glucose and the ESC ApoB secondary target for the atherogenic
 
 from dataclasses import asdict, dataclass, field
 
+from app.engines.drug_effects import moved_by
 from app.engines.panel import catalog, status
 from app.engines.rcv import compare
 
@@ -63,6 +64,8 @@ class Domain:
     key: KeyMarker | None
     out_of_range: list[str] = field(default_factory=list)
     fact_ids: list[str] = field(default_factory=list)
+    drug_note: str | None = None  # "ค่านี้ถูกยา X ลดลง" when a regular drug moves the domain's markers
+    drugs: list[str] = field(default_factory=list)
 
 
 def _fmt(v: float) -> str:
@@ -78,8 +81,28 @@ def _unfavourable(aid: str, v: float) -> bool:
     return not ((better == "lower" and st == "low") or (better == "higher" and st == "high"))
 
 
-def summarize(cur: dict[str, float], prev: dict[str, float] | None, *, diabetes: bool, high_risk: bool) -> list[dict]:
+DIR_TH = {"down": "ลดลง", "up": "เพิ่มขึ้น"}
+
+
+def _drug_note(members: list[str], key: str, moved: dict[str, list[dict]]) -> tuple[str | None, list[str], list[str]]:
+    hits = {}
+    for m in members:
+        for e in moved.get(m, []):
+            hits.setdefault(e["drug"], (e["direction"], e["fact_ids"]))
+    if not hits:
+        return None, [], []
+    parts = [f"{d} ทำให้ค่าในหัวข้อนี้{DIR_TH[dr]}" for d, (dr, _) in hits.items()]
+    note = " · ".join(parts)
+    if any(e["direction"] == "down" for e in moved.get(key, [])):
+        note += " — ค่าที่เห็นเป็นค่าระหว่างใช้ยา ความเสี่ยงก่อนรักษาสูงกว่านี้"
+    facts = sorted({f for _, fs in hits.values() for f in fs})
+    return note, list(hits), facts
+
+
+def summarize(cur: dict[str, float], prev: dict[str, float] | None, *, diabetes: bool, high_risk: bool,
+              drugs: list[str] | None = None) -> list[dict]:
     cat = catalog()
+    moved = moved_by(drugs or [])
     out = []
     for d in DOMAINS:
         k = d["key"]
@@ -123,5 +146,7 @@ def summarize(cur: dict[str, float], prev: dict[str, float] | None, *, diabetes:
             facts.append("RCV-METHOD")
         key = KeyMarker(k, a["abbr"], a["name"], a["unit"], v, a.get("ref_low"), a.get("ref_high"), target,
                         p, None if ch is None else round(ch.pct_change, 1), None if ch is None else ch.verdict)
-        out.append(asdict(Domain(d["id"], d["title"], d["what"], st, STATUS_LABEL[st], head, key, oor, facts)))
+        note, drug_names, drug_facts = _drug_note(members, k, moved)
+        facts += drug_facts
+        out.append(asdict(Domain(d["id"], d["title"], d["what"], st, STATUS_LABEL[st], head, key, oor, facts, note, drug_names)))
     return out

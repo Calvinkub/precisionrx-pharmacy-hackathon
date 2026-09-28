@@ -1,0 +1,52 @@
+{
+ "id": "o2",
+ "label": "มะเร็งลำไส้ใหญ่ · จะเริ่ม FOLFIRI",
+ "patient": {
+  "age": 58,
+  "sex": "female",
+  "dx": "มะเร็งลำไส้ใหญ่ระยะแพร่กระจายไปตับ"
+ },
+ "story": "แพทย์วางแผนเริ่มสูตร FOLFIRI (fluorouracil + irinotecan) สัปดาห์หน้า มีผลตรวจยีนแพ้ยาจากโครงการเดิม",
+ "meds": [
+  {
+   "drug": "fluorouracil",
+   "status": "planned"
+  },
+  {
+   "drug": "irinotecan",
+   "status": "planned"
+  }
+ ],
+ "pgx": {
+  "DPYD": "1.5 (c.1236G>A/HapB3 heterozygous)",
+  "UGT1A1": "*28/*28"
+ },
+ "ctdna": {
+  "date": "2026-09-05",
+  "lab": "ห้องแล็บ liquid biopsy (จำลอง)",
+  "specimen": "พลาสมา (หลอด cfDNA)",
+  "variants": [
+   {
+    "gene": "KRAS",
+    "variant": "G12D",
+    "vaf": 14.8,
+    "tier": "Tier I",
+    "lab_note": "ตามรายงานแล็บ: เกี่ยวข้องกับการเลือกยาต้าน EGFR"
+   },
+   {
+    "gene": "APC",
+    "variant": "R1450*",
+    "vaf": 12.1,
+    "tier": "Tier II",
+    "lab_note": ""
+   },
+   {
+    "gene": "TP53",
+    "variant": "R175H",
+    "vaf": 11.6,
+    "tier": "Tier II",
+    "lab_note": ""
+   }
+  ]
+ }
+}

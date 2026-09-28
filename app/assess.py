@@ -5,6 +5,7 @@ from dataclasses import asdict
 from pydantic import BaseModel, Field
 
 from app.engines import meds as m
+from app.engines.meds import STATINS as m_STATINS
 from app.engines.lifestyle import lifestyle_advice
 from app.engines.nmr_factors import MMOL_TO_MG_DL_CHOL, nmr_factors
 from app.engines.nmr_summary import summarize
@@ -57,6 +58,26 @@ def ldl_target_finding(statin: m.Medication, ldl: float, cv_risk: float | None) 
         [f"Thai CV risk = {cv_risk:.1f}%", f"LDL-C = {ldl:.2f} mmol/L", "เป้า RCPT 2024 < 2.6 mmol/L"])
 
 
+def next_steps(medications: list, cur: dict, risks: list, factors: list, diabetes: bool) -> list[dict]:
+    """What to check next, each with its source."""
+    out = []
+    if any(m.key in m_STATINS for m in medications):
+        out.append({"id": "recheck_lipids", "text": "ตรวจไขมันซ้ำใน 4–12 สัปดาห์หลังเริ่มหรือปรับยาลดไขมัน เพื่อดูผลของยาและการกินยา",
+                    "fact_ids": ["RCPT-2024-FOLLOWUP"]})
+    g = cur.get("glucose")
+    dm = next((r for r in risks if r.id == "dm"), None)
+    if not diabetes and ((g is not None and g >= 5.6) or (dm and dm.value is not None and dm.value >= 6)):
+        out.append({"id": "confirm_glucose", "text": "ตรวจน้ำตาลขณะอดอาหาร (FPG) หรือ HbA1c เพื่อยืนยันภาวะก่อนเบาหวาน",
+                    "fact_ids": ["ADA-2026-DX", "TDRS-2006"]})
+    if any(f.id == "glyca_high" for f in factors):
+        out.append({"id": "recheck_inflammation", "text": "ตรวจค่าการอักเสบซ้ำในช่วงที่ไม่ได้ป่วยหรือติดเชื้อ ก่อนแปลผล",
+                    "fact_ids": ["GLYCA-CVD"]})
+    if any(m.pdc_pct is not None and m.pdc_pct < 80 for m in medications):
+        out.append({"id": "adherence_talk", "text": "คุยกับเภสัชกรเรื่องการกินยาให้สม่ำเสมอ (มียาที่กินไม่ถึง 80% ของวัน)",
+                    "fact_ids": ["PQA-PDC80"]})
+    return out
+
+
 def assess(req: AssessIn) -> dict:
     visits = req.visits
     cur = visits[-1].values
@@ -89,8 +110,9 @@ def assess(req: AssessIn) -> dict:
 
     factors = nmr_factors(cur, cv.value, p.diabetes)
     high_risk = p.diabetes or (cv.value is not None and cv.value >= 20)
-    summary = summarize(cur, prev, diabetes=p.diabetes, high_risk=high_risk)
+    summary = summarize(cur, prev, diabetes=p.diabetes, high_risk=high_risk, drugs=[x.key for x in medications])
     advice = lifestyle_advice(p, cur, req.alcohol_drinks_per_day, req.activity_min_week)
+    follow_up = next_steps(medications, cur, risks, factors, p.diabetes)
     trend_rows = trend(prev, cur) if prev else []
 
     cat = catalog()
@@ -101,6 +123,8 @@ def assess(req: AssessIn) -> dict:
     for group in (risks, findings, factors, advice):
         for x in group:
             used.update(x.fact_ids)
+    for x in follow_up:
+        used.update(x["fact_ids"])
     for d in summary:
         used.update(d["fact_ids"])
     if trend_rows:
@@ -114,6 +138,7 @@ def assess(req: AssessIn) -> dict:
         "nmr_factors": [asdict(f) for f in factors],
         "findings": [asdict(f) for f in findings],
         "advice": [asdict(a) for a in advice],
+        "follow_up": follow_up,
         "trend": [asdict(t) for t in trend_rows],
         "facts": {k: store["facts"][k] for k in sorted(used) if k in store["facts"]},
         "missing_facts": sorted(k for k in used if k not in store["facts"]),

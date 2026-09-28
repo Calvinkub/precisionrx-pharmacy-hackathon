@@ -16,16 +16,18 @@ uv run pytest                               # engine + API + CDS Hooks tests + e
 uv run python -m eval.run_eval --sheet      # eval report → eval/report.md
 ```
 
-Pages: `/` overview · `/dashboard/?case=1&visit=2` NMR dashboard · `/his/?hn=HN-0003&drug=clopidogrel&dose=75` mock HIS ordering · `/queue/` pharmacist queue.
+Pages: `/` overview · `/dashboard/?case=1&visit=2` NMR results + medication findings · `/medications/` regular meds pulled from the dispensing record and how each shifts NMR markers · `/care/` risk + self-care summary (printable) · `/cfdna/?case=o1` oncology ctDNA + germline PGx + TKI interactions.
 UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → http://localhost:4321 (proxies `/api` and `/cds-services` to port 8765). Type/a11y check: `pnpm check`.
 
 | Path | Content |
 |---|---|
 | `app/engines/` | Deterministic engines: `risk.py` (Thai CV Risk, Thai diabetes score), `rcv.py`, `panel.py`, `nmr_factors.py`, `meds.py` (PGx, DDI, statin response, adherence), `lifestyle.py` |
-| `app/cds_hooks.py` | CDS Hooks service: discovery, `order-select`, `order-sign`, feedback → pharmacist queue |
+| `app/cds_hooks.py` | CDS Hooks service (API only; the mock HIS page was removed) |
+| `app/engines/dispensing.py`, `drug_effects.py` | Regular meds + PDC from refill history; which NMR markers each drug moves (`evidence/drug_effects.yaml`) |
+| `app/engines/oncology.py` | cfDNA module: CHIP / possible-germline flags, ctDNA-negative caveat, T790M → osimertinib, TKI + PPI, DPYD / UGT1A1 |
 | `app/evidence/` | `facts.yaml` (every output cites a fact id + source), `analytes.yaml` (NMR catalog: reference band, CVa, CVi) |
 | `web/` | Astro 7 + Svelte 5 UI (`src/pages`, `src/components`, `src/styles/global.css` tokens). `public/sample_panel.csv` = upload example |
-| `data/synthetic/` | 3 demo cases |
+| `data/synthetic/` | 3 cardiometabolic cases (with dispensing history) + `oncology/` 3 cfDNA cases |
 | `eval/` | 45-case gold-standard eval set, runner, report, pharmacist review sheet |
 | `docs/` | Research notes behind the numbers (verify before pitching) |
 | [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) | Plan and status |

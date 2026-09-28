@@ -25,13 +25,12 @@
 
 ## เช็กหลัง deploy
 
-- `/` , `/dashboard/?case=1&visit=2` , `/his/?hn=HN-0001&drug=carbamazepine&dose=200` , `/queue/` เปิดได้
+- `/` , `/dashboard/?case=1&visit=2` , `/medications/` , `/care/` , `/cfdna/` เปิดได้
 - `/api/eval` และ `/cds-services` ตอบ JSON
 
 ## ข้อจำกัดที่ต้องรู้
 
-- **คิวเภสัชกรเก็บในหน่วยความจำของ function** — บน Vercel อาจมีหลาย instance และ instance ถูกปิดเมื่อไม่มีคนใช้
-  ตอน demo คนเดียวมักใช้ได้ แต่รายการอาจหายหรือไม่ขึ้นในหน้าคิวเป็นบางครั้ง ถ้าต้องใช้จริง ให้ย้าย `QUEUE` ใน
-  `app/cds_hooks.py` ไปเก็บใน Vercel KV / Upstash Redis / Supabase
+- ทุกหน้าไม่เก็บ state ฝั่ง server (ข้อมูลผู้ป่วยที่แก้เก็บใน sessionStorage ของเบราว์เซอร์) จึงเหมาะกับ serverless
+- ผลตรวจที่อัปโหลด CSV อยู่แค่ในหน้านั้น ไม่ถูกบันทึก
 - ข้อมูลทั้งหมดเป็นข้อมูลจำลอง ลิงก์เป็นสาธารณะ ห้ามใส่ข้อมูลผู้ป่วยจริง
 - ทางเลือกถ้าไม่ใช้ Vercel: `Dockerfile` ใช้กับ Render / Fly.io / Hugging Face Spaces ได้
