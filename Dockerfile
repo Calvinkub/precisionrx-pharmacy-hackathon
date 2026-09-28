@@ -19,6 +19,7 @@ RUN uv sync --frozen --no-install-project
 COPY app/ app/
 COPY data/ data/
 COPY eval/ eval/
+COPY scripts/ scripts/
 COPY --from=web /web/dist web/dist
 RUN uv run python -m eval.run_eval >/dev/null
 ENV PORT=8000

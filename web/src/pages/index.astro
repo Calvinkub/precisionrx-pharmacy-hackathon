@@ -9,6 +9,7 @@ const steps = [
   ["ติดตามผล", "ตรวจครั้งใหม่ บอกได้ว่าดีขึ้นจริง หรือแค่แกว่งตามธรรมชาติ"],
 ];
 const links = [
+  ["/ncd/?patient=P002", "คัดกรอง NCDs (แพทย์)", "NMR + cfDNA + EHR → 5 โรค พร้อมเหตุผลและแผนดูแล"],
   ["/dashboard/?case=1&visit=2", "ผลตรวจ", "ผล NMR และเรื่องยาสำหรับเภสัชกร"],
   ["/medications/?case=1&visit=2", "ยาที่ใช้ประจำ", "ยาแต่ละตัวเปลี่ยนค่าในเลือดอย่างไร"],
   ["/care/?case=1&visit=2", "ความเสี่ยงและการดูแลตัวเอง", "สรุปสำหรับคุยกับผู้ป่วย พิมพ์ได้"],
@@ -20,10 +21,11 @@ const links = [
     <section class="hero">
       <p class="eyebrow">ต้นแบบสำหรับ pharmacy hackathon</p>
       <h1>ผลตรวจที่คนไข้มีอยู่แล้ว<br />ควรถูกใช้ทุกครั้งที่สั่งยา</h1>
-      <p class="lead">PrecisionRx รวมผล NMR ผลตรวจยีน และยาที่ใช้ เป็นข้อเสนอสั้น ๆ ที่เภสัชกรตัดสินใจได้ ทุกข้อความมีแหล่งอ้างอิง และเตือนเฉพาะเรื่องที่ต้องทำ</p>
+      <p class="lead">PrecisionRx รวมผล NMR, cfDNA, ผลแล็บจากระบบโรงพยาบาล และยาที่ใช้ เป็นความเสี่ยงโรค NCDs ที่แพทย์และเภสัชกรตรวจสอบเหตุผลได้ ทุกข้อความมีแหล่งอ้างอิง และเตือนเฉพาะเรื่องที่ต้องทำ</p>
       <div class="cta">
-        <a class="btn btn-primary" href="/dashboard/?case=1&visit=2">ดูตัวอย่าง</a>
-        <a class="btn" href="/care/?case=1&visit=2">ดูสรุปสำหรับผู้ป่วย</a>
+        <a class="btn btn-primary" href="/ncd/?patient=P002">ดูหน้าแพทย์</a>
+        <a class="btn" href="/dashboard/?case=1&visit=2">ดูหน้าเภสัชกร</a>
+
       </div>
     </section>
 

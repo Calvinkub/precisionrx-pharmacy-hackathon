@@ -1,0 +1,251 @@
+{
+ "resourceType": "Bundle",
+ "type": "collection",
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P002",
+    "gender": "male",
+    "birthDate": "1965-01-20"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P002-29463-7",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "29463-7",
+       "display": "Body weight"
+      }
+     ],
+     "text": "Body weight"
+    },
+    "effectiveDateTime": "2026-05-06",
+    "valueQuantity": {
+     "value": 78,
+     "unit": "kg",
+     "system": "http://unitsofmeasure.org",
+     "code": "kg"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P002-8302-2",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "8302-2",
+       "display": "Body height"
+      }
+     ],
+     "text": "Body height"
+    },
+    "effectiveDateTime": "2026-05-06",
+    "valueQuantity": {
+     "value": 168,
+     "unit": "cm",
+     "system": "http://unitsofmeasure.org",
+     "code": "cm"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P002-8280-0",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "8280-0",
+       "display": "Waist circumference"
+      }
+     ],
+     "text": "Waist circumference"
+    },
+    "effectiveDateTime": "2026-05-06",
+    "valueQuantity": {
+     "value": 97,
+     "unit": "cm",
+     "system": "http://unitsofmeasure.org",
+     "code": "cm"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P002-bp",
+    "status": "final",
+    "effectiveDateTime": "2026-05-06",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "85354-9",
+       "display": "Blood pressure panel"
+      }
+     ]
+    },
+    "component": [
+     {
+      "code": {
+       "coding": [
+        {
+         "system": "http://loinc.org",
+         "code": "8480-6"
+        }
+       ]
+      },
+      "valueQuantity": {
+       "value": 148,
+       "unit": "mm[Hg]"
+      }
+     },
+     {
+      "code": {
+       "coding": [
+        {
+         "system": "http://loinc.org",
+         "code": "8462-4"
+        }
+       ]
+      },
+      "valueQuantity": {
+       "value": 92,
+       "unit": "mm[Hg]"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P002-smoke",
+    "status": "final",
+    "effectiveDateTime": "2026-05-06",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "72166-2",
+       "display": "Tobacco smoking status"
+      }
+     ]
+    },
+    "valueCodeableConcept": {
+     "text": "Current every day smoker"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "P002-E11.9",
+    "onsetDateTime": "2019-04-01",
+    "code": {
+     "coding": [
+      {
+       "system": "http://hl7.org/fhir/sid/icd-10",
+       "code": "E11.9",
+       "display": "Type 2 diabetes mellitus without complications"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "P002-I10",
+    "onsetDateTime": "2018-02-01",
+    "code": {
+     "coding": [
+      {
+       "system": "http://hl7.org/fhir/sid/icd-10",
+       "code": "I10",
+       "display": "Essential (primary) hypertension"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "P002-atorvastatin",
+    "status": "active",
+    "medicationCodeableConcept": {
+     "text": "atorvastatin"
+    },
+    "dosage": [
+     {
+      "doseAndRate": [
+       {
+        "doseQuantity": {
+         "value": 40,
+         "unit": "mg"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "P002-metformin",
+    "status": "active",
+    "medicationCodeableConcept": {
+     "text": "metformin"
+    },
+    "dosage": [
+     {
+      "doseAndRate": [
+       {
+        "doseQuantity": {
+         "value": 1000,
+         "unit": "mg"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "P002-amlodipine",
+    "status": "active",
+    "medicationCodeableConcept": {
+     "text": "amlodipine"
+    },
+    "dosage": [
+     {
+      "doseAndRate": [
+       {
+        "doseQuantity": {
+         "value": 5,
+         "unit": "mg"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

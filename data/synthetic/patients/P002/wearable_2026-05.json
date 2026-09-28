@@ -1,0 +1,103 @@
+{
+ "device": "smartwatch (synthetic)",
+ "days": [
+  {
+   "date": "2026-04-22",
+   "steps": 3327,
+   "active_minutes": 0,
+   "resting_hr": 82,
+   "sleep_hours": 6.5
+  },
+  {
+   "date": "2026-04-23",
+   "steps": 2538,
+   "active_minutes": 0,
+   "resting_hr": 81,
+   "sleep_hours": 5.9
+  },
+  {
+   "date": "2026-04-24",
+   "steps": 1535,
+   "active_minutes": 0,
+   "resting_hr": 80,
+   "sleep_hours": 6.2
+  },
+  {
+   "date": "2026-04-25",
+   "steps": 1623,
+   "active_minutes": 6,
+   "resting_hr": 80,
+   "sleep_hours": 4.5
+  },
+  {
+   "date": "2026-04-26",
+   "steps": 2725,
+   "active_minutes": 1,
+   "resting_hr": 80,
+   "sleep_hours": 6.6
+  },
+  {
+   "date": "2026-04-27",
+   "steps": 2220,
+   "active_minutes": 4,
+   "resting_hr": 80,
+   "sleep_hours": 6.5
+  },
+  {
+   "date": "2026-04-28",
+   "steps": 1292,
+   "active_minutes": 12,
+   "resting_hr": 79,
+   "sleep_hours": 6.3
+  },
+  {
+   "date": "2026-04-29",
+   "steps": 2110,
+   "active_minutes": 5,
+   "resting_hr": 81,
+   "sleep_hours": 6.7
+  },
+  {
+   "date": "2026-04-30",
+   "steps": 191,
+   "active_minutes": 2,
+   "resting_hr": 81,
+   "sleep_hours": 6.1
+  },
+  {
+   "date": "2026-05-01",
+   "steps": 2835,
+   "active_minutes": 0,
+   "resting_hr": 81,
+   "sleep_hours": 5.1
+  },
+  {
+   "date": "2026-05-02",
+   "steps": 2174,
+   "active_minutes": 0,
+   "resting_hr": 78,
+   "sleep_hours": 7.7
+  },
+  {
+   "date": "2026-05-03",
+   "steps": 2402,
+   "active_minutes": 3,
+   "resting_hr": 82,
+   "sleep_hours": 5.4
+  },
+  {
+   "date": "2026-05-04",
+   "steps": 1473,
+   "active_minutes": 5,
+   "resting_hr": 77,
+   "sleep_hours": 6.5
+  },
+  {
+   "date": "2026-05-05",
+   "steps": 1109,
+   "active_minutes": 3,
+   "resting_hr": 79,
+   "sleep_hours": 7.4
+  }
+ ]
+}

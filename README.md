@@ -16,7 +16,7 @@ uv run pytest                               # engine + API + CDS Hooks tests + e
 uv run python -m eval.run_eval --sheet      # eval report → eval/report.md
 ```
 
-Pages: `/` overview · `/dashboard/?case=1&visit=2` NMR results + medication findings · `/medications/` regular meds pulled from the dispensing record and how each shifts NMR markers · `/care/` risk + self-care summary (printable) · `/cfdna/?case=o1` oncology ctDNA + germline PGx + TKI interactions.
+Pages: `/` overview · `/ncd/?patient=P002` doctor NCD screening (NMR + cfDNA + EHR, LangGraph agents, exact XAI, care plan → FHIR) · `/dashboard/?case=1&visit=2` NMR results + medication findings · `/medications/` regular meds pulled from the dispensing record and how each shifts NMR markers · `/care/` risk + self-care summary (printable) · `/cfdna/?case=o1` oncology ctDNA + germline PGx + TKI interactions.
 UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → http://localhost:4321 (proxies `/api` and `/cds-services` to port 8765). Type/a11y check: `pnpm check`.
 
 | Path | Content |
@@ -31,6 +31,7 @@ UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → htt
 | `eval/` | 45-case gold-standard eval set, runner, report, pharmacist review sheet |
 | `docs/` | Research notes behind the numbers (verify before pitching) |
 | [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) | Plan and status |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 5-tier NCD multi-omics architecture: what is where, and the honest substitutions |
 | [DEPLOY.md](DEPLOY.md) | Deploy to Vercel (`vercel.json`) or any Docker host (`Dockerfile`) |
 
 ## Files

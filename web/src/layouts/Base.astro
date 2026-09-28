@@ -4,14 +4,15 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
-  current?: "home" | "dashboard" | "medications" | "care" | "cfdna";
+  current?: "home" | "ncd" | "dashboard" | "medications" | "care" | "cfdna";
 }
 const { title, description = "PrecisionRx — ต้นแบบระบบช่วยเภสัชกรตัดสินใจเรื่องยา (ข้อมูลจำลอง)", current } = Astro.props;
 const nav = [
+  { id: "ncd", href: "/ncd/", label: "NCDs (แพทย์)", carry: false },
   { id: "dashboard", href: "/dashboard/", label: "ผลตรวจ", carry: true },
   { id: "medications", href: "/medications/", label: "ยาที่ใช้", carry: true },
-  { id: "care", href: "/care/", label: "ความเสี่ยงและการดูแล", carry: true },
-  { id: "cfdna", href: "/cfdna/", label: "cfDNA", carry: false },
+  { id: "care", href: "/care/", label: "การดูแลตัวเอง", carry: true },
+  { id: "cfdna", href: "/cfdna/", label: "cfDNA มะเร็ง", carry: false },
 ];
 ---
 <!doctype html>
@@ -89,8 +90,8 @@ const nav = [
   .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; color: var(--ink); text-decoration: none; letter-spacing: -0.01em; }
   .mark { width: 22px; height: 22px; border-radius: 7px; background: var(--ink); position: relative; }
   .mark::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--bg); }
-  nav { margin-left: auto; }
-  nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  nav { margin-left: auto; min-width: 0; }
+  nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; overflow-x: auto; }
   nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; color: var(--ink-3); text-decoration: none; font-size: 15px; border-radius: 999px; transition: color .15s; }
   nav a:hover { color: var(--ink); }
   nav a[aria-current="page"] { color: var(--ink); font-weight: 500; background: var(--subtle); }
@@ -103,6 +104,7 @@ const nav = [
   @media (max-width: 560px) {
     .bar { flex-wrap: wrap; gap: 0 8px; padding-top: 8px; }
     .theme { margin-left: auto; }
-    nav { order: 3; flex-basis: 100%; margin: 0 0 6px -12px; }
+    nav { order: 3; flex-basis: 100%; min-width: 0; max-width: 100%; overflow-x: auto; margin: 0 0 6px; scrollbar-width: none; }
+    nav a:first-child { padding-left: 0; }
   }
 </style>

@@ -1,0 +1,33 @@
+# LOINC / ICD-10 map. verified: true = code + name checked on loinc.org / ICD browser.
+# Units are canonical UCUM (see app/ingest/units.py).
+labs:
+  ldl_c: {code: "13457-7", display: "LDL cholesterol (calculated)", unit: "mmol/L", aliases: ["LDL", "LDL-C", "LDL cholesterol", "LDL-Cholesterol"], verified: true}
+  hdl_c: {code: "2085-9", display: "HDL cholesterol", unit: "mmol/L", aliases: ["HDL", "HDL-C"], verified: true}
+  tg: {code: "2571-8", display: "Triglyceride", unit: "mmol/L", aliases: ["TG", "Triglycerides", "Triglyceride"], verified: true}
+  total_c: {code: "2093-3", display: "Cholesterol total", unit: "mmol/L", aliases: ["Cholesterol", "Total cholesterol", "TC", "CHOL"], verified: true}
+  apob: {code: "1884-6", display: "Apolipoprotein B", unit: "g/L", aliases: ["ApoB", "Apo B"], verified: true}
+  glucose: {code: "1558-6", display: "Fasting glucose", unit: "mmol/L", aliases: ["FPG", "FBS", "Glucose fasting", "Fasting plasma glucose", "Glucose"], verified: true}
+  hba1c: {code: "4548-4", display: "Hemoglobin A1c/Hemoglobin.total", unit: "%", aliases: ["HbA1c", "A1C", "Hemoglobin A1c"], verified: true}
+  creatinine: {code: "2160-0", display: "Creatinine [Mass/volume] in Serum or Plasma", unit: "mg/dL", aliases: ["Creatinine", "Cr", "Serum creatinine"], verified: true}
+  egfr: {code: "98979-8", display: "eGFR (CKD-EPI 2021)", unit: "mL/min/{1.73_m2}", aliases: ["eGFR"], verified: true}
+  alt: {code: "1742-6", display: "Alanine aminotransferase", unit: "U/L", aliases: ["ALT", "SGPT"], verified: true}
+  ast: {code: "1920-8", display: "Aspartate aminotransferase", unit: "U/L", aliases: ["AST", "SGOT"], verified: true}
+  ggt: {code: "2324-2", display: "Gamma glutamyl transferase", unit: "U/L", aliases: ["GGT", "Gamma GT"], verified: true}
+  platelets: {code: "777-3", display: "Platelets", unit: "10*9/L", aliases: ["PLT", "Platelet", "Platelets"], verified: true}
+  albumin: {code: "1751-7", display: "Albumin", unit: "g/L", aliases: ["Albumin", "ALB"], verified: true}
+  uacr: {code: "9318-7", display: "Albumin/Creatinine ratio in Urine", unit: "mg/g", aliases: ["UACR", "ACR", "Urine albumin creatinine ratio"], verified: false}
+  ldl_p: {code: "54434-6", display: "LDL particles (Lipoprotein.beta.subparticle) [Moles/volume]", unit: "nmol/L", aliases: ["LDL-P", "LDL particle number"], verified: true}
+  glyca: {code: "82730-3", display: "GlycA [Moles/volume] in Serum or Plasma", unit: "umol/L", aliases: ["GlycA"], verified: true}
+conditions:
+  E11: {display: "Type 2 diabetes mellitus", system: icd-10, verified: true}
+  R73.0: {display: "Abnormal glucose tolerance test (incl. impaired glucose tolerance, prediabetes)", system: icd-10, verified: true}
+  R73: {display: "Elevated blood glucose level", system: icd-10, verified: true}
+  E78: {display: "Disorders of lipoprotein metabolism (hyperlipidaemia)", system: icd-10, verified: true}
+  I10: {display: "Essential (primary) hypertension", system: icd-10, verified: true}
+  N18: {display: "Chronic kidney disease", system: icd-10, verified: true}
+  K76.0: {display: "Fatty (change of) liver, not elsewhere classified (incl. NAFLD/MASLD)", system: icd-10, verified: true}
+  E88.810: {display: "Metabolic syndrome (ICD-10-CM; WHO ICD-10 has no specific code)", system: icd-10-cm, verified: true}
+  I25: {display: "Chronic ischaemic heart disease", system: icd-10, verified: false}
+  I63: {display: "Cerebral infarction", system: icd-10, verified: false}
+  C34: {display: "Malignant neoplasm of bronchus and lung", system: icd-10, verified: true}
+  C18: {display: "Malignant neoplasm of colon", system: icd-10, verified: true}

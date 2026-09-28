@@ -28,7 +28,14 @@
 - `/` , `/dashboard/?case=1&visit=2` , `/medications/` , `/care/` , `/cfdna/` เปิดได้
 - `/api/eval` และ `/cds-services` ตอบ JSON
 
+## Claude (ถ้าต้องการ)
+
+ตั้ง Environment Variable `ANTHROPIC_API_KEY` ใน Vercel Project Settings → หน้า `/ncd/` จะใช้ Claude วางแผนและเรียบเรียงสรุป
+ถ้าไม่ตั้ง ระบบใช้ template ที่ให้ผลเหมือนเดิมทุกครั้ง (ทุกอย่างยังใช้ได้)
+
 ## ข้อจำกัดที่ต้องรู้
+
+- WebSocket (`/ws/...`) ใช้ไม่ได้บน Vercel — หน้าเว็บถอยไปใช้ REST เอง จึงไม่เห็น progress ทีละขั้นระหว่างรัน
 
 - ทุกหน้าไม่เก็บ state ฝั่ง server (ข้อมูลผู้ป่วยที่แก้เก็บใน sessionStorage ของเบราว์เซอร์) จึงเหมาะกับ serverless
 - ผลตรวจที่อัปโหลด CSV อยู่แค่ในหน้านั้น ไม่ถูกบันทึก

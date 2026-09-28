@@ -1,0 +1,32 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 439 >>
+stream
+BT /F1 10 Tf 50 800 Td 14 TL (SYNTHETIC HOSPITAL LABORATORY - CLINICAL CHEMISTRY) Tj T* (Patient: P002   Sex: M   DOB: 1965-01-20) Tj T* (Collected: 2026-05-06) Tj T* () Tj T* (TEST  RESULT  UNIT  REFERENCE) Tj T* (ALT 62 U/L 10-40) Tj T* (AST 55 U/L 10-40) Tj T* (GGT 90 U/L 10-71) Tj T* (Platelets 180 10^9/L 150-400) Tj T* (Albumin 3.9 g/dL 3.5-5.2) Tj T* (UACR 45 mg/g <30) Tj T* () Tj T* (This report is synthetic test data.) Tj T* ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000731 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+801
+%%EOF

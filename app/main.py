@@ -5,9 +5,16 @@ from dataclasses import asdict
 from datetime import date
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi import FastAPI, HTTPException, UploadFile, WebSocket
+from pydantic import BaseModel
 
+from app.agents import tools as agent_tools
+from app.agents.graph import GRAPH
+from app.agents.graph import run as run_graph
 from app.assess import AssessIn, assess
+from app.engines.careplan import export_fhir as careplan_export
+from app.ingest.normalize import build_record
+from app.ingest.schemas import PatientState
 from app.cds_hooks import router as cds_router
 from app.engines.dispensing import regular_meds
 from app.engines.drug_effects import effects_for
@@ -85,6 +92,75 @@ def case_medications(case_id: str, visit: int = 1):
 
 
 ONCO = CASES / "oncology"
+
+
+# ---------------------------------------------------------------- v2: NCD multi-omics pipeline (doctor + pharmacist)
+@app.get("/api/v2/patients")
+def v2_patients():
+    out = []
+    for d in sorted(agent_tools.PATIENTS.iterdir()):
+        if d.is_dir():
+            rec, raw = build_record(d)
+            out.append({"id": d.name, "sex": rec.demographics.sex, "age": rec.demographics.age, "sources": rec.sources,
+                        "conditions": [c.coding.code for c in rec.conditions]})
+    return out
+
+
+@app.post("/api/v2/patients/{patient_id}/run")
+def v2_run(patient_id: str):
+    try:
+        state = run_graph(patient_id)
+    except KeyError:
+        raise HTTPException(404, "patient not found")
+    store = facts()["facts"]
+    return {**state.model_dump(mode="json"), "facts": store}
+
+
+@app.websocket("/ws/v2/patients/{patient_id}/run")
+async def v2_run_ws(ws: WebSocket, patient_id: str):
+    """Streams one event per finished agent node (local/dev; serverless hosts should use the REST route)."""
+    await ws.accept()
+    try:
+        for update in GRAPH.stream(PatientState(patient_id=patient_id), stream_mode="updates"):
+            for node, delta in update.items():
+                msgs = delta.get("agent_messages") or []
+                await ws.send_json({"node": node, "message": msgs[-1].content if msgs else "", "status": "done"})
+        await ws.send_json({"node": "__end__", "status": "done"})
+    except KeyError:
+        await ws.send_json({"error": "patient not found"})
+    await ws.close()
+
+
+@app.get("/api/v2/tools")
+def v2_tools():
+    return agent_tools.TOOL_SCHEMAS
+
+
+@app.post("/api/v2/tools/{name}")
+def v2_tool(name: str, args: dict):
+    fn = agent_tools.TOOLS.get(name)
+    if not fn:
+        raise HTTPException(404, "unknown tool")
+    try:
+        return {"tool": name, "output": fn(**args)}
+    except (KeyError, TypeError, ValueError) as e:
+        raise HTTPException(422, f"{type(e).__name__}: {e}")
+
+
+class CarePlanIn(BaseModel):
+    patient_id: str
+    items: list[dict]
+    approver: str
+    note: str = ""
+
+
+@app.post("/api/v2/careplan/export")
+def v2_careplan(body: CarePlanIn):
+    if not body.approver.strip():
+        raise HTTPException(422, "approver required")
+    if not any(i.get("selected") for i in body.items):
+        raise HTTPException(422, "select at least one item")
+    return careplan_export(body.patient_id, body.items, body.approver.strip(), body.note)
 
 
 @app.get("/api/oncology/cases")

@@ -1,0 +1,251 @@
+{
+ "resourceType": "Bundle",
+ "type": "collection",
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P001",
+    "gender": "female",
+    "birthDate": "1974-02-15"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P001-29463-7",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "29463-7",
+       "display": "Body weight"
+      }
+     ],
+     "text": "Body weight"
+    },
+    "effectiveDateTime": "2026-06-12",
+    "valueQuantity": {
+     "value": 67,
+     "unit": "kg",
+     "system": "http://unitsofmeasure.org",
+     "code": "kg"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P001-8302-2",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "8302-2",
+       "display": "Body height"
+      }
+     ],
+     "text": "Body height"
+    },
+    "effectiveDateTime": "2026-06-12",
+    "valueQuantity": {
+     "value": 155,
+     "unit": "cm",
+     "system": "http://unitsofmeasure.org",
+     "code": "cm"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P001-8280-0",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "8280-0",
+       "display": "Waist circumference"
+      }
+     ],
+     "text": "Waist circumference"
+    },
+    "effectiveDateTime": "2026-06-12",
+    "valueQuantity": {
+     "value": 88,
+     "unit": "cm",
+     "system": "http://unitsofmeasure.org",
+     "code": "cm"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P001-bp",
+    "status": "final",
+    "effectiveDateTime": "2026-06-12",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "85354-9",
+       "display": "Blood pressure panel"
+      }
+     ]
+    },
+    "component": [
+     {
+      "code": {
+       "coding": [
+        {
+         "system": "http://loinc.org",
+         "code": "8480-6"
+        }
+       ]
+      },
+      "valueQuantity": {
+       "value": 138,
+       "unit": "mm[Hg]"
+      }
+     },
+     {
+      "code": {
+       "coding": [
+        {
+         "system": "http://loinc.org",
+         "code": "8462-4"
+        }
+       ]
+      },
+      "valueQuantity": {
+       "value": 86,
+       "unit": "mm[Hg]"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "P001-smoke",
+    "status": "final",
+    "effectiveDateTime": "2026-06-12",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "72166-2",
+       "display": "Tobacco smoking status"
+      }
+     ]
+    },
+    "valueCodeableConcept": {
+     "text": "Never smoker"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "P001-E78.5",
+    "onsetDateTime": "2026-03-10",
+    "code": {
+     "coding": [
+      {
+       "system": "http://hl7.org/fhir/sid/icd-10",
+       "code": "E78.5",
+       "display": "Hyperlipidaemia, unspecified"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "P001-K21.9",
+    "onsetDateTime": "2025-09-01",
+    "code": {
+     "coding": [
+      {
+       "system": "http://hl7.org/fhir/sid/icd-10",
+       "code": "K21.9",
+       "display": "Gastro-oesophageal reflux disease"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "P001-simvastatin",
+    "status": "active",
+    "medicationCodeableConcept": {
+     "text": "simvastatin"
+    },
+    "dosage": [
+     {
+      "doseAndRate": [
+       {
+        "doseQuantity": {
+         "value": 40,
+         "unit": "mg"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "P001-omeprazole",
+    "status": "active",
+    "medicationCodeableConcept": {
+     "text": "omeprazole"
+    },
+    "dosage": [
+     {
+      "doseAndRate": [
+       {
+        "doseQuantity": {
+         "value": 20,
+         "unit": "mg"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "FamilyMemberHistory",
+    "id": "P001-fh",
+    "status": "completed",
+    "relationship": {
+     "text": "mother"
+    },
+    "condition": [
+     {
+      "code": {
+       "coding": [
+        {
+         "system": "http://hl7.org/fhir/sid/icd-10",
+         "code": "E11"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ]
+}
