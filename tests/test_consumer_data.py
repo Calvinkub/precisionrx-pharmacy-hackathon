@@ -16,3 +16,18 @@ def test_consumer_risks_come_from_validated_scores():
     assert d["risks"]["mets"]["met"] == 4
     assert d["insulin_resistance_pattern"] is True
     assert set(d["facts"]) >= {"TCVRS-2021", "TDRS-2006", "CFDNA-FRAGMENTOMICS-SEQ"}
+
+
+def test_traces_add_up_to_the_result():
+    import math
+    d = build()
+    t = d["traces"]
+    assert sum(i["effect"] for i in t["diabetes"]["inputs"]) == d["risks"]["diabetes"]["value"]
+    # FLI: reference logit + each input's logit term = the patient's logit
+    logit = lambda f: math.log(f / (100 - f))
+    base = logit(float(t["liver"]["base"].split()[1]))
+    total = base + sum(i["effect"] for i in t["liver"]["inputs"])
+    assert abs(100 / (1 + math.exp(-total)) - d["risks"]["liver"]["fli"]) < 1.5  # base shown rounded
+    assert t["mets"]["result"] == f"{sum(i['met'] for i in t['mets']['inputs'])}/5"
+    assert all(1 <= i["src"] <= 5 for k in ("diabetes", "cvd", "liver", "fib4", "mets", "insulin_resistance") for i in t[k]["inputs"])
+    assert d["cfdna_run"]["qc_status"] == "pass" and len(d["cfdna_run"]["replicates"]) == 3

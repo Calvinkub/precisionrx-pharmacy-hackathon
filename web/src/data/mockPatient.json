@@ -1,26 +1,182 @@
 {
   "_note": "SYNTHETIC demo person. Fields marked in 'assumed' were added so validated scores can be computed.",
-  "assumed": ["height_cm", "weight_kg", "hdl_mg_dl", "alt", "ast", "ggt", "platelets", "family_history", "alcohol", "medications"],
+  "assumed": [
+    "height_cm",
+    "weight_kg",
+    "hdl_mg_dl",
+    "alt",
+    "ast",
+    "ggt",
+    "platelets",
+    "family_history",
+    "alcohol",
+    "medications"
+  ],
   "profile": {
-    "name": "John Doe", "age": 45, "sex": "male", "height_cm": 175, "weight_kg": 82.1, "bmi": 26.8, "waist_cm": 92,
-    "sbp": 132, "dbp": 85, "smoking": "ex-smoker", "alcohol": "1–2 ดื่มมาตรฐาน/สัปดาห์", "medications": [],
-    "family_history": [{"relation": "พ่อ", "condition": "เบาหวานชนิดที่ 2"}, {"relation": "แม่", "condition": "ความดันโลหิตสูง"}],
-    "activity_min_week": 60, "steps_day": 5200
+    "name": "John Doe",
+    "age": 45,
+    "sex": "male",
+    "height_cm": 175,
+    "weight_kg": 82.1,
+    "bmi": 26.8,
+    "waist_cm": 92,
+    "sbp": 132,
+    "dbp": 85,
+    "smoking": "ex-smoker",
+    "alcohol": "1–2 ดื่มมาตรฐาน/สัปดาห์",
+    "medications": [],
+    "family_history": [
+      {
+        "relation": "พ่อ",
+        "condition": "เบาหวานชนิดที่ 2"
+      },
+      {
+        "relation": "แม่",
+        "condition": "ความดันโลหิตสูง"
+      }
+    ],
+    "activity_min_week": 60,
+    "steps_day": 5200
   },
   "labs": {
-    "glucose_mg_dl": 108, "hba1c_pct": 5.9, "tg_mg_dl": 185, "hdl_mg_dl": 42,
-    "alt": 45, "ast": 32, "ggt": 52, "platelets": 240
+    "glucose_mg_dl": 108,
+    "hba1c_pct": 5.9,
+    "tg_mg_dl": 185,
+    "hdl_mg_dl": 42,
+    "alt": 45,
+    "ast": 32,
+    "ggt": 52,
+    "platelets": 240
   },
   "nmr": {
-    "small_ldl_p": {"value": 850, "unit": "nmol/L", "label": "Small LDL-P", "ref": "Labcorp NMR LipoProfile: P75 = 839 nmol/L (MESA)", "high_above": 839},
-    "valine": {"value": 285, "unit": "µmol/L", "label": "Valine", "ref": "UK Biobank P10–P90: 163–270", "low": 162.5, "high_above": 270.1},
-    "isoleucine": {"value": 85, "unit": "µmol/L", "label": "Isoleucine", "ref": "UK Biobank P10–P90: 33–76", "low": 33.0, "high_above": 75.7},
-    "leucine": {"value": 155, "unit": "µmol/L", "label": "Leucine", "ref": "UK Biobank P10–P90: 74–143", "low": 73.9, "high_above": 142.7}
+    "small_ldl_p": {
+      "value": 850,
+      "unit": "nmol/L",
+      "label": "Small LDL-P",
+      "ref": "Labcorp NMR LipoProfile: P75 = 839 nmol/L (MESA)",
+      "high_above": 839
+    },
+    "valine": {
+      "value": 285,
+      "unit": "µmol/L",
+      "label": "Valine",
+      "ref": "UK Biobank P10–P90: 163–270",
+      "low": 162.5,
+      "high_above": 270.1
+    },
+    "isoleucine": {
+      "value": 85,
+      "unit": "µmol/L",
+      "label": "Isoleucine",
+      "ref": "UK Biobank P10–P90: 33–76",
+      "low": 33.0,
+      "high_above": 75.7
+    },
+    "leucine": {
+      "value": 155,
+      "unit": "µmol/L",
+      "label": "Leucine",
+      "ref": "UK Biobank P10–P90: 74–143",
+      "low": 73.9,
+      "high_above": 142.7
+    }
   },
   "cfdna_mock": {
     "_label": "ตัวอย่างหน้าตารายงาน — ค่าเหล่านี้ต้องมาจาก assay methylation/sequencing ที่ validate แล้ว ระบบนี้ไม่ได้คำนวณ",
-    "concentration_ng_ml": 32.5, "tumor_fraction_pct": 4.8, "fragmentation_score": 0.74, "liver_methylation_score": 0.86,
-    "predicted_origin": "ตับ", "origin_confidence_pct": 91,
-    "mock_thresholds": {"fragmentation_score": 0.5, "liver_methylation_score": 0.5}
-  }
+    "tumor_fraction_pct": 4.8,
+    "fragmentation_score": 0.74,
+    "liver_methylation_score": 0.86,
+    "predicted_origin": "ตับ",
+    "origin_confidence_pct": 91,
+    "mock_thresholds": {
+      "fragmentation_score": 0.5,
+      "liver_methylation_score": 0.5
+    }
+  },
+  "sources": [
+    {
+      "no": 1,
+      "id": "form",
+      "name": "แบบสอบถาม",
+      "device": "กรอกโดยผู้รับบริการ",
+      "specimen": null,
+      "date": "2026-09-21",
+      "sample_id": null,
+      "fields": [
+        "age",
+        "sex",
+        "family_history",
+        "smoking",
+        "alcohol",
+        "activity_min_week",
+        "steps_day",
+        "medications"
+      ]
+    },
+    {
+      "no": 2,
+      "id": "clinic",
+      "name": "วัดที่คลินิก",
+      "device": "เครื่องชั่ง · สายวัด · เครื่องวัดความดันอัตโนมัติ",
+      "specimen": null,
+      "date": "2026-09-21",
+      "sample_id": null,
+      "fields": [
+        "height_cm",
+        "weight_kg",
+        "waist_cm",
+        "sbp",
+        "dbp"
+      ]
+    },
+    {
+      "no": 3,
+      "id": "lab",
+      "name": "ห้องแล็บ",
+      "device": "เครื่องเคมีคลินิก + เครื่องนับเม็ดเลือด",
+      "specimen": "ซีรัม / เลือด EDTA (อดอาหาร 8 ชม.)",
+      "date": "2026-09-21",
+      "sample_id": "LAB-DEMO-0921",
+      "fields": [
+        "glucose_mg_dl",
+        "hba1c_pct",
+        "tg_mg_dl",
+        "hdl_mg_dl",
+        "alt",
+        "ast",
+        "ggt",
+        "platelets"
+      ]
+    },
+    {
+      "no": 4,
+      "id": "nmr",
+      "name": "เครื่อง NMR",
+      "device": "¹H NMR spectroscopy (พลาสมา)",
+      "specimen": "พลาสมา EDTA",
+      "date": "2026-09-21",
+      "sample_id": "NMR-DEMO-0921",
+      "fields": [
+        "small_ldl_p",
+        "valine",
+        "isoleucine",
+        "leucine"
+      ]
+    },
+    {
+      "no": 5,
+      "id": "ce",
+      "name": "เครื่อง cfDNA",
+      "device": "Capillary electrophoresis (QIAxcel Connect)",
+      "specimen": "พลาสมาจากหลอด Cell-free DNA BCT",
+      "date": "2026-09-28",
+      "sample_id": "CFDNA-DEMO-0928",
+      "fields": [
+        "cfdna_size",
+        "cfdna_conc",
+        "cfdna_hmw"
+      ],
+      "run_file": "data/synthetic/cfdna_runs/E10146.json"
+    }
+  ]
 }

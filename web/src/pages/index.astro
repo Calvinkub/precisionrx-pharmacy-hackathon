@@ -2,6 +2,8 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import StatusChip from "../components/StatusChip.astro";
 import Sources from "../components/Sources.astro";
+import SourceBadge from "../components/SourceBadge.astro";
+import DataSources from "../components/DataSources.astro";
 import mock from "../data/mockPatient.json";
 import c from "../data/computed.json";
 import { Cigarette, HeartPulse, Pill, Ruler, Scale, Users, Wine, Target } from "@lucide/astro";
@@ -24,12 +26,14 @@ const cards = [
 <MainLayout title="ข้อมูลพื้นฐาน" current="baseline">
   <p class="eyebrow">ข้อมูลพื้นฐาน · ตัวอย่าง</p>
   <h1 class="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">{p.name}</h1>
-  <p class="mt-1 text-ink-2">{p.age} ปี · {p.sex === "male" ? "ชาย" : "หญิง"}</p>
+  <p class="mt-1 flex items-center gap-2 text-ink-2">{p.age} ปี · {p.sex === "male" ? "ชาย" : "หญิง"} <SourceBadge no={1} /></p>
 
-  <section aria-label="สัญญาณชีพ" class="mt-8 grid grid-cols-2 lg:grid-cols-5 gap-3">
+  <div class="mt-8"><DataSources /></div>
+
+  <section aria-label="สัญญาณชีพ" class="mt-4 grid grid-cols-2 lg:grid-cols-5 gap-3">
     {cards.map((k) => (
       <article class="card flex flex-col gap-2">
-        <div class="flex items-center justify-between text-ink-3"><span class="text-sm">{k.label}</span><k.icon size={18} aria-hidden="true" /></div>
+        <div class="flex items-center justify-between text-ink-3"><span class="flex items-center gap-1.5 text-sm"><SourceBadge no={2} />{k.label}</span><k.icon size={18} aria-hidden="true" /></div>
         <p class="num text-3xl font-medium tracking-tight">{k.value}<span class="ml-1 text-sm text-ink-3 font-normal">{k.unit}</span></p>
         {k.tone !== "neutral" && <div><StatusChip tone={k.tone} label={k.chip} /></div>}
         {"sub" in k && <p class="text-xs text-ink-3">{k.sub}</p>}
@@ -40,7 +44,7 @@ const cards = [
 
   <section aria-labelledby="h-life" class="mt-8 grid gap-3 md:grid-cols-2">
     <article class="card">
-      <h2 id="h-life" class="eyebrow">ไลฟ์สไตล์</h2>
+      <h2 id="h-life" class="eyebrow flex items-center gap-1.5"><SourceBadge no={1} />ไลฟ์สไตล์</h2>
       <ul class="mt-4 flex flex-wrap gap-2">
         <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Cigarette size={16} aria-hidden="true" />{p.smoking === "ex-smoker" ? "เคยสูบบุหรี่ (เลิกแล้ว)" : p.smoking === "current" ? "สูบบุหรี่" : "ไม่สูบบุหรี่"}</li>
         <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Wine size={16} aria-hidden="true" />แอลกอฮอล์ {p.alcohol}</li>
@@ -49,13 +53,13 @@ const cards = [
       </ul>
     </article>
     <article class="card">
-      <h2 class="eyebrow">ประวัติครอบครัว</h2>
+      <h2 class="eyebrow flex items-center gap-1.5"><SourceBadge no={1} />ประวัติครอบครัว</h2>
       <ul class="mt-4 flex flex-wrap gap-2">
         {p.family_history.map((f) => (
           <li class="inline-flex items-center gap-2 rounded-full bg-warn-soft px-3 py-1.5 text-sm"><Users size={16} aria-hidden="true" />{f.relation} · {f.condition}</li>
         ))}
       </ul>
-      <p class="mt-4 text-sm text-ink-2">ประวัติเบาหวานในพ่อแม่หรือพี่น้องเพิ่มคะแนนเสี่ยงเบาหวาน 4 จาก 17 คะแนน</p>
+      <p class="mt-4 text-sm text-ink-2">→ คะแนนเสี่ยงเบาหวาน +4</p>
     </article>
   </section>
 

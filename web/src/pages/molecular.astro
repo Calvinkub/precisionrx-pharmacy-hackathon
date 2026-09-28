@@ -3,66 +3,86 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Meter from "../components/Meter.astro";
 import Sources from "../components/Sources.astro";
 import StatusChip from "../components/StatusChip.astro";
+import SourceBadge from "../components/SourceBadge.astro";
+import Electropherogram from "../components/Electropherogram.astro";
 import mock from "../data/mockPatient.json";
 import c from "../data/computed.json";
-import { Info, Stethoscope, TriangleAlert } from "@lucide/astro";
+import { Stethoscope, TriangleAlert } from "@lucide/astro";
 
 const d = mock.cfdna_mock;
+const run = c.cfdna_run;
 const liver = c.risks.liver;
-const fib4 = liver.notes.find((x: string) => x.startsWith("FIB-4")) ?? "";
-const metrics = [
-  { label: "ความเข้มข้น cfDNA", value: d.concentration_ng_ml, unit: "ng/mL", max: null, cut: null, note: "ขึ้นกับวิธีสกัดและชุดตรวจ — ไม่มีค่าอ้างอิงกลาง" },
-  { label: "Fragmentation score", value: d.fragmentation_score, unit: "", max: 1, cut: d.mock_thresholds.fragmentation_score, note: `เกณฑ์ตัวอย่าง ${d.mock_thresholds.fragmentation_score}` },
-  { label: "Liver methylation score", value: d.liver_methylation_score, unit: "", max: 1, cut: d.mock_thresholds.liver_methylation_score, note: `เกณฑ์ตัวอย่าง ${d.mock_thresholds.liver_methylation_score}` },
-  { label: "Tumor fraction (ประมาณ)", value: d.tumor_fraction_pct, unit: "%", max: null, cut: null, note: "ต้องมาจาก sequencing" },
+const fib4 = c.traces.fib4;
+// measured by the CE instrument (source 5), QC rules from app/engines/cfdna_qc.py
+const measured = [
+  { label: "ขนาดชิ้นเฉลี่ย", value: run.average_size_bp, unit: "bp", ok: run.average_size_bp >= 155 && run.average_size_bp <= 180, rule: "ปกติ ≈ 167 (1 นิวคลีโอโซม)" },
+  { label: "ความเข้มข้น", value: run.mean_conc_ng_ul.toFixed(2), unit: "ng/µL", ok: true, rule: `รวม ${run.total_ng} ng ใน ${run.elution_ul} µL` },
+  { label: "DNA ใหญ่ > 700 bp", value: (run.hmw_max * 100).toFixed(1), unit: "%", ok: run.hmw_max <= 0.1, rule: "≤ 10% ผ่าน" },
+  { label: "ความซ้ำของยอด", value: run.peak_cv_pct, unit: "% CV", ok: run.peak_cv_pct <= 5, rule: `${run.replicates.length} ครั้ง` },
+];
+const mocks = [
+  { label: "Fragmentation score", value: d.fragmentation_score, max: 1, cut: d.mock_thresholds.fragmentation_score },
+  { label: "Liver methylation", value: d.liver_methylation_score, max: 1, cut: d.mock_thresholds.liver_methylation_score },
+  { label: "Tumor fraction", value: d.tumor_fraction_pct, unit: "%", max: null, cut: null },
 ];
 ---
 <MainLayout title="cfDNA" current="molecular">
   <p class="eyebrow">Cell-free DNA</p>
   <h1 class="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">Cellular signal</h1>
 
-  <div class="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-ink-3 p-4 text-sm">
-    <Info size={18} class="mt-0.5 shrink-0 text-ink-3" aria-hidden="true" />
-    <p><strong>ตัวอย่างหน้าตารายงาน</strong> — ค่าในหน้านี้เป็นค่าสมมติ ไม่ได้คำนวณโดย PrecisionRx ในการใช้จริงต้องมาจาก assay แบบ methylation/sequencing ที่ validate แล้ว และส่งผลผ่านแพทย์ <Sources ids={["CFDNA-FRAGMENTOMICS-SEQ"]} /></p>
-  </div>
+  <section class="card mt-6" aria-labelledby="h-run">
+    <h2 id="h-run" class="sr-only">กราฟจากเครื่อง cfDNA</h2>
+    <Electropherogram />
+    <ul class="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4">
+      {measured.map((m) => (
+        <li class="rounded-2xl bg-subtle p-3.5">
+          <p class="flex items-center gap-1.5 text-xs text-ink-3"><SourceBadge no={5} />{m.label}</p>
+          <p class="num mt-1 text-2xl font-medium">{m.value}<span class="ml-1 text-xs font-normal text-ink-3">{m.unit}</span></p>
+          <p class="mt-1 flex items-center gap-1.5 text-xs text-ink-3"><span class:list={["inline-block h-2 w-2 rounded-full", m.ok ? "bg-good" : "bg-warn-dot"]} aria-hidden="true"></span>{m.rule}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-4 flex flex-wrap items-center gap-2 text-sm">
+      <StatusChip tone={run.qc_status === "pass" ? "good" : run.qc_status === "warning" ? "warn" : "bad"} label={run.qc_status === "pass" ? "ตัวอย่างผ่าน QC" : "ตัวอย่างไม่ผ่าน QC"} />
+      <span class="text-xs text-ink-3">กราฟนี้บอกคุณภาพตัวอย่าง ไม่ได้บอกโรค · <Sources ids={["CFDNA-NUCLEOSOME", "CFDNA-HMW-QC", "CFDNA-FRAGMENTOMICS-SEQ"]} /></span>
+    </p>
+  </section>
 
-  <section class="mt-4 rounded-3xl bg-warn-soft p-5 sm:p-6" aria-labelledby="h-alert">
+  <section class="mt-4 rounded-3xl border border-dashed border-ink-3 p-5 sm:p-6" aria-labelledby="h-alert">
     <div class="flex items-start gap-3">
       <TriangleAlert size={22} class="mt-1 shrink-0 text-warn" aria-hidden="true" />
       <div>
-        <h2 id="h-alert" class="text-xl sm:text-2xl font-semibold">พบสัญญาณโมเลกุลที่เกี่ยวข้องกับตับ</h2>
-        <p class="mt-1 text-ink-2">ไม่ใช่การวินิจฉัยโรค — ควรคุยกับแพทย์เพื่อตัดสินใจว่าต้องตรวจเพิ่มหรือไม่</p>
-        <p class="mt-3"><StatusChip tone="warn" label={`แหล่งที่มาที่คาด: ${d.predicted_origin} · ความมั่นใจ ${d.origin_confidence_pct}% (ตัวอย่าง)`} /></p>
+        <p class="flex items-center gap-2"><SourceBadge no="mock" /><span class="text-xs text-ink-3">ไม่ได้มาจากกราฟข้างบน — ต้องใช้การตรวจ sequencing / methylation</span></p>
+        <h2 id="h-alert" class="mt-2 text-xl sm:text-2xl font-semibold">สัญญาณโมเลกุลที่เกี่ยวข้องกับตับ</h2>
+        <p class="mt-1 text-ink-2">ไม่ใช่การวินิจฉัยโรค — คุยกับแพทย์</p>
+        <p class="mt-3"><StatusChip tone="warn" label={`แหล่งที่คาด: ${d.predicted_origin} · ${d.origin_confidence_pct}%`} /></p>
       </div>
     </div>
-  </section>
-
-  <section aria-label="ค่าจาก cfDNA" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-    {metrics.map((m) => (
-      <article class="card">
-        <p class="text-sm text-ink-3">{m.label}</p>
-        <p class="num mt-1 text-3xl font-medium">{m.value}<span class="ml-1 text-sm font-normal text-ink-3">{m.unit}</span></p>
-        {m.max !== null && m.cut !== null && (
-          <div class="mt-3"><Meter value={m.value} max={m.max} tone={m.value >= m.cut ? "warn" : "good"} ticks={[m.cut]} label={`${m.label} ${m.value} เกณฑ์ ${m.cut}`} /></div>
-        )}
-        <p class="mt-3 text-xs text-ink-3">{m.note}</p>
-      </article>
-    ))}
+    <ul class="mt-5 grid gap-2 sm:grid-cols-3">
+      {mocks.map((m) => (
+        <li class="rounded-2xl bg-subtle p-3.5">
+          <p class="text-xs text-ink-3">{m.label}</p>
+          <p class="num mt-1 text-2xl font-medium">{m.value}{m.unit && <span class="ml-1 text-xs font-normal text-ink-3">{m.unit}</span>}</p>
+          {m.max !== null && m.cut !== null && <div class="mt-2"><Meter value={m.value} max={m.max} tone={m.value >= m.cut ? "warn" : "good"} ticks={[m.cut]} label={`${m.label} ${m.value} เกณฑ์ตัวอย่าง ${m.cut}`} /></div>}
+        </li>
+      ))}
+    </ul>
   </section>
 
   <section class="mt-4 grid gap-3 md:grid-cols-2">
     <article class="card" aria-labelledby="h-ctx">
-      <h2 id="h-ctx" class="eyebrow">ผลเลือดอื่นที่เกี่ยวกับตับ (คำนวณจริง)</h2>
-      <p class="num mt-3 text-2xl font-medium">FLI {Math.round(liver.fli)} <span class="text-base font-normal text-ink-3">· {fib4}</span></p>
-      <p class="mt-1 text-sm text-ink-2">{liver.label} — Fatty Liver Index ≥ 60 บ่งชี้ไขมันพอกตับ ส่วน FIB-4 ต่ำกว่า 1.3 บอกว่าโอกาสมีพังผืดมากน้อย</p>
+      <h2 id="h-ctx" class="eyebrow">ผลเลือดอื่นที่เกี่ยวกับตับ</h2>
+      <p class="num mt-3 text-2xl font-medium">FLI {Math.round(liver.fli)} <span class="text-base font-normal text-ink-3">· FIB-4 {fib4.result}</span></p>
+      <p class="mt-2 flex flex-wrap items-center gap-1.5 text-sm">{c.traces.liver.inputs.map((i) => <span class="inline-flex items-center gap-1 rounded-full bg-subtle px-2 py-0.5"><SourceBadge no={i.src} />{i.label}</span>)}</p>
+      <p class="mt-2 text-sm text-ink-2">{liver.label} · FIB-4 &lt; {fib4.cut} = พังผืดน้อย</p>
       <p class="mt-3 text-xs text-ink-3"><Sources ids={liver.fact_ids} /></p>
     </article>
     <article class="card" aria-labelledby="h-next">
       <h2 id="h-next" class="eyebrow flex items-center gap-2"><Stethoscope size={16} aria-hidden="true" />ขั้นต่อไปที่แนะนำ</h2>
       <ol class="mt-3 space-y-2 text-sm">
-        <li>1. นัดคุยกับแพทย์ พร้อมรายงานนี้ (ปุ่มส่งออกอยู่ที่หน้าแผนดูแล)</li>
-        <li>2. แพทย์อาจพิจารณาอัลตราซาวด์ช่องท้องตามดุลยพินิจ</li>
-        <li>3. FibroScan มักใช้เมื่อ FIB-4 ตั้งแต่ 1.3 ขึ้นไป — ของคุณ {fib4.replace("FIB-4 ", "").split(":")[0]}</li>
+        <li>1. นัดคุยกับแพทย์ พร้อมรายงานนี้</li>
+        <li>2. อัลตราซาวด์ช่องท้องตามดุลยพินิจแพทย์</li>
+        <li>3. FibroScan มักใช้เมื่อ FIB-4 ≥ 1.3 — ของคุณ {fib4.result}</li>
       </ol>
       <p class="mt-3 text-xs text-ink-3"><Sources ids={["FIB4-MASLD", "CFDNA-FRAGMENTOMICS-SEQ"]} /></p>
     </article>

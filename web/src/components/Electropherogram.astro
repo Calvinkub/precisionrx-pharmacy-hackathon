@@ -1,0 +1,48 @@
+---
+// cfDNA fragment-size trace from capillary electrophoresis: 3 replicates of the same tube, log bp axis.
+import SourceBadge from "./SourceBadge.astro";
+import c from "../data/computed.json";
+const r = c.cfdna_run;
+const LO = 10, HI = 5000;
+const lx = (bp: number) => (Math.log(bp / LO) / Math.log(HI / LO)) * 1000;
+const core = Math.max(...r.replicates.flatMap((x) => x.pts.filter(([s]) => s > 40 && s < 2500).map(([, v]) => v)));
+const ymax = core * 1.18;
+const y = (v: number) => (200 - Math.min(v / ymax, 1.02) * 190).toFixed(1);
+const paths = r.replicates.map((x) => x.pts.map(([s, v], i) => `${i ? "L" : "M"}${lx(s).toFixed(1)},${y(v)}`).join(""));
+const pct = (bp: number) => lx(bp) / 10;
+const ticks = [15, 50, 100, 167, 300, 700, 1500, 3000];
+const zones = [
+  { from: 12, to: 19, cls: "fill-[var(--band)]", label: "มาร์กเกอร์", at: 15 },
+  { from: 100, to: 250, cls: "fill-[var(--accent-soft)]", label: "cfDNA", at: 158 },
+  { from: 700, to: 2500, cls: "fill-[var(--bad-soft)]", label: "DNA ใหญ่ > 700", at: 1300 },
+  { from: 2500, to: 3600, cls: "fill-[var(--band)]", label: "มาร์กเกอร์", at: 3000 },
+];
+---
+<figure class="m-0">
+  <div class="flex flex-wrap items-center gap-2 text-sm"><SourceBadge no={5} /><span class="font-medium">สัญญาณจากเครื่อง cfDNA</span><span class="text-ink-3">· {r.instrument} · {r.tube}</span></div>
+  <div class="relative mt-3">
+    <div class="relative h-5 text-[11px] text-ink-3" aria-hidden="true">
+      {zones.map((z) => <span class="absolute -translate-x-1/2 whitespace-nowrap" style={`left:${pct(z.at)}%`}>{z.label}</span>)}
+    </div>
+    <svg viewBox="0 0 1000 200" preserveAspectRatio="none" class="ep-reveal block h-44 w-full sm:h-52" role="img"
+         aria-label={`กราฟขนาดชิ้น DNA 3 ครั้ง จุดยอดเฉลี่ย ${r.average_size_bp} bp อยู่ในช่วง cfDNA DNA ขนาดใหญ่เกิน 700 bp สูงสุด ${(r.hmw_max * 100).toFixed(1)}% มาร์กเกอร์ 15 และ 3000 bp ไม่นับ`}>
+      {zones.map((z) => <rect x={lx(z.from)} y="0" width={lx(z.to) - lx(z.from)} height="200" class={z.cls} />)}
+      {paths.map((d) => <path d={d} fill="none" stroke="var(--ink)" stroke-opacity="0.55" stroke-width="1.25" vector-effect="non-scaling-stroke" stroke-linejoin="round" />)}
+      <line x1={lx(r.average_size_bp)} x2={lx(r.average_size_bp)} y1="0" y2="200" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3" vector-effect="non-scaling-stroke" />
+      <line x1="0" x2="1000" y1="199.5" y2="199.5" stroke="var(--line)" vector-effect="non-scaling-stroke" />
+    </svg>
+    <div class="relative h-5 text-[11px] text-ink-3" aria-hidden="true">
+      {ticks.map((t) => <span class="num absolute -translate-x-1/2" style={`left:${pct(t)}%`}>{t}</span>)}
+    </div>
+    <p class="text-right text-[11px] text-ink-3">ขนาดชิ้น DNA (bp, สเกล log)</p>
+  </div>
+  <figcaption class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-2">
+    <span class="inline-flex items-center gap-1.5"><span class="inline-block h-0.5 w-5 bg-ink opacity-60"></span>วัด {r.replicates.length} ครั้ง</span>
+    <span class="inline-flex items-center gap-1.5"><span class="inline-block w-5 border-t-2 border-dashed border-accent"></span>ยอดเฉลี่ย {r.average_size_bp} bp</span>
+    <span class="text-ink-3">เส้นกราฟสังเคราะห์จากค่าสรุปของ run จริง · {r.date}</span>
+  </figcaption>
+</figure>
+<style>
+  .ep-reveal { animation: ep-reveal 1.4s cubic-bezier(.3,.7,.2,1) both; }
+  @keyframes ep-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+</style>

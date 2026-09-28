@@ -1,0 +1,28 @@
+---
+// White-box explanation of an additive score: each input, where it came from, how much it pushed, and the result.
+import SourceBadge from "./SourceBadge.astro";
+type Input = { label: string; value: string; src: number; effect: number; show: string; ref?: string };
+interface Props { inputs: Input[]; result: string; base?: string | null; baseLabel?: string; scale: string }
+const { inputs, result, base, baseLabel, scale } = Astro.props;
+const max = Math.max(...inputs.map((i) => Math.abs(i.effect)), 1e-9);
+---
+<figure class="m-0">
+  <ul class="space-y-2">
+    {inputs.map((i) => (
+      <li class="grid grid-cols-[auto_minmax(0,1fr)_5rem_3rem] sm:grid-cols-[auto_minmax(0,1fr)_9rem_3.5rem] items-center gap-2.5 text-sm">
+        <SourceBadge no={i.src} />
+        <span class="min-w-0 leading-snug"><span class:list={[i.effect ? "text-ink" : "text-ink-3"]}>{i.label}</span> <span class="num block text-xs text-ink-3 sm:inline sm:text-sm">{i.value}</span></span>
+        <span class="h-2 rounded-full bg-band" aria-hidden="true">
+          <span class="block h-2 rounded-full bg-warn-dot" style={`width:${(Math.abs(i.effect) / max) * 100}%`}></span>
+        </span>
+        <span class:list={["num text-right", i.effect ? "font-medium" : "text-ink-3"]}>{i.show}</span>
+      </li>
+    ))}
+  </ul>
+  <figcaption class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-line pt-3 text-sm">
+    {base && <span class="text-ink-3" title={baseLabel}>ฐาน <span class="num">{base}</span></span>}
+    {base && <span aria-hidden="true" class="text-ink-3">→</span>}
+    <span>ผล <strong class="num">{result}</strong></span>
+    <span class="ml-auto text-xs text-ink-3">{scale}{baseLabel ? ` · ฐาน = ${baseLabel}` : ""}</span>
+  </figcaption>
+</figure>

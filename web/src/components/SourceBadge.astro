@@ -1,0 +1,12 @@
+---
+// Numbered data-source marker: which machine or form a value came from. "mock" = not from any machine.
+import { source } from "../lib/sources";
+interface Props { no: number | "mock"; size?: "sm" | "md" }
+const { no, size = "sm" } = Astro.props;
+const s = no === "mock" ? null : source(no);
+const label = s ? `แหล่ง ${s.no}: ${s.name}` : "ค่าตัวอย่าง ไม่ได้มาจากเครื่อง";
+---
+<span role="img" aria-label={label} title={label}
+  class:list={["num inline-flex shrink-0 items-center justify-center rounded-full font-semibold leading-none",
+    size === "sm" ? "h-5 min-w-5 px-1 text-[11px]" : "h-7 min-w-7 px-1.5 text-sm",
+    s ? "bg-ink text-bg" : "border border-dashed border-ink-3 text-ink-3 px-2"]}>{s ? s.no : "ตัวอย่าง"}</span>

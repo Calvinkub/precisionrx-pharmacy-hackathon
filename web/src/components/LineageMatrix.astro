@@ -1,0 +1,42 @@
+---
+// Which data source feeds which result. Derived from the traces, never hand-typed.
+import SourceBadge from "./SourceBadge.astro";
+import { ICONS, SOURCES } from "../lib/sources";
+type Row = { label: string; href: string; srcs: (number | "mock")[] };
+interface Props { rows: Row[] }
+const { rows } = Astro.props;
+const cols: (number | "mock")[] = [...SOURCES.map((s) => s.no), "mock"];
+---
+<div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <caption class="sr-only">ผลแต่ละข้อใช้ข้อมูลจากแหล่งใด</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="pb-2 text-left font-normal text-ink-3 text-xs">ผลลัพธ์</th>
+        {cols.map((n) => {
+          const s = n === "mock" ? null : SOURCES.find((x) => x.no === n)!;
+          const Icon = s ? ICONS[s.id as keyof typeof ICONS] : null;
+          return (
+            <th scope="col" class="pb-2 px-1 font-normal">
+              <span class="flex flex-col items-center gap-1"><SourceBadge no={n} />{Icon && <Icon size={14} class="text-ink-3 hidden sm:block" aria-hidden="true" />}</span>
+            </th>
+          );
+        })}
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-line">
+      {rows.map((r) => (
+        <tr>
+          <th scope="row" class="py-2.5 pr-2 text-left font-normal"><a href={r.href} class="text-ink">{r.label}</a></th>
+          {cols.map((n) => (
+            <td class="px-1 text-center">
+              {r.srcs.includes(n)
+                ? <span class:list={["inline-block h-3 w-3 rounded-full", n === "mock" ? "border border-dashed border-ink-3" : "bg-ink"]}><span class="sr-only">ใช้</span></span>
+                : <span class="inline-block h-1 w-1 rounded-full bg-band"><span class="sr-only">ไม่ใช้</span></span>}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

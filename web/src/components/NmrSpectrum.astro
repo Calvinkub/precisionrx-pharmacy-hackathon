@@ -1,0 +1,87 @@
+---
+// Illustrative ¹H NMR spectrum drawn from the values the instrument reported (not the raw FID/spectrum).
+// Highlighted peaks scale with the measured value; dashed = the same peaks at the population reference
+// (BCAA: middle of UK Biobank P10–P90; small LDL-P: MESA P75, the only reference we have).
+import SourceBadge from "./SourceBadge.astro";
+import mock from "../data/mockPatient.json";
+const n = mock.nmr;
+type Pk = [ppm: number, width: number, height: number];
+const lor = (x: number, pk: Pk[]) => pk.reduce((y, [p, w, h]) => y + h / (1 + ((x - p) / w) ** 2), 0);
+const BG: Pk[] = [[1.27, 0.05, 1.1], [1.32, 0.006, 0.9], [1.34, 0.006, 0.9], [1.47, 0.005, 0.3], [1.49, 0.005, 0.3], [1.92, 0.005, 0.25],
+  [2.03, 0.012, 0.5], [2.44, 0.008, 0.18], [2.53, 0.006, 0.22], [2.68, 0.006, 0.22], [3.04, 0.006, 0.4], [3.24, 0.008, 0.35], [3.41, 0.01, 0.4],
+  [3.47, 0.01, 0.42], [3.53, 0.008, 0.36], [3.72, 0.012, 0.5], [3.84, 0.012, 0.45], [3.9, 0.01, 0.38], [4.05, 0.006, 0.3], [4.11, 0.008, 0.22]];
+const FG = {
+  small_ldl_p: [[0.84, 0.035, 0.75]] as Pk[],
+  isoleucine: [[0.935, 0.004, 0.22], [1.005, 0.004, 0.24]] as Pk[],
+  leucine: [[0.96, 0.005, 0.36]] as Pk[],
+  valine: [[0.99, 0.004, 0.32], [1.04, 0.004, 0.32]] as Pk[],
+};
+const measured = (k: keyof typeof FG, s: number) => FG[k].map(([p, w, h]) => [p, w, h * s] as Pk);
+const refOf = (k: keyof typeof FG) => { const a = n[k] as { low?: number; high_above: number }; return a.low != null ? (a.low + a.high_above) / 2 : a.high_above; };
+const you = (Object.keys(FG) as (keyof typeof FG)[]).flatMap((k) => measured(k, n[k].value / refOf(k)));
+const ref = (Object.keys(FG) as (keyof typeof FG)[]).flatMap((k) => measured(k, 1));
+
+function path(lo: number, hi: number, pk: Pk[], N: number, ymax: number) {
+  let d = "";
+  for (let i = 0; i <= N; i++) {
+    const x = hi - (hi - lo) * (i / N);
+    const y = 200 - (lor(x, pk) / ymax) * 188;
+    d += `${i ? "L" : "M"}${((i / N) * 1000).toFixed(1)},${y.toFixed(1)}`;
+  }
+  return d;
+}
+const FULL = [4.3, 0.6] as const, ZOOM = [1.08, 0.76] as const;
+const fullD = path(FULL[1], FULL[0], [...BG, ...you], 1400, 1.6);
+const zMax = Math.max(...Array.from({ length: 400 }, (_, i) => lor(ZOOM[1] + (i / 400) * 0.32, [...BG, ...you]))) * 1.12;
+const zoomYou = path(ZOOM[1], ZOOM[0], [...BG, ...you], 700, zMax);
+const zoomRef = path(ZOOM[1], ZOOM[0], [...BG, ...ref], 700, zMax);
+const xp = (ppm: number, [hi, lo]: readonly [number, number]) => ((hi - ppm) / (hi - lo)) * 100;
+const labels = [
+  { k: "valine", ppm: 1.04, text: "V" }, { k: "isoleucine", ppm: 1.005, text: "I" }, { k: "valine", ppm: 0.99, text: "V" },
+  { k: "leucine", ppm: 0.96, text: "L" }, { k: "isoleucine", ppm: 0.935, text: "I" }, { k: "small_ldl_p", ppm: 0.84, text: "Small LDL" },
+] as const;
+const named = [...new Set(labels.map((l) => l.k))];
+const ticksFull = [4, 3, 2, 1], ticksZoom = [1.05, 1.0, 0.95, 0.9, 0.85, 0.8];
+---
+<figure class="m-0">
+  <div class="flex items-center gap-2 text-sm"><SourceBadge no={4} /><span class="font-medium">สัญญาณจากเครื่อง NMR</span><span class="text-ink-3">· พลาสมา</span></div>
+  <div class="relative mt-3">
+    <svg viewBox="0 0 1000 200" preserveAspectRatio="none" class="nmr-reveal block h-24 w-full sm:h-28" role="img" aria-label="สเปกตรัม NMR ทั้งช่วง 4.3 ถึง 0.6 ppm ช่วงที่ไฮไลต์คือบริเวณกรดอะมิโนกลุ่ม BCAA และไขมัน LDL">
+      <rect x={xp(ZOOM[0], FULL) * 10} y="0" width={(xp(ZOOM[1], FULL) - xp(ZOOM[0], FULL)) * 10} height="200" fill="var(--warn-soft)" />
+      <path d={fullD} fill="none" stroke="var(--ink)" stroke-width="1.25" vector-effect="non-scaling-stroke" stroke-linejoin="round" />
+      <line x1="0" x2="1000" y1="199.5" y2="199.5" stroke="var(--line)" vector-effect="non-scaling-stroke" />
+    </svg>
+    <div class="relative h-5 text-[11px] text-ink-3" aria-hidden="true">
+      {ticksFull.map((t) => <span class="num absolute -translate-x-1/2" style={`left:${xp(t, FULL)}%`}>{t}</span>)}
+      <span class="absolute right-0">ppm</span>
+    </div>
+  </div>
+
+  <div class="mt-3 rounded-2xl bg-subtle p-3 sm:p-4">
+    <div class="relative">
+      <div class="relative h-6 text-xs" aria-hidden="true">
+        {labels.map((l) => <span class="absolute -translate-x-1/2 font-semibold" style={`left:${xp(l.ppm, ZOOM)}%`}>{l.text}</span>)}
+      </div>
+      <svg viewBox="0 0 1000 200" preserveAspectRatio="none" class="nmr-reveal block h-36 w-full sm:h-44" role="img"
+           aria-label={`ขยายช่วง 1.08 ถึง 0.76 ppm: ${named.map((k) => `${n[k].label} ${n[k].value} ${n[k].unit}`).join(", ")} ทุกยอดสูงกว่าเส้นประซึ่งเป็นค่าอ้างอิงประชากร`}>
+        <path d={zoomRef} fill="none" stroke="var(--ink-3)" stroke-width="1.25" stroke-dasharray="4 4" vector-effect="non-scaling-stroke" />
+        <path d={`${zoomYou}L1000,200L0,200Z`} fill="var(--warn)" fill-opacity="0.08" stroke="none" />
+        <path d={zoomYou} fill="none" stroke="var(--warn)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" />
+        <line x1="0" x2="1000" y1="199.5" y2="199.5" stroke="var(--line)" vector-effect="non-scaling-stroke" />
+      </svg>
+      <div class="relative h-5 text-[11px] text-ink-3" aria-hidden="true">
+        {ticksZoom.map((t) => <span class="num absolute -translate-x-1/2" style={`left:${xp(t, ZOOM)}%`}>{t.toFixed(2)}</span>)}
+      </div>
+    </div>
+    <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-2">
+      <span class="inline-flex items-center gap-1.5"><span class="inline-block h-0.5 w-5 bg-warn"></span>ของคุณ</span>
+      <span class="inline-flex items-center gap-1.5"><span class="inline-block w-5 border-t border-dashed border-ink-3"></span>ค่าอ้างอิงประชากร</span>
+      <span class="text-ink-3">V Valine · I Isoleucine · L Leucine · อ้างอิง: BCAA ค่ากลาง UK Biobank, LDL P75 MESA</span>
+    </div>
+  </div>
+  <figcaption class="mt-2 text-xs text-ink-3">ภาพจำลองจากค่าที่เครื่องรายงาน · ความสูงยอดปรับตามค่าจริง · ไม่ใช่สัญญาณดิบ · {mock.sources[3].sample_id}</figcaption>
+</figure>
+<style>
+  .nmr-reveal { animation: nmr-reveal 1.6s cubic-bezier(.3,.7,.2,1) both; }
+  @keyframes nmr-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+</style>
