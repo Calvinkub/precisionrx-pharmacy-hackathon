@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd web && npx --yes pnpm@12.4.1 install --frozen-lockfile && npx --yes pnpm@12.4.1 build",
+  "functions": {
+    "app/main.py": {
+      "maxDuration": 30,
+      "excludeFiles": "{web/node_modules/**,web/src/**,web/public/**,web/.astro/**,tests/**,docs/**,.venv/**,**/__pycache__/**}"
+    }
+  }
+}

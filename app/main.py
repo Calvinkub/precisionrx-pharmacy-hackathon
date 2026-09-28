@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, UploadFile
-from fastapi.staticfiles import StaticFiles
 
 from app.assess import AssessIn, assess
 from app.cds_hooks import router as cds_router
@@ -69,9 +68,10 @@ def post_assess(req: AssessIn):
     return assess(req)
 
 
-# UI last so /api and /cds-services win. Falls back to a hint when the site is not built yet.
+# Astro build as low-priority frontend routes: API routes always win. On Vercel these files are
+# promoted to the CDN at build time. Falls back to a hint when the site is not built yet.
 if WEB.is_dir():
-    app.mount("/", StaticFiles(directory=WEB, html=True), name="web")
+    app.frontend("/", directory=WEB)
 else:
     @app.get("/")
     def not_built():

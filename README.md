@@ -29,6 +29,7 @@ UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → htt
 | `eval/` | 45-case gold-standard eval set, runner, report, pharmacist review sheet |
 | `docs/` | Research notes behind the numbers (verify before pitching) |
 | [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) | Plan and status |
+| [DEPLOY.md](DEPLOY.md) | Deploy to Vercel (`vercel.json`) or any Docker host (`Dockerfile`) |
 
 ## Files
 

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "PrecisionRx hackathon prototype — NMR response dashboard + PGx CDS (synthetic data only)"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.110",
+    "fastapi>=0.141",
     "uvicorn>=0.29",
     "pyyaml>=6.0",
     "python-multipart>=0.0.9",
