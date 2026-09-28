@@ -2,12 +2,14 @@
 import Base from "../../layouts/Base.astro";
 import His from "../../components/His.svelte";
 ---
-<Base title="หน้าสั่งยา (HIS จำลอง)" current="his" description="ระบบโรงพยาบาลจำลอง — PrecisionRx เตือนผ่าน CDS Hooks ตอนสั่งยา">
+<Base title="สั่งยา" current="his" description="หน้าสั่งยาจำลอง — PrecisionRx เตือนผ่าน CDS Hooks ตอนสั่งยา">
   <div class="container page">
     <header class="page-head">
-      <h1>หน้าสั่งยา <span class="tag">HIS จำลอง</span></h1>
-      <p>PrecisionRx ทำงานเบื้องหลังผ่านมาตรฐาน CDS Hooks — เตือนเฉพาะเรื่องที่เกิดจากคำสั่งยาใหม่</p>
+      <h1>สั่งยา</h1>
+      <p>ระบบโรงพยาบาลจำลอง · PrecisionRx ทำงานเบื้องหลังผ่าน CDS Hooks และเตือนเฉพาะเรื่องที่เกิดจากคำสั่งใหม่</p>
     </header>
+    <div class="spacer"></div>
     <His client:load />
   </div>
 </Base>
+<style>.spacer { height: 32px; }</style>

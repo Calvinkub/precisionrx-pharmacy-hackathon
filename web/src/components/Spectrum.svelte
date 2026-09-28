@@ -40,10 +40,11 @@
   function draw(k: number) {
     if (!canvas) return;
     const css = getComputedStyle(document.documentElement);
-    const color = css.getPropertyValue("--series-1").trim();
-    const grid = css.getPropertyValue("--grid").trim();
+    const color = css.getPropertyValue("--ink").trim();
+    const grid = css.getPropertyValue("--line").trim();
     const muted = css.getPropertyValue("--ink-3").trim();
-    const surface = css.getPropertyValue("--surface").trim();
+    const color2 = css.getPropertyValue("--ink-2").trim();
+    const surface = css.getPropertyValue("--bg").trim();
     const dpr = window.devicePixelRatio || 1;
     const W = wrap.clientWidth, H = height;
     canvas.width = W * dpr; canvas.height = H * dpr;
@@ -58,7 +59,7 @@
       const s = Math.max(0.25, Math.min(2.5, v / mid));
       for (const [p, w, h] of list) peaks.push([p, w, h * s]);
     }
-    const pad = { l: 8, r: 8, t: 22, b: 26 };
+    const pad = { l: 2, r: 2, t: 18, b: 20 };
     const N = Math.max(500, Math.floor(W * 2));
     const pts: [number, number][] = [];
     let ymax = 0;
@@ -72,32 +73,30 @@
 
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = 1; ctx.strokeStyle = grid; ctx.fillStyle = muted;
-    ctx.font = "11px 'IBM Plex Mono', monospace"; ctx.textAlign = "center";
-    for (let p = 5; p >= 1; p--) {
-      ctx.beginPath(); ctx.moveTo(x(p), pad.t); ctx.lineTo(x(p), H - pad.b); ctx.stroke();
-      ctx.fillText(`${p}.0`, x(p), H - 8);
-    }
-    ctx.textAlign = "right"; ctx.fillText("ppm", W - pad.r, H - 8);
+    ctx.font = "11px Anuphan, sans-serif"; ctx.textAlign = "center";
+    ctx.beginPath(); ctx.moveTo(pad.l, H - pad.b); ctx.lineTo(W - pad.r, H - pad.b); ctx.stroke();
+    for (let p = 5; p >= 1; p--) ctx.fillText(`${p}`, x(p), H - 6);
+    ctx.textAlign = "right"; ctx.fillText("ppm", W - pad.r, H - 6);
 
     const upto = Math.floor(pts.length * k);
     // area wash (~10%) + 2px line
     ctx.beginPath();
     for (let i = 0; i < upto; i++) { const [p, v] = pts[i]; i ? ctx.lineTo(x(p), y(v)) : ctx.moveTo(x(p), y(v)); }
-    ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.strokeStyle = color; ctx.stroke();
+    ctx.lineWidth = 1.25; ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.strokeStyle = color; ctx.stroke();
     if (upto > 1) {
       ctx.lineTo(x(pts[upto - 1][0]), y(0)); ctx.lineTo(x(pts[0][0]), y(0)); ctx.closePath();
-      ctx.globalAlpha = 0.1; ctx.fillStyle = color; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.05; ctx.fillStyle = color; ctx.fill(); ctx.globalAlpha = 1;
     }
     if (k < 1) {
       const sx = x(pts[upto]?.[0] ?? PPM_MIN);
-      ctx.fillStyle = color; ctx.globalAlpha = 0.18; ctx.fillRect(sx - 5, pad.t, 10, H - pad.t - pad.b); ctx.globalAlpha = 1;
+      ctx.fillStyle = color; ctx.globalAlpha = 0.25; ctx.fillRect(sx - 0.5, pad.t, 1, H - pad.t - pad.b); ctx.globalAlpha = 1;
     } else {
-      ctx.textAlign = "center"; ctx.font = "12px 'IBM Plex Sans Thai', sans-serif";
+      ctx.textAlign = "center"; ctx.font = "12px Anuphan, sans-serif";
       for (const [id, ppm, label] of LABELS) {
         if (values[id] == null) continue;
         const ty = Math.max(14, y(signal(ppm, peaks)) - 8);
         ctx.lineWidth = 4; ctx.strokeStyle = surface; ctx.strokeText(label, x(ppm), ty);
-        ctx.fillStyle = muted; ctx.fillText(label, x(ppm), ty);
+        ctx.fillStyle = color2; ctx.fillText(label, x(ppm), ty);
       }
     }
   }
@@ -133,15 +132,14 @@
     <canvas bind:this={canvas} aria-hidden="true" style={`height:${height}px`}></canvas>
   </div>
   <figcaption>
-    <span>ภาพประกอบ ¹H NMR สร้างจากค่าที่ห้องแล็บคำนวณแล้ว — ระบบไม่ประมวลผล spectrum เอง</span>
-    <span class="status" aria-hidden="true">{progress < 1 ? `กำลังอ่านสัญญาณ… ${Math.round(progress * 100)}%` : `วัดได้ ${count} สาร ✓`}</span>
+    <span>ภาพประกอบ ¹H NMR จากค่าที่แล็บคำนวณแล้ว</span>
+    <span aria-hidden="true">{progress < 1 ? `กำลังอ่าน… ${Math.round(progress * 100)}%` : `${count} สาร`}</span>
   </figcaption>
 </figure>
 
 <style>
-  .spectrum { margin: 0; background: var(--sunken); border-radius: 12px; padding: 10px 10px 8px; }
+  .spectrum { margin: 0 0 8px; }
   .plot { width: 100%; min-width: 0; overflow: hidden; }
   canvas { display: block; width: 100%; }
-  figcaption { display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-3); padding: 4px 4px 0; }
-  .status { font-family: var(--mono); color: var(--ink-2); }
+  figcaption { display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); padding-top: 6px; }
 </style>

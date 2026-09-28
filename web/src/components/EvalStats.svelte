@@ -4,8 +4,7 @@
 
   interface Summary {
     cases: number; passed: number; expected_findings: number; omissions: number; false_flags: number;
-    citations: number; citations_missing: number; unverified_fact_ids_cited: string[];
-    alerts_per_case_naive: number; alerts_per_case_precisionrx: number; alert_reduction_pct: number;
+    citations: number; citations_missing: number; alerts_per_case_naive: number; alerts_per_case_precisionrx: number; alert_reduction_pct: number;
   }
   let s = $state<Summary | null>(null);
   let failed = $state(false);
@@ -15,33 +14,26 @@
 </script>
 
 {#if s}
-  <div class="hero-stat">
-    <span class="label">จำนวนการเตือนต่อเคส</span>
-    <span class="value">−{s.alert_reduction_pct}%</span>
-    <span class="sub">{s.alerts_per_case_naive} → {s.alerts_per_case_precisionrx} เทียบกับระบบที่เตือนทุกข้อมูลที่มี</span>
-  </div>
-  <dl class="tiles">
-    <div><dt>เคสที่ผ่าน</dt><dd>{s.passed}/{s.cases}</dd></div>
-    <div><dt>การเตือนที่หลุด</dt><dd>{s.omissions}<small> / {s.expected_findings}</small></dd></div>
-    <div><dt>เตือนผิด</dt><dd>{s.false_flags}</dd></div>
-    <div><dt>การอ้างอิงที่ตรวจแล้ว</dt><dd>{s.citations - s.citations_missing}/{s.citations}</dd></div>
+  <dl class="stats">
+    <div><dt>การเตือนที่ลดลง</dt><dd>{Math.round(s.alert_reduction_pct)}%</dd><dd class="note">{s.alerts_per_case_naive} → {s.alerts_per_case_precisionrx} ต่อเคส</dd></div>
+    <div><dt>เคสทดสอบที่ผ่าน</dt><dd>{s.passed}/{s.cases}</dd><dd class="note">ไม่มีการเตือนที่หลุดหรือเตือนผิด</dd></div>
+    <div><dt>ข้อความที่มีแหล่งอ้างอิง</dt><dd>{s.citations - s.citations_missing}/{s.citations}</dd><dd class="note">ตรวจกับต้นฉบับแล้ว</dd></div>
   </dl>
-  <p class="note">ชุดทดสอบข้อมูลจำลอง 46 เคส เฉลยเขียนจาก guideline ก่อนรัน engine — วัดว่า rule ทำงานตามที่เขียน ไม่ใช่ความแม่นยำทางคลินิก · รอเภสัชกรตรวจเฉลย</p>
+  <p class="caveat">ชุดทดสอบข้อมูลจำลอง เฉลยเขียนจาก guideline ก่อนรันระบบ — วัดว่ากฎทำงานตามที่เขียน ยังไม่ใช่ความแม่นยำทางคลินิก</p>
 {:else if failed}
-  <p class="note">โหลดผลชุดทดสอบไม่ได้ — รัน <code>uv run python -m eval.run_eval</code> ก่อน</p>
-{:else}
-  <p class="note">กำลังโหลดผลชุดทดสอบ…</p>
+  <p class="caveat">ยังไม่มีผลชุดทดสอบ</p>
 {/if}
 
 <style>
-  .hero-stat { display: grid; gap: 2px; margin-bottom: 18px; }
-  .hero-stat .label { font-size: 14px; color: var(--ink-2); }
-  .hero-stat .value { font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
-  .hero-stat .sub { font-size: 13.5px; color: var(--ink-2); }
-  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
-  .tiles div { background: var(--sunken); border-radius: 12px; padding: 10px 14px; }
-  dt { font-size: 12.5px; color: var(--ink-2); }
-  dd { margin: 0; font-size: 22px; font-weight: 600; }
-  dd small { font-size: 14px; color: var(--ink-3); font-weight: 500; }
-  .note { font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+  .stats div { padding: 0 32px; border-left: 1px solid var(--line); }
+  .stats div:first-child { padding-left: 0; border-left: 0; }
+  dt { font-size: 14px; color: var(--ink-3); }
+  dd { margin: 0; font-size: clamp(36px, 4.5vw, 52px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  dd.note { font-size: 14px; color: var(--ink-2); letter-spacing: 0; font-weight: 400; line-height: 1.5; }
+  .caveat { font-size: 13.5px; color: var(--ink-3); margin-top: 24px; }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: 1fr; gap: 24px; }
+    .stats div { padding: 0; border-left: 0; }
+  }
 </style>

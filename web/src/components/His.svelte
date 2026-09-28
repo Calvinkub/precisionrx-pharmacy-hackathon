@@ -17,9 +17,9 @@
   const DRUGS = ["carbamazepine", "oxcarbazepine", "allopurinol", "simvastatin", "atorvastatin", "rosuvastatin", "clopidogrel",
     "omeprazole", "esomeprazole", "pantoprazole", "amlodipine", "losartan", "metformin", "aspirin"];
   const IND = {
-    critical: { th: "ห้ามสั่ง (HARD STOP)", icon: "⛔", tone: "critical" },
-    warning: { th: "คำเตือน", icon: "⚠", tone: "serious" },
-    info: { th: "ข้อมูล", icon: "ℹ", tone: "info" },
+    critical: { th: "ห้ามสั่ง", tone: "critical" },
+    warning: { th: "คำเตือน", tone: "serious" },
+    info: { th: "ข้อมูล", tone: "info" },
   } as const;
 
   let patients = $state<HisPatient[]>([]);
@@ -167,18 +167,18 @@
 </script>
 
 {#snippet segs(list: Seg[])}
-  {#each list as s}{#if s.t === "b"}<strong>{s.v}</strong>{:else if s.t === "code"}<code>{s.v}</code>{:else if s.t === "i"}<em>{s.v}</em>{:else}{s.v}{/if}{/each}
+  {#each list as s}{#if s.t === "b"}<strong>{s.v}</strong>{:else if s.t === "code"}<span class="ref">{s.v}</span>{:else if s.t === "i"}<em>{s.v}</em>{:else}{s.v}{/if}{/each}
 {/snippet}
 
 <div class="layout">
-  <nav class="card patients" aria-label="รายชื่อผู้ป่วย">
+  <nav class="patients" aria-label="รายชื่อผู้ป่วย">
     <h2>ผู้ป่วยวันนี้</h2>
     <ul>
       {#each patients as x (x.id)}
         <li>
           <button type="button" aria-current={p?.id === x.id ? "true" : undefined} onclick={() => selectPatient(x.id)}>
-            <strong>{x.id} · {x.name}</strong>
-            <small>{x.age} ปี {x.sex} · {x.dx}</small>
+            <span class="pname">{x.name}</span>
+            <span class="pmeta">{x.id} · {x.age} ปี · {x.dx}</span>
           </button>
         </li>
       {/each}
@@ -187,54 +187,40 @@
 
   {#if p}
     <div class="main">
-      <section class="card banner" aria-label="ข้อมูลผู้ป่วย">
-        <div class="who">
-          <h2>{p.name}</h2>
-          <dl>
-            <div><dt>HN</dt><dd>{p.id}</dd></div>
-            <div><dt>อายุ/เพศ</dt><dd>{p.age} ปี · {p.sex}</dd></div>
-            <div><dt>วินิจฉัย</dt><dd>{p.dx}</dd></div>
-            <div><dt>แพ้ยา</dt><dd>{p.allergy}</dd></div>
-          </dl>
-        </div>
-        <div class="pgx">
-          <h3>ผล PGx ในระบบ</h3>
+      <header class="patient">
+        <p class="muted small">{p.id} · {p.age} ปี · {p.sex} · แพ้ยา: {p.allergy}</p>
+        <h2 class="pt-name">{p.name}</h2>
+        <p class="dx">{p.dx}</p>
+        <p class="pgx">
+          <span class="muted">ผลตรวจยีน:</span>
           {#if p.pgx.length}
-            <ul>
-              {#each p.pgx as g}
-                <li class="chip {/positive|poor|decreased|ultrarapid/.test(g.result) ? 'critical' : ''}"><span class="dot"></span><span class="mono">{g.gene}</span> {g.result} <span class="muted">· {g.source} {g.date}</span></li>
-              {/each}
-            </ul>
-          {:else}
-            <p class="muted">ยังไม่มีผล PGx</p>
-          {/if}
-        </div>
+            {#each p.pgx as g, i}{i ? " · " : " "}<strong>{g.gene}</strong> {g.result} <span class="muted small">({g.source} {g.date})</span>{/each}
+          {:else}<span class="muted"> ยังไม่มีผล</span>{/if}
+        </p>
+      </header>
+
+      <section class="block" aria-labelledby="h-active">
+        <h2 id="h-active">ยาที่ใช้อยู่</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">ยา</th><th scope="col">ขนาด</th><th scope="col">วิธีใช้</th><th scope="col"><span class="sr-only">สถานะ</span></th></tr></thead>
+          <tbody>
+            {#each p.active as m (m.id)}
+              <tr class:stopped={m.status === "stopped"}>
+                <th scope="row">{m.drug}</th>
+                <td class="num">{m.dose_mg ?? "–"} mg</td>
+                <td>{m.sig ?? ""}</td>
+                <td class="r">{#if m.status === "stopped"}<span class="muted small">หยุดแล้ว</span>{:else if m.isNew}<span class="status good">เพิ่มใหม่</span>{/if}</td>
+              </tr>
+            {:else}
+              <tr><td colspan="4" class="muted">ไม่มียาที่ใช้อยู่</td></tr>
+            {/each}
+          </tbody>
+        </table></div>
+        {#if labOrders.length}<p class="small lab">สั่งตรวจแล้ว: {labOrders.join(", ")}</p>{/if}
       </section>
 
-      <section class="card" aria-labelledby="h-active">
-        <div class="card-head"><h2 id="h-active">ยาที่ใช้อยู่</h2><p>{p.active.filter((m) => m.status !== "stopped").length} รายการ</p></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th scope="col">ยา</th><th scope="col">ขนาด</th><th scope="col">วิธีใช้</th><th scope="col">สถานะ</th></tr></thead>
-            <tbody>
-              {#each p.active as m (m.id)}
-                <tr class:new={m.isNew}>
-                  <th scope="row">{#if m.status === "stopped"}<s>{m.drug}</s>{:else}{m.drug}{/if}</th>
-                  <td class="num">{m.dose_mg ?? "–"} mg</td>
-                  <td>{m.sig ?? ""}</td>
-                  <td>{#if m.status === "stopped"}<span class="chip">หยุดแล้ว</span>{:else if m.isNew}<span class="chip good"><span class="dot"></span>ใหม่</span>{:else}ใช้อยู่{/if}</td>
-                </tr>
-              {:else}
-                <tr><td colspan="4" class="muted">ไม่มียาที่ใช้อยู่</td></tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-        {#if labOrders.length}<p class="lab"><strong>สั่งตรวจแล้ว:</strong> {labOrders.join(", ")}</p>{/if}
-      </section>
-
-      <section class="card" aria-labelledby="h-order">
-        <div class="card-head"><h2 id="h-order">สั่งยาใหม่</h2><p>ลองทำ: {p.try}</p></div>
+      <section class="block" aria-labelledby="h-order">
+        <h2 id="h-order">สั่งยาใหม่</h2>
         <form class="order" onsubmit={sign} autocomplete="off">
           <label class="field drug">ชื่อยา<input class="input" list="his-drugs" bind:value={drug} oninput={scheduleSelect} placeholder="เช่น carbamazepine" required /></label>
           <label class="field">ขนาด (mg)<input class="input" type="number" step="any" bind:value={dose} onchange={orderSelect} /></label>
@@ -242,116 +228,115 @@
           <button type="submit" class="btn btn-primary" aria-describedby={hasCritical ? "sign-blocked" : undefined}>ยืนยันคำสั่ง</button>
           <datalist id="his-drugs">{#each DRUGS as d}<option value={d}></option>{/each}</datalist>
         </form>
-        <p class="hint">พิมพ์ชื่อยาแล้วระบบส่ง <code>order-select</code> ไปที่ PrecisionRx ทันที · กดยืนยันส่ง <code>order-sign</code> ตรวจซ้ำ</p>
+        <p class="hint">ลองสั่ง: {p.try}</p>
         {#if hasCritical}<p id="sign-blocked" class="sr-only">ยังบันทึกไม่ได้ เพราะมีคำสั่งห้าม</p>{/if}
-        {#if hookStatus}<p class="hook mono" aria-hidden="true">{hookStatus}</p>{/if}
-        <div role="status" aria-live="polite" class="msg-wrap">
+        <div role="status" aria-live="polite">
           {#if message}<p class="msg" class:bad={message.bad}>{message.text}</p>{/if}
         </div>
 
         <div bind:this={cardsEl} class="cards" aria-live="polite">
           {#if cards && !cards.length}
-            <p class="ok"><span class="chip good"><span class="dot"></span>ผ่าน</span> ไม่มีประเด็น PGx หรือยาตีกันจากคำสั่งนี้ — ไม่เด้งเตือน</p>
+            <p class="ok"><span class="status good">ไม่มีคำเตือน</span> <span class="muted">ไม่พบประเด็นยีนหรือยาตีกันจากคำสั่งนี้</span></p>
           {/if}
           {#each cards ?? [] as e (e.card.uuid)}
             {@const ind = IND[e.card.indicator]}
-            <article class="cds tone-{ind.tone}" class:pending={e.state === "pending"} class:resolved={e.state !== "pending"} aria-labelledby={`c-${e.card.uuid}`}>
-              <header>
-                <h3 id={`c-${e.card.uuid}`}>{e.card.summary}</h3>
-                <span class="chip {ind.tone}"><span aria-hidden="true">{ind.icon}</span>{ind.th}</span>
-              </header>
-              <div class="detail">
-                {#each blocks(e.card.detail) as b}
+            <article class="alert {ind.tone}" class:pending={e.state === "pending"} class:resolved={e.state !== "pending"} aria-labelledby={`c-${e.card.uuid}`}>
+              <div class="a-top">
+                <span class="status {ind.tone}">{ind.th}</span>
+                <a class="small" href={e.card.source.url} target="_blank" rel="noopener">แหล่งอ้างอิง<span class="sr-only"> (แท็บใหม่)</span></a>
+              </div>
+              <h3 id={`c-${e.card.uuid}`}>{e.card.summary}</h3>
+              {#each blocks(e.card.detail).slice(0, 1) as b}
+                {#if b.kind === "p"}<p class="lead-p">{@render segs(b.segs)}</p>{/if}
+              {/each}
+              <details class="more">
+                <summary class="link-btn">หลักฐานและเหตุผล</summary>
+                {#each blocks(e.card.detail).slice(1) as b}
                   {#if b.kind === "p"}<p>{@render segs(b.segs)}</p>{:else}<ul>{#each b.items as it}<li>{@render segs(it)}</li>{/each}</ul>{/if}
                 {/each}
-              </div>
-              <p class="src">แหล่ง: <a href={e.card.source.url} target="_blank" rel="noopener">{e.card.source.label}<span class="sr-only"> (แท็บใหม่)</span></a></p>
+              </details>
               {#if e.state === "pending"}
-                {#if e.card.suggestions.length}
-                  <div class="row" role="group" aria-label="ทำตามคำแนะนำ">
-                    {#each e.card.suggestions as s (s.uuid)}
-                      <button type="button" class="btn btn-sm sugg" onclick={() => accept(e, s)}>{s.label}</button>
-                    {/each}
-                  </div>
-                {/if}
+                <div class="acts">
+                  {#each e.card.suggestions as s (s.uuid)}
+                    <button type="button" class="btn btn-sm btn-primary" onclick={() => accept(e, s)}>{s.label}</button>
+                  {/each}
+                </div>
                 <div class="override">
-                  <label class="field">เหตุผลที่ override
+                  <label class="field">เหตุผลถ้าจะสั่งต่อ (override)
                     <select class="select" id={`reason-${e.card.uuid}`} bind:value={e.reason}>
-                      <option value={undefined}>— เลือกเหตุผล —</option>
+                      <option value={undefined}>เลือกเหตุผล</option>
                       {#each e.card.overrideReasons as r}<option value={r.code}>{r.display}</option>{/each}
                     </select>
                   </label>
                   <label class="field">หมายเหตุถึงเภสัชกร<input class="input" bind:value={e.note} /></label>
-                  <button type="button" class="btn btn-sm" onclick={() => override(e)}>Override → แจ้งเภสัชกร</button>
+                  <button type="button" class="btn btn-sm" onclick={() => override(e)}>Override และแจ้งเภสัชกร</button>
                 </div>
               {:else}
-                <p class="state">{e.state === "accepted" ? `✓ ทำตามคำแนะนำ: ${e.detail}` : `↪ Override (${e.detail}) — ส่งเข้าคิวเภสัชกรแล้ว`}</p>
+                <p class="state">{e.state === "accepted" ? `ทำตามคำแนะนำแล้ว — ${e.detail}` : `Override แล้ว (${e.detail}) — ส่งให้เภสัชกรทบทวน`}</p>
               {/if}
             </article>
           {/each}
         </div>
+        {#if hookStatus}<p class="hook" aria-hidden="true">{hookStatus}</p>{/if}
       </section>
     </div>
   {/if}
 </div>
 
 <style>
-  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; align-items: start; }
-  .main { display: grid; gap: 16px; min-width: 0; }
-  .patients { position: sticky; top: 80px; }
-  .patients h2 { margin-bottom: 10px; }
-  .patients ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 56px; align-items: start; }
+  .patients { position: sticky; top: 96px; }
+  .patients h2 { margin-bottom: 12px; }
+  .patients ul { list-style: none; margin: 0; padding: 0; }
   .patients button {
-    width: 100%; text-align: left; font: inherit; color: var(--ink); cursor: pointer; display: grid; gap: 2px;
-    border: 1px solid var(--border); background: var(--raised); border-radius: 10px; padding: 10px 12px; min-height: 48px;
+    width: 100%; text-align: left; font: inherit; color: var(--ink-2); cursor: pointer; display: grid; gap: 1px;
+    border: 0; background: none; padding: 12px 0 12px 14px; border-left: 2px solid var(--line);
   }
-  .patients button:hover { border-color: var(--ink-3); }
-  .patients button[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); }
-  .patients strong { font-size: 14px; }
-  .patients small { font-size: 12.5px; color: var(--ink-2); }
-  .banner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
-  .who h2 { font-size: 20px; }
-  dl { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 8px 0 0; }
-  dl div { display: flex; gap: 6px; font-size: 14px; }
-  dt { color: var(--ink-3); } dd { margin: 0; font-weight: 500; }
-  .pgx h3 { font-size: 13px; color: var(--ink-2); font-weight: 500; margin-bottom: 6px; }
-  .pgx ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-  .pgx .chip { white-space: normal; }
+  .patients button:hover { color: var(--ink); border-left-color: var(--ink-3); }
+  .patients button[aria-current="true"] { color: var(--ink); border-left-color: var(--ink); }
+  .pname { font-weight: 500; }
+  .pmeta { font-size: 13px; color: var(--ink-3); }
+  .main { min-width: 0; }
+  .patient { padding-bottom: 32px; }
+  .pt-name { font-size: clamp(28px, 3.4vw, 38px); font-weight: 600; letter-spacing: -0.015em; text-transform: none; color: var(--ink); margin-top: 6px; line-height: 1.25; }
+  .dx { font-size: 17px; color: var(--ink-2); margin-top: 2px; }
+  .pgx { margin-top: 12px; font-size: 15px; overflow-wrap: anywhere; }
   .table-wrap { overflow-x: auto; }
-  th[scope="row"] { font-size: 14px; color: var(--ink); font-weight: 500; border-bottom: 1px solid var(--border); }
-  tr.new th, tr.new td { background: var(--good-soft); }
-  .lab { margin-top: 10px; font-size: 14px; }
-  .order { display: grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 10px; align-items: end; }
-  .hint { font-size: 12.5px; color: var(--ink-3); margin-top: 8px; }
-  .hook { font-size: 12px; color: var(--ink-3); margin-top: 6px; }
-  .msg-wrap { margin-top: 10px; }
-  .msg { padding: 10px 14px; border-radius: 10px; background: var(--good-soft); border-left: 4px solid var(--good); font-weight: 500; }
-  .msg.bad { background: var(--critical-soft); border-left-color: var(--critical); }
-  .cards { display: grid; gap: 12px; margin-top: 12px; }
-  .ok { font-size: 14px; display: flex; gap: 8px; align-items: center; }
-  .cds { border-radius: 12px; padding: 14px 16px; background: var(--sunken); border-left: 5px solid var(--border-strong); }
-  .cds.resolved { opacity: .75; }
-  .cds header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-  .cds h3 { font-size: 16px; }
-  .detail { font-size: 14px; margin-top: 6px; }
-  .detail p { margin-top: 4px; }
-  .detail ul { margin: 4px 0; padding-left: 20px; }
-  .detail code { font-size: 12px; }
-  .src { font-size: 13px; margin-top: 8px; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .sugg { border-color: var(--accent); color: var(--accent); }
-  .override { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 8px; align-items: end; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-strong); }
-  .state { margin-top: 10px; font-weight: 600; font-size: 14px; }
-  .tone-critical { background: var(--critical-soft); border-left-color: var(--critical); }
-  .tone-serious { background: var(--serious-soft); border-left-color: var(--serious); }
-  .tone-info { background: var(--info-soft); border-left-color: var(--series-1); }
-  @media (max-width: 960px) {
-    .layout { grid-template-columns: 1fr; }
+  .block { border-top: 1px solid var(--line); padding: 32px 0; }
+  .block > h2 { margin-bottom: 16px; }
+  th[scope="row"] { font-weight: 500; font-size: 15px; color: var(--ink); border-bottom: 1px solid var(--line); }
+  tr.stopped th, tr.stopped td { color: var(--ink-3); text-decoration: line-through; }
+  tr.stopped td:last-child { text-decoration: none; }
+  .lab { margin-top: 12px; color: var(--ink-2); }
+  .order { display: grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 12px; align-items: end; }
+  .hint { font-size: 14px; color: var(--ink-3); margin-top: 12px; }
+  .msg { margin-top: 16px; font-weight: 500; color: var(--ink); }
+  .msg.bad { color: var(--critical); }
+  .cards { display: grid; gap: 12px; margin-top: 20px; }
+  .ok { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .alert { border-radius: var(--radius); padding: 22px 24px; background: var(--subtle); }
+  .alert.critical { background: var(--critical-soft); }
+  .alert.serious { background: var(--warning-soft); }
+  .alert.resolved { opacity: .7; }
+  .a-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .alert h3 { font-size: 18px; margin-top: 8px; }
+  .lead-p { color: var(--ink-2); margin-top: 4px; max-width: 70ch; }
+  .more { margin-top: 10px; font-size: 14px; color: var(--ink-2); }
+  .more summary { list-style: none; font-size: 14px; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more p, .more ul { margin-top: 8px; }
+  .more ul { padding-left: 18px; }
+  .ref { font-size: 13px; color: var(--ink-3); }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .override { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; margin-top: 16px; padding-top: 16px; border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+  .state { margin-top: 14px; font-weight: 500; }
+  .hook { font-size: 12.5px; color: var(--ink-3); margin-top: 16px; font-variant-numeric: tabular-nums; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; gap: 24px; }
     .patients { position: static; }
-    .patients ul { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-    .banner { grid-template-columns: 1fr; }
+    .patients ul { display: flex; gap: 0 16px; overflow-x: auto; }
+    .patients button { border-left: 0; border-bottom: 2px solid var(--line); padding: 8px 0; white-space: nowrap; }
+    .patients button[aria-current="true"] { border-bottom-color: var(--ink); }
   }
-  @media (max-width: 640px) {
-    .order, .override { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 640px) { .order, .override { grid-template-columns: 1fr; } }
 </style>
