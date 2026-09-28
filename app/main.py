@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 CASES = ROOT.parent / "data" / "synthetic"
 
 app = FastAPI(title="PrecisionRx prototype (synthetic data only)")
-WEB = ROOT.parent / "web" / "dist"  # Astro build output (cd web && npm run build)
+WEB = ROOT.parent / "web" / "dist"  # Astro build output (cd web && pnpm build)
 EVAL = ROOT.parent / "eval" / "results.json"
 app.include_router(cds_router)
 
@@ -75,4 +75,4 @@ if WEB.is_dir():
 else:
     @app.get("/")
     def not_built():
-        return {"error": "UI not built", "fix": "cd web && npm install && npm run build"}
+        return {"error": "UI not built", "fix": "cd web && pnpm install && pnpm build"}
