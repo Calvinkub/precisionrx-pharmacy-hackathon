@@ -23,8 +23,14 @@ export interface NmrFactor { id: string; title: string; detail: string; severity
 export interface Advice { id: string; topic: string; reason: string; advice: string; fact_ids: string[] }
 export interface TrendRow { id: string; abbr: string; unit: string; previous: number; current: number; pct_change: number; rcv_pct: number | null; verdict: Verdict }
 export type Verdict = "improved" | "worsened" | "within_variation" | "changed" | "not_assessable";
+export interface NmrDomain {
+  id: string; title: string; what: string; status: "good" | "warning" | "serious" | "none"; status_label: string; headline: string;
+  key: { id: string; abbr: string; name: string; unit: string; value: number; ref_low: number | null; ref_high: number | null;
+         target: number | null; previous: number | null; pct_change: number | null; verdict: Verdict | null } | null;
+  out_of_range: string[]; fact_ids: string[];
+}
 export interface Assessment {
-  snapshot: string; risks: Risk[]; nmr_factors: NmrFactor[]; findings: Finding[];
+  snapshot: string; nmr_summary: NmrDomain[]; risks: Risk[]; nmr_factors: NmrFactor[]; findings: Finding[];
   advice: Advice[]; trend: TrendRow[]; facts: Record<string, Fact>;
 }
 
@@ -69,4 +75,4 @@ export const CAT_TH: Record<string, string> = { low: "ต่ำ", moderate: "ป
 export const CAT_TONE: Record<string, string> = { low: "good", moderate: "warning", high: "serious", very_high: "critical", not_assessable: "" };
 export const SEV_TH = { stop: "หยุด — ห้ามใช้", action: "ต้องทบทวน", monitor: "ติดตาม", info: "ปกติ" } as const;
 export const SEV_TONE = { stop: "critical", action: "serious", monitor: "info", info: "good" } as const;
-export const SEV_ICON = { stop: "⛔", action: "⚠", monitor: "◔", info: "✓" } as const;
+export const SEV_ICON = { stop: "⛔", action: "⚠", monitor: "!", info: "✓" } as const;

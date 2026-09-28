@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
   import AnalytePanel from "./AnalytePanel.svelte";
+  import NmrSummary from "./NmrSummary.svelte";
   import Results from "./Results.svelte";
   import Spectrum from "./Spectrum.svelte";
   import { api, postJson, type Analyte, type Assessment, type Case, type Med, type Profile } from "../lib/api";
@@ -147,8 +148,16 @@
       {#if visit}<p>{visit.label ? `${visit.label} · ` : ""}{visit.date}</p>{/if}
     </div>
     {#if visit && catalog.length}
-      <Spectrum values={visit.values} {byId} />
-      <AnalytePanel {catalog} values={visit.values} {prev} />
+      <Spectrum values={visit.values} {byId} height={120} />
+      {#if result?.nmr_summary}
+        <NmrSummary domains={result.nmr_summary} />
+      {:else}
+        <p class="muted">กำลังสรุปผล…</p>
+      {/if}
+      <details class="all-values">
+        <summary>ดูค่าทั้งหมด {Object.keys(visit.values).length} สาร <span class="muted">(สำหรับเภสัชกร)</span></summary>
+        <AnalytePanel {catalog} values={visit.values} {prev} />
+      </details>
     {:else}
       <p class="muted">กำลังโหลด…</p>
     {/if}
@@ -249,6 +258,14 @@
   .story { flex-basis: 100%; font-size: 14px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .error { background: var(--critical-soft); border-left: 4px solid var(--critical); padding: 10px 14px; border-radius: 10px; margin-bottom: 16px; }
 
+  .all-values { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .all-values summary {
+    cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; gap: 8px; list-style: none;
+    padding: 0 12px; border-radius: 10px; background: var(--sunken);
+  }
+  .all-values summary::-webkit-details-marker { display: none; }
+  .all-values summary::before { content: "▸"; transition: transform .15s; }
+  .all-values[open] summary::before { transform: rotate(90deg); }
   .grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: start; }
   .form-card { position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; }
   .g2, .g3 { display: grid; gap: 10px; margin-bottom: 10px; }

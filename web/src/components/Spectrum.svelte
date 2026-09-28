@@ -2,7 +2,7 @@
   import type { Analyte } from "../lib/api";
 
   // Illustrative ¹H NMR spectrum drawn from the lab's quantified values. The system never processes raw spectra.
-  let { values, byId }: { values: Record<string, number>; byId: Record<string, Analyte> } = $props();
+  let { values, byId, height = 200 }: { values: Record<string, number>; byId: Record<string, Analyte>; height?: number } = $props();
 
   // [ppm, half-width, height] per analyte; heights scale with value / reference midpoint
   const PEAKS: Record<string, [number, number, number][]> = {
@@ -21,7 +21,7 @@
     acetone: [[2.23, 0.005, 0.25]],
   };
   const LABELS: [string, number, string][] = [["tg", 1.27, "ไขมัน (–CH₂–)"], ["glyca", 2.03, "GlycA"], ["glucose", 3.72, "กลูโคส"], ["creatinine", 3.04, "Crea"], ["valine", 0.99, "BCAA"]];
-  const PPM_MAX = 5.6, PPM_MIN = 0.5, H = 200;
+  const PPM_MAX = 5.6, PPM_MIN = 0.5;
 
   let canvas: HTMLCanvasElement;
   let wrap: HTMLDivElement;
@@ -45,7 +45,7 @@
     const muted = css.getPropertyValue("--ink-3").trim();
     const surface = css.getPropertyValue("--surface").trim();
     const dpr = window.devicePixelRatio || 1;
-    const W = wrap.clientWidth;
+    const W = wrap.clientWidth, H = height;
     canvas.width = W * dpr; canvas.height = H * dpr;
     const ctx = canvas.getContext("2d")!;
     ctx.scale(dpr, dpr);
@@ -130,7 +130,7 @@
 
 <figure class="spectrum">
   <div bind:this={wrap} class="plot" role="img" aria-label={summary}>
-    <canvas bind:this={canvas} aria-hidden="true"></canvas>
+    <canvas bind:this={canvas} aria-hidden="true" style={`height:${height}px`}></canvas>
   </div>
   <figcaption>
     <span>ภาพประกอบ ¹H NMR สร้างจากค่าที่ห้องแล็บคำนวณแล้ว — ระบบไม่ประมวลผล spectrum เอง</span>
@@ -141,7 +141,7 @@
 <style>
   .spectrum { margin: 0; background: var(--sunken); border-radius: 12px; padding: 10px 10px 8px; }
   .plot { width: 100%; min-width: 0; overflow: hidden; }
-  canvas { display: block; width: 100%; height: 200px; }
+  canvas { display: block; width: 100%; }
   figcaption { display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-3); padding: 4px 4px 0; }
   .status { font-family: var(--mono); color: var(--ink-2); }
 </style>

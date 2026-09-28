@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from app.engines import meds as m
 from app.engines.lifestyle import lifestyle_advice
 from app.engines.nmr_factors import MMOL_TO_MG_DL_CHOL, nmr_factors
+from app.engines.nmr_summary import summarize
 from app.engines.panel import catalog, facts, status, trend
 from app.engines.risk import Profile, thai_cv_risk, thai_diabetes_risk
 
@@ -87,6 +88,8 @@ def assess(req: AssessIn) -> dict:
     findings = m.sort_findings(findings)
 
     factors = nmr_factors(cur, cv.value, p.diabetes)
+    high_risk = p.diabetes or (cv.value is not None and cv.value >= 20)
+    summary = summarize(cur, prev, diabetes=p.diabetes, high_risk=high_risk)
     advice = lifestyle_advice(p, cur, req.alcohol_drinks_per_day, req.activity_min_week)
     trend_rows = trend(prev, cur) if prev else []
 
@@ -98,12 +101,15 @@ def assess(req: AssessIn) -> dict:
     for group in (risks, findings, factors, advice):
         for x in group:
             used.update(x.fact_ids)
+    for d in summary:
+        used.update(d["fact_ids"])
     if trend_rows:
         used.update({"RCV-METHOD", "EFLM-CVI", "NIGHTINGALE-CVA"})
     store = facts()
     return {
         "snapshot": store["snapshot"],
         "panel": panel,
+        "nmr_summary": summary,
         "risks": [asdict(r) for r in risks],
         "nmr_factors": [asdict(f) for f in factors],
         "findings": [asdict(f) for f in findings],
