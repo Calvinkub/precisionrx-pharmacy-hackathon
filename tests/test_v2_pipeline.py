@@ -162,3 +162,14 @@ def test_fhir_careplan_export_only_selected_items():
     kinds = [e["resource"]["resourceType"] for e in b["entry"]]
     assert kinds == ["CarePlan", "ServiceRequest"]
     assert b["entry"][0]["resource"]["activity"][0]["reference"]["reference"] == b["entry"][1]["fullUrl"]
+
+
+def test_cfdna_run_summary_matches_slide_conventions():
+    r = client.get("/api/cfdna/runs/E10146").json()
+    bct, roche = r["tubes"]
+    assert bct["average_size_bp"] == 158.3 and bct["total_ng"] == 27.54
+    assert roche["average_size_bp"] == 157 and roche["total_ng"] == 28.79
+    # the 3000 bp alignment marker must not count as high-molecular-weight DNA
+    assert all(x["hmw_fraction"] < 0.1 for x in bct["replicates"])
+    assert roche["replicates"][1]["qc_status"] == "fail"
+    assert bct["external_score"]["ruo"] is True

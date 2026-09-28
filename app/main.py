@@ -13,6 +13,7 @@ from app.agents.graph import GRAPH
 from app.agents.graph import run as run_graph
 from app.assess import AssessIn, assess
 from app.engines.careplan import export_fhir as careplan_export
+from app.engines.cfdna_run import summarize_run
 from app.ingest.normalize import build_record
 from app.ingest.schemas import PatientState
 from app.cds_hooks import router as cds_router
@@ -92,6 +93,22 @@ def case_medications(case_id: str, visit: int = 1):
 
 
 ONCO = CASES / "oncology"
+CE_RUNS = CASES / "cfdna_runs"
+
+
+@app.get("/api/cfdna/runs")
+def cfdna_runs():
+    return [{"id": f.stem, "label": json.loads(f.read_text(encoding="utf-8"))["sample_label"]} for f in sorted(CE_RUNS.glob("*.json"))]
+
+
+@app.get("/api/cfdna/runs/{run_id}")
+def cfdna_run(run_id: str):
+    f = CE_RUNS / f"{run_id}.json"
+    if not f.is_file() or f.parent != CE_RUNS:
+        raise HTTPException(404, "run not found")
+    r = summarize_run(json.loads(f.read_text(encoding="utf-8")))
+    store = facts()["facts"]
+    return {**r, "facts": {k: store[k] for k in r["fact_ids"] if k in store}}
 
 
 # ---------------------------------------------------------------- v2: NCD multi-omics pipeline (doctor + pharmacist)

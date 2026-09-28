@@ -170,3 +170,34 @@ write("P002", {
     "profile.json": json.dumps({"alcohol_drinks_per_day": 2.5}),
 })
 print("wrote", sorted(p.name for p in OUT.iterdir()))
+
+
+# ---------------------------------------------------------------- cfDNA electropherogram run (replicates × tubes)
+def ce_trace(peak: float, hmw: float, seed: int) -> tuple[list[float], list[float]]:
+    """QIAxcel-style trace: 15 bp + 3000 bp alignment markers, cfDNA peak, di-nucleosome, optional HMW peak."""
+    rnd = random.Random(seed)
+    sizes, rfu = [], []
+    bp = 10.0
+    while bp <= 5000:
+        g = lambda mu, sd, h: h * math.exp(-((bp - mu) ** 2) / (2 * sd ** 2))
+        v = (g(15, 0.9, 0.62) + g(3000, 60, 0.55) + g(peak, peak * 0.07, 0.24) + g(peak * 2.05, 22, 0.035)
+             + g(peak * 3.1, 35, 0.012) + g(1900, 230, hmw) + 0.004 + rnd.uniform(0, 0.004))
+        sizes.append(round(bp, 1)); rfu.append(round(v, 4))
+        bp *= 1.012
+    return sizes, rfu
+
+
+RUN = {"id": "E10146", "sample_label": "Case E10146 (ค่าสรุปจากสไลด์ที่ผู้ใช้ให้มา · เส้นกราฟสังเคราะห์)", "instrument": "QIAxcel Connect",
+       "date": "2026-09-28", "elution_ul": 12.5, "tubes": []}
+for tube, label, score, reps in [
+    ("BCT", "Cell-free DNA BCT", 0.90, [(161, 2.26, 0.0), (156, 2.14, 0.0), (158, 2.21, 0.0)]),
+    ("Roche", "Roche Cell-Free DNA Collection Tube", 0.86, [(163, 2.22, 0.0), (150, 2.38, 0.09), (158, 2.31, 0.0)]),
+]:
+    t = {"tube": tube, "tube_label": label, "replicates": [],
+         "external_score": {"name": "CEliver score", "value": score, "source": "โมเดลวิจัยภายนอก (ค่าจากสไลด์)", "ruo": True}}
+    for i, (pk, conc, hmw) in enumerate(reps, start=1):
+        s, r = ce_trace(pk, hmw, seed=i * 7 + len(tube))
+        t["replicates"].append({"name": f"replicate {i}", "main_peak_bp": pk, "conc_ng_ul": conc, "sizes_bp": s, "rfu": r})
+    RUN["tubes"].append(t)
+(OUT.parent / "cfdna_runs" / "E10146.json").write_text(json.dumps(RUN, ensure_ascii=False))
+print("wrote cfdna run E10146")
