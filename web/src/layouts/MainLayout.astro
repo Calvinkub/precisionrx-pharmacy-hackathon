@@ -3,7 +3,7 @@ import "../styles/app.css";
 import { CalendarCheck, Dna, FlaskConical, Orbit, UserRound } from "@lucide/astro";
 
 interface Props { title: string; current: "home" | "identification" | "metabolomics" | "molecular" | "action-plan"; description?: string }
-const { title, current, description = "Multi-Omics — ภาพรวมสุขภาพจากผล NMR และ cfDNA (ข้อมูลตัวอย่าง)" } = Astro.props;
+const { title, current, description = "PrecisionRx — ภาพรวมสุขภาพจากผล NMR และ cfDNA (ข้อมูลตัวอย่าง)" } = Astro.props;
 const tabs = [
   { id: "identification", href: "/identification/", label: "Identification data", short: "ข้อมูล", icon: UserRound },
   { id: "metabolomics", href: "/metabolomics/", label: "Metabolites Profile", short: "Metabolites", icon: FlaskConical },
@@ -18,7 +18,7 @@ const mobileTabs = [{ id: "home", href: "/", label: "ภาพรวม", short:
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <title>{title} · Multi-Omics</title>
+    <title>{title} · PrecisionRx</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%230b0f17'/><circle cx='16' cy='16' r='6' fill='%2306b6d4'/></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,7 +30,7 @@ const mobileTabs = [{ id: "home", href: "/", label: "ภาพรวม", short:
     <header class="no-print sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur-md">
       <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 sm:px-6 h-16">
         <a href="/" aria-current={current === "home" ? "page" : undefined} class="flex items-center gap-2.5 font-semibold tracking-tight text-ink no-underline shrink-0">
-          <span class="orb" aria-hidden="true"></span> Multi-Omics
+          <span class="orb" aria-hidden="true"></span> PrecisionRx
         </a>
         <nav aria-label="เมนูหลัก" class="ml-auto hidden md:block">
           <ul class="flex gap-1">
