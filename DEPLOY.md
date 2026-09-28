@@ -25,7 +25,7 @@
 
 ## เช็กหลัง deploy
 
-- `/` , `/overview/` , `/metabolomics/` , `/molecular/` , `/action-plan/` เปิดได้
+- `/` , `/identification/` , `/metabolomics/` , `/molecular/` , `/action-plan/` เปิดได้
 - `/api/eval` และ `/cds-services` ตอบ JSON
 
 ## Claude (ถ้าต้องการ)

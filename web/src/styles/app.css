@@ -1,30 +1,24 @@
 @import "tailwindcss";
 
-/* Design tokens (light + dark). Tailwind utilities read them via @theme inline. */
+/* Design tokens. Default = dark "neon clinical" (#0B0F17 + cyan / emerald / amber); light is opt-in via the toggle. */
 :root {
-  color-scheme: light;
-  --bg: #f6f6f4; --card: #ffffff; --subtle: #f0f0ed; --ink: #151515; --ink-2: #4a4a47; --ink-3: #62625e;
-  --line: #e5e4e0; --band: #e8e7e2; --accent: #0d5c55; --accent-soft: #e3efec;
-  --good: #1f9d55; --good-soft: #e6f4ec; --warn: #b7791f; --warn-dot: #e0a100; --warn-soft: #fbf3e2;
-  --bad: #c2410c; --bad-dot: #e0703f; --bad-soft: #fcece4; --info: #2a78d6; --info-soft: #e8f0fb;
-}
-@media (prefers-color-scheme: dark) {
-  :root:where(:not([data-theme="light"])) {
-    color-scheme: dark;
-    --bg: #0f0f0f; --card: #191919; --subtle: #222221; --ink: #f4f4f2; --ink-2: #c6c5c0; --ink-3: #9d9c97;
-    --line: #2b2b2a; --band: #2e2e2c; --accent: #5fc4b8; --accent-soft: #153330;
-    --good: #4ade80; --good-soft: #14301f; --warn: #f5c451; --warn-dot: #e0a100; --warn-soft: #2e2511;
-    --bad: #fb923c; --bad-dot: #e0703f; --bad-soft: #36201a; --info: #6da7ec; --info-soft: #172a44;
-  }
-}
-:root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0f0f0f; --card: #191919; --subtle: #222221; --ink: #f4f4f2; --ink-2: #c6c5c0; --ink-3: #9d9c97;
-  --line: #2b2b2a; --band: #2e2e2c; --accent: #5fc4b8; --accent-soft: #153330;
-  --good: #4ade80; --good-soft: #14301f; --warn: #f5c451; --warn-dot: #e0a100; --warn-soft: #2e2511;
-  --bad: #fb923c; --bad-dot: #e0703f; --bad-soft: #36201a; --info: #6da7ec; --info-soft: #172a44;
+  --bg: #0b0f17; --card: #111723; --subtle: #172030; --ink: #e8eef6; --ink-2: #b3bfcf; --ink-3: #8a98ad;
+  --line: #222c3d; --band: #1e2839; --accent: #06b6d4; --accent-soft: #0b2a33;
+  --good: #10b981; --good-soft: #0b2a22; --warn: #f59e0b; --warn-dot: #f59e0b; --warn-soft: #2b2110;
+  --bad: #fb7185; --bad-dot: #f43f5e; --bad-soft: #2e1520; --info: #06b6d4; --info-soft: #0b2a33;
+  --glow: 1;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f7fa; --card: #ffffff; --subtle: #eef2f6; --ink: #0f172a; --ink-2: #3f4b5e; --ink-3: #5b6678;
+  --line: #e2e8f0; --band: #e5e9ef; --accent: #0e7490; --accent-soft: #e0f2f6;
+  --good: #047857; --good-soft: #e3f5ee; --warn: #b45309; --warn-dot: #f59e0b; --warn-soft: #fdf3e1;
+  --bad: #be123c; --bad-dot: #f43f5e; --bad-soft: #fde8ec; --info: #0e7490; --info-soft: #e0f2f6;
+  --glow: 0;
 }
 
+/* Tailwind utilities read the tokens here */
 @theme inline {
   --font-sans: "Anuphan", system-ui, -apple-system, "Segoe UI", sans-serif;
   --color-bg: var(--bg); --color-card: var(--card); --color-subtle: var(--subtle);
@@ -36,18 +30,23 @@
 
 @layer base {
   html { -webkit-text-size-adjust: 100%; }
-  body { @apply bg-bg text-ink font-sans antialiased; font-size: 16px; line-height: 1.6; }
+  body { @apply bg-bg text-ink font-sans antialiased; font-size: 16px; line-height: 1.6; min-height: 100vh;
+    background-image: radial-gradient(900px 520px at 78% -8%, color-mix(in srgb, var(--accent) calc(var(--glow) * 11%), transparent), transparent 70%),
+                      radial-gradient(700px 480px at 0% 30%, color-mix(in srgb, var(--good) calc(var(--glow) * 6%), transparent), transparent 70%);
+    background-attachment: fixed; }
   :focus-visible { outline: 2px solid var(--info); outline-offset: 3px; border-radius: 6px; }
   [popover] { inset: 0; margin: auto; height: fit-content; width: min(440px, calc(100vw - 32px)); border: 1px solid var(--line);
     border-radius: 18px; background: var(--card); color: var(--ink); padding: 22px 24px; box-shadow: 0 24px 60px rgba(0,0,0,.18); }
   [popover]::backdrop { background: rgba(0, 0, 0, .25); }
 }
 @layer components {
-  .card { @apply bg-card border border-line rounded-3xl p-5 sm:p-6; }
+  .card { @apply border border-line rounded-3xl p-5 sm:p-6; background: color-mix(in srgb, var(--card) 82%, transparent); backdrop-filter: blur(14px); }
+  .glass { background: color-mix(in srgb, var(--card) 70%, transparent); backdrop-filter: blur(16px); @apply border border-line; }
   .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.08em] text-ink-3; }
   .num { font-variant-numeric: tabular-nums; }
   .btn { @apply inline-flex items-center justify-center gap-2 min-h-11 px-5 rounded-full border border-line font-medium text-ink bg-card hover:bg-subtle transition-colors cursor-pointer; }
-  .btn-primary { @apply bg-ink text-bg border-ink hover:bg-ink hover:opacity-90; }
+  .btn-primary { @apply bg-accent text-bg border-accent hover:bg-accent; box-shadow: 0 0 calc(var(--glow) * 22px) color-mix(in srgb, var(--accent) 45%, transparent); }
+  .btn-primary:hover { filter: brightness(1.08); }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 @media print {

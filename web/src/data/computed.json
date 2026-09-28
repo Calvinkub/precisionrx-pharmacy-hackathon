@@ -3517,6 +3517,27 @@
    }
   ]
  },
+ "whatif": {
+  "targets": {
+   "bmi": 22.9,
+   "waist": 89,
+   "sbp": 120,
+   "weight_kg": 70.1
+  },
+  "diabetes": {
+   "now": 12,
+   "after": 7,
+   "max": 17,
+   "now_label": "สูงมาก",
+   "after_label": "สูง",
+   "after_band": "โอกาสเป็นเบาหวานใน 12 ปี 11–20%"
+  },
+  "cvd": {
+   "now": 5.09,
+   "after": 3.83,
+   "unit": "%"
+  }
+ },
  "nmr_high": [
   "small_ldl_p",
   "valine",

@@ -16,7 +16,7 @@ uv run pytest                               # engine + API + CDS Hooks tests + e
 uv run python -m eval.run_eval --sheet      # eval report → eval/report.md
 ```
 
-Pages (consumer app, one sample person `web/src/data/mockPatient.json`): `/` baseline profile · `/overview/` risk overview (MetS x/5, Thai diabetes score, Thai CV Risk, FLI) · `/metabolomics/` NMR insight ↔ raw toggle · `/molecular/` cfDNA (**labelled mock values**) · `/action-plan/` checklist, PDF brief, .ics calendar.
+Pages (consumer app, one sample person `web/src/data/mockPatient.json`): `/` Metabolic Nexus hero (MetS x/5 core, marker nodes, HUD: insulin-resistance pattern, cfDNA QC, what-if re-computed with the same formulas) + risk traces and source matrix · `/identification/` Identification data · `/metabolomics/` Metabolites Profile (NMR spectrum, insight ↔ raw) · `/molecular/` cfDNA Pattern (CE electropherogram + QC; methylation/origin are **labelled mock values**) · `/action-plan/` Advices (checklist, PDF brief, .ics). Every value carries a numbered source badge (1 form · 2 clinic · 3 lab · 4 NMR · 5 cfDNA CE). Theme: dark neon by default, light via the toggle.
 Risk numbers are computed by the Python engines: after changing the profile run `uv run python -m scripts.build_consumer_data` (writes `web/src/data/computed.json`; a test fails if it drifts). The doctor/pharmacist APIs (`/api/v2/*`, `/api/cfdna/*`, `/api/oncology/*`, CDS Hooks) remain; their old pages were removed.
 UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → http://localhost:4321 (proxies `/api` and `/cds-services` to port 8765). Type/a11y check: `pnpm check`.
 

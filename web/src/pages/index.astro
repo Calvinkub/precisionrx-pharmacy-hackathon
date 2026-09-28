@@ -1,67 +1,100 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import StatusChip from "../components/StatusChip.astro";
-import Sources from "../components/Sources.astro";
+import MetabolicNexus from "../components/MetabolicNexus.astro";
+import RiskOverview from "../components/RiskOverview.astro";
 import SourceBadge from "../components/SourceBadge.astro";
-import DataSources from "../components/DataSources.astro";
+import Sources from "../components/Sources.astro";
 import mock from "../data/mockPatient.json";
 import c from "../data/computed.json";
-import { Cigarette, HeartPulse, Pill, Ruler, Scale, Users, Wine, Target } from "@lucide/astro";
+import { ArrowRight, Dna } from "@lucide/astro";
 
-const p = mock.profile;
-// thresholds: Thai obesity (BMI ≥25, waist ≥90 M / ≥80 F) · Thai HT 2024 (<120/80 optimal, 130–139/85–89 high-normal, ≥140/90 high)
-const bmiTone = c.bmi >= 25 ? "bad" : c.bmi >= 23 ? "warn" : "good";
-const bmiLabel = c.bmi >= 25 ? "อ้วน (เกณฑ์เอเชีย)" : c.bmi >= 23 ? "น้ำหนักเกิน" : "ปกติ";
-const waistCut = p.sex === "male" ? 90 : 80;
-const bpTone = p.sbp >= 140 || p.dbp >= 90 ? "bad" : p.sbp >= 130 || p.dbp >= 85 ? "warn" : "good";
-const bpLabel = bpTone === "bad" ? "สูง" : bpTone === "warn" ? "สูงกว่าปกติ" : "ปกติ";
-const cards = [
-  { icon: Ruler, label: "ส่วนสูง", value: p.height_cm, unit: "ซม.", tone: "neutral", chip: "—" },
-  { icon: Scale, label: "น้ำหนัก", value: p.weight_kg, unit: "กก.", tone: "neutral", chip: "—" },
-  { icon: Scale, label: "BMI", value: c.bmi, unit: "kg/m²", tone: bmiTone, chip: bmiLabel, sub: "ปกติ 18.5–22.9" },
-  { icon: Target, label: "รอบเอว", value: p.waist_cm, unit: "ซม.", tone: p.waist_cm >= waistCut ? "warn" : "good", chip: p.waist_cm >= waistCut ? "เกินเกณฑ์" : "ปกติ", sub: `เกณฑ์ < ${waistCut}` },
-  { icon: HeartPulse, label: "ความดันโลหิต", value: `${p.sbp}/${p.dbp}`, unit: "mmHg", tone: bpTone, chip: bpLabel, sub: "ปกติ < 130/85" },
-] as const;
+const p = mock.profile, w = c.whatif, run = c.cfdna_run, d = mock.cfdna_mock;
+const ir = c.traces.insulin_resistance;
+const drivers = [
+  { label: `BCAA สูง ${c.bcaa_high.length}/3`, src: 4 },
+  ...(c.nmr_high.includes("small_ldl_p") ? [{ label: "Small LDL-P สูง", src: 4 }] : []),
+  ...(c.prediabetes ? [{ label: "น้ำตาลช่วงก่อนเบาหวาน", src: 3 }] : []),
+];
+const irMet = ir.inputs.filter((i) => i.met).length;
+const bars = [
+  { label: "เบาหวาน (คะแนน)", now: w.diabetes.now, after: w.diabetes.after, max: w.diabetes.max, fmt: (v: number) => `${v}` },
+  { label: "หัวใจ 10 ปี", now: w.cvd.now, after: w.cvd.after, max: 10, fmt: (v: number) => `${v.toFixed(1)}%` },
+];
 ---
-<MainLayout title="ข้อมูลพื้นฐาน" current="baseline">
-  <p class="eyebrow">ข้อมูลพื้นฐาน · ตัวอย่าง</p>
-  <h1 class="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">{p.name}</h1>
-  <p class="mt-1 flex items-center gap-2 text-ink-2">{p.age} ปี · {p.sex === "male" ? "ชาย" : "หญิง"} <SourceBadge no={1} /></p>
-
-  <div class="mt-8"><DataSources /></div>
-
-  <section aria-label="สัญญาณชีพ" class="mt-4 grid grid-cols-2 lg:grid-cols-5 gap-3">
-    {cards.map((k) => (
-      <article class="card flex flex-col gap-2">
-        <div class="flex items-center justify-between text-ink-3"><span class="flex items-center gap-1.5 text-sm"><SourceBadge no={2} />{k.label}</span><k.icon size={18} aria-hidden="true" /></div>
-        <p class="num text-3xl font-medium tracking-tight">{k.value}<span class="ml-1 text-sm text-ink-3 font-normal">{k.unit}</span></p>
-        {k.tone !== "neutral" && <div><StatusChip tone={k.tone} label={k.chip} /></div>}
-        {"sub" in k && <p class="text-xs text-ink-3">{k.sub}</p>}
-      </article>
-    ))}
-  </section>
-  <p class="mt-3 text-xs text-ink-3">เกณฑ์ BMI และรอบเอวของคนไทย · ความดันตามแนวทางสมาคมความดันโลหิตสูงแห่งประเทศไทย 2024 · <Sources ids={["THAI-OBESITY", "THAI-HT-2024-NA"]} /></p>
-
-  <section aria-labelledby="h-life" class="mt-8 grid gap-3 md:grid-cols-2">
-    <article class="card">
-      <h2 id="h-life" class="eyebrow flex items-center gap-1.5"><SourceBadge no={1} />ไลฟ์สไตล์</h2>
-      <ul class="mt-4 flex flex-wrap gap-2">
-        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Cigarette size={16} aria-hidden="true" />{p.smoking === "ex-smoker" ? "เคยสูบบุหรี่ (เลิกแล้ว)" : p.smoking === "current" ? "สูบบุหรี่" : "ไม่สูบบุหรี่"}</li>
-        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Wine size={16} aria-hidden="true" />แอลกอฮอล์ {p.alcohol}</li>
-        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Pill size={16} aria-hidden="true" />{p.medications.length ? p.medications.join(", ") : "ไม่มียาประจำ"}</li>
-        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><HeartPulse size={16} aria-hidden="true" />ออกกำลังกาย {p.activity_min_week} นาที/สัปดาห์</li>
+<MainLayout title="Metabolic Nexus" current="home">
+  <section class="grid items-center gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)]" aria-labelledby="h-hero">
+    <div>
+      <p class="eyebrow">Personal biomolecular twin · ตัวอย่าง</p>
+      <h1 id="h-hero" class="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight">Metabolic Nexus</h1>
+      <p class="mt-3 text-ink-2">{p.name} · {p.age} ปี · ค่าจาก 5 แหล่งข้อมูล รวมเป็นภาพเดียว</p>
+      <ul class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink-2">
+        <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-warn shadow-[0_0_8px_var(--warn)]"></span>เกินเกณฑ์</li>
+        <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]"></span>วัดแล้ว · ผ่าน</li>
+        <li class="flex items-center gap-1.5"><SourceBadge no="mock" />ค่าสมมติ</li>
       </ul>
+      <p class="mt-4 hidden text-xs text-ink-3 lg:block">ชี้หรือแตะที่โหนดเพื่อดูค่าจริงและแหล่งที่มา</p>
+    </div>
+    <div>
+      <MetabolicNexus />
+      <p class="mt-2 text-center text-xs text-ink-3 lg:hidden">แตะที่โหนดเพื่อดูค่า</p>
+    </div>
+  </section>
+
+  <section aria-label="สรุปผล" class="mt-6 grid gap-3 md:grid-cols-3">
+    <article class="card flex flex-col">
+      <p class="eyebrow">Metabolic state</p>
+      <h2 class="mt-2 text-xl font-semibold leading-snug">{c.insulin_resistance_pattern ? "รูปแบบคล้ายภาวะดื้ออินซูลิน" : "ไม่พบรูปแบบดื้ออินซูลิน"}</h2>
+      <div class="mt-3 flex gap-1" role="img" aria-label={`เข้าเกณฑ์ ${irMet} จาก ${ir.inputs.length} ข้อ`}>
+        {ir.inputs.map((i) => <span class:list={["h-1.5 flex-1 rounded-full", i.met ? "bg-warn shadow-[0_0_8px_var(--warn)]" : "bg-band"]}></span>)}
+      </div>
+      <ul class="mt-3 flex flex-wrap gap-1.5">
+        {drivers.map((x) => <li class="inline-flex items-center gap-1.5 rounded-full bg-warn-soft px-2.5 py-1 text-xs"><SourceBadge no={x.src} />{x.label}</li>)}
+      </ul>
+      <p class="mt-3 text-sm text-ink-2">{c.risks.diabetes.band} · {c.risks.liver.notes[0]}</p>
+      <p class="mt-auto pt-3 text-xs text-ink-3"><Sources ids={["BCAA-T2D", "TDRS-2006", "FLI-2006"]} /></p>
     </article>
-    <article class="card">
-      <h2 class="eyebrow flex items-center gap-1.5"><SourceBadge no={1} />ประวัติครอบครัว</h2>
-      <ul class="mt-4 flex flex-wrap gap-2">
-        {p.family_history.map((f) => (
-          <li class="inline-flex items-center gap-2 rounded-full bg-warn-soft px-3 py-1.5 text-sm"><Users size={16} aria-hidden="true" />{f.relation} · {f.condition}</li>
+
+    <article class="card flex flex-col">
+      <p class="eyebrow">Cellular surveillance</p>
+      <div class="mt-2 flex items-center gap-3">
+        <Dna size={30} class="helix shrink-0 text-accent" aria-hidden="true" />
+        <h2 class="text-xl font-semibold leading-snug">{run.qc_status === "pass" ? "ตัวอย่างผ่าน QC" : "ตัวอย่างไม่ผ่าน QC"} <span class="num text-ink-3 font-normal">· {run.average_size_bp} bp</span></h2>
+      </div>
+      <p class="mt-2 flex items-center gap-1.5 text-xs text-ink-3"><SourceBadge no={5} />{run.instrument} · {run.replicates.length} ครั้ง</p>
+      <div class="mt-3 rounded-2xl border border-dashed border-ink-3 p-3">
+        <p class="flex items-center gap-1.5 text-sm"><SourceBadge no="mock" />Liver-associated signal <span class="num font-semibold">{d.origin_confidence_pct}%</span></p>
+        <p class="mt-1 text-xs text-ink-3">ค่าตัวอย่าง · ต้องใช้ sequencing จริง · คุยกับแพทย์ก่อนตรวจเพิ่ม</p>
+      </div>
+      <p class="mt-auto pt-3 text-xs text-ink-3"><Sources ids={["CFDNA-HMW-QC", "CFDNA-FRAGMENTOMICS-SEQ"]} /></p>
+    </article>
+
+    <article class="card flex flex-col">
+      <p class="eyebrow">Actionable forecast</p>
+      <h2 class="mt-2 text-xl font-semibold leading-snug">เบาหวาน <span class="num">{w.diabetes.now} → {w.diabetes.after}</span> คะแนน</h2>
+      <ul class="mt-3 space-y-2.5">
+        {bars.map((b) => (
+          <li class="text-xs">
+            <p class="text-ink-2">{b.label}</p>
+            <div class="mt-1 grid grid-cols-[3rem_minmax(0,1fr)_2.75rem] items-center gap-2">
+              <span class="text-ink-3">ตอนนี้</span>
+              <span class="h-2 rounded-full bg-band"><span class="block h-2 rounded-full bg-warn" style={`width:${Math.min(b.now / b.max, 1) * 100}%`}></span></span>
+              <span class="num text-right">{b.fmt(b.now)}</span>
+              <span class="text-ink-3">ปรับแล้ว</span>
+              <span class="h-2 rounded-full bg-band"><span class="block h-2 rounded-full bg-good shadow-[0_0_8px_var(--good)]" style={`width:${Math.min(b.after / b.max, 1) * 100}%`}></span></span>
+              <span class="num text-right">{b.fmt(b.after)}</span>
+            </div>
+          </li>
         ))}
       </ul>
-      <p class="mt-4 text-sm text-ink-2">→ คะแนนเสี่ยงเบาหวาน +4</p>
+      <p class="mt-3 text-xs text-ink-2">ถ้า BMI &lt; 23 (≈ {w.targets.weight_kg} กก.) · เอว &lt; {w.targets.waist} · ความดัน {w.targets.sbp} — สูตรเดิมคำนวณใหม่</p>
+      <p class="mt-1 text-xs text-ink-3">WHO: ระดับประชากร ≥ 80% ของโรคหัวใจและเบาหวานชนิด 2 ป้องกันได้ · <Sources ids={["WHO-2005-PREVENTABLE", "TDRS-2006", "TCVRS-2021"]} /></p>
+      <a href="/metabolomics/" class="btn btn-primary mt-4 no-underline">สำรวจผลตรวจเชิงลึก <ArrowRight size={16} aria-hidden="true" /></a>
     </article>
   </section>
 
-  <a href="/overview/" class="btn btn-primary mt-8 no-underline">ดูภาพรวมความเสี่ยง →</a>
+  <div class="mt-12"><RiskOverview /></div>
 </MainLayout>
+<style>
+  .helix { animation: helix 4s linear infinite; }
+  @keyframes helix { to { transform: rotateY(360deg); } }
+</style>
