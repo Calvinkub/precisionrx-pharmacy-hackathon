@@ -1,0 +1,27 @@
+---
+// One quiet "แหล่งอ้างอิง" link; details in a native popover (no JS).
+import facts from "../data/computed.json";
+interface Props { ids: string[]; label?: string }
+const { ids, label = "แหล่งอ้างอิง" } = Astro.props;
+const store = facts.facts as Record<string, { text: string; source: string; url: string; verified: boolean }>;
+const list = ids.map((id) => [id, store[id]] as const).filter(([, f]) => f);
+const uid = `src-${Math.random().toString(36).slice(2, 9)}`;
+---
+{list.length > 0 && (
+  <>
+    <button type="button" popovertarget={uid} class="text-xs text-ink-3 underline decoration-line underline-offset-4 hover:text-ink cursor-pointer">{label}</button>
+    <div popover id={uid}>
+      <p class="text-base font-semibold mb-3">{label}</p>
+      <ul class="space-y-4">
+        {list.map(([, f]) => (
+          <li class="border-b border-line pb-4">
+            <p class="text-sm">{f.text}</p>
+            <p class="mt-1 text-xs text-ink-3">{f.source}{f.verified ? "" : " · ยังไม่ได้ตรวจถ้อยคำกับต้นฉบับ"}</p>
+            <a class="mt-1 inline-block text-xs text-accent" href={f.url} target="_blank" rel="noopener">เปิดแหล่งที่มา<span class="sr-only"> (แท็บใหม่)</span></a>
+          </li>
+        ))}
+      </ul>
+      <button type="button" popovertarget={uid} popovertargetaction="hide" class="btn mt-4 min-h-9 text-sm">ปิด</button>
+    </div>
+  </>
+)}

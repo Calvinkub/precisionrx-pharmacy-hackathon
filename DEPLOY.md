@@ -25,12 +25,12 @@
 
 ## เช็กหลัง deploy
 
-- `/` , `/dashboard/?case=1&visit=2` , `/medications/` , `/care/` , `/cfdna/` เปิดได้
+- `/` , `/overview/` , `/metabolomics/` , `/molecular/` , `/action-plan/` เปิดได้
 - `/api/eval` และ `/cds-services` ตอบ JSON
 
 ## Claude (ถ้าต้องการ)
 
-ตั้ง Environment Variable `ANTHROPIC_API_KEY` ใน Vercel Project Settings → หน้า `/ncd/` จะใช้ Claude วางแผนและเรียบเรียงสรุป
+ตั้ง Environment Variable `ANTHROPIC_API_KEY` ใน Vercel Project Settings → API `/api/v2/patients/{id}/run` จะใช้ Claude วางแผนและเรียบเรียงสรุป
 ถ้าไม่ตั้ง ระบบใช้ template ที่ให้ผลเหมือนเดิมทุกครั้ง (ทุกอย่างยังใช้ได้)
 
 ## ข้อจำกัดที่ต้องรู้

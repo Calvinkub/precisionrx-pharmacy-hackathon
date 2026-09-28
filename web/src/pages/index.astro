@@ -1,86 +1,63 @@
 ---
-import Base from "../layouts/Base.astro";
-import EvalStats from "../components/EvalStats.svelte";
+import MainLayout from "../layouts/MainLayout.astro";
+import StatusChip from "../components/StatusChip.astro";
+import Sources from "../components/Sources.astro";
+import mock from "../data/mockPatient.json";
+import c from "../data/computed.json";
+import { Cigarette, HeartPulse, Pill, Ruler, Scale, Users, Wine, Target } from "@lucide/astro";
 
-const steps = [
-  ["ผลตรวจ NMR", "รับค่าที่แล็บคำนวณแล้ว สรุปเป็น 6 เรื่องสุขภาพที่อ่านเข้าใจได้ทันที"],
-  ["ยาที่กินประจำ", "ดึงจากประวัติรับยา รู้ว่ายาตัวไหนเปลี่ยนค่าในเลือด จะได้ไม่อ่านความเสี่ยงผิด"],
-  ["ความเสี่ยงและเรื่องยา", "ใช้คะแนนความเสี่ยงของคนไทย และกฎจาก guideline ที่ตรวจสอบได้"],
-  ["ติดตามผล", "ตรวจครั้งใหม่ บอกได้ว่าดีขึ้นจริง หรือแค่แกว่งตามธรรมชาติ"],
-];
-const links = [
-  ["/ncd/?patient=P002", "คัดกรอง NCDs (แพทย์)", "NMR + cfDNA + EHR → 5 โรค พร้อมเหตุผลและแผนดูแล"],
-  ["/dashboard/?case=1&visit=2", "ผลตรวจ", "ผล NMR และเรื่องยาสำหรับเภสัชกร"],
-  ["/medications/?case=1&visit=2", "ยาที่ใช้ประจำ", "ยาแต่ละตัวเปลี่ยนค่าในเลือดอย่างไร"],
-  ["/care/?case=1&visit=2", "ความเสี่ยงและการดูแลตัวเอง", "สรุปสำหรับคุยกับผู้ป่วย พิมพ์ได้"],
-  ["/cfdna/", "cfDNA", "ผล electropherogram และ ctDNA + ยีนของผู้ป่วย + ยาตีกัน"],
-];
+const p = mock.profile;
+// thresholds: Thai obesity (BMI ≥25, waist ≥90 M / ≥80 F) · Thai HT 2024 (<120/80 optimal, 130–139/85–89 high-normal, ≥140/90 high)
+const bmiTone = c.bmi >= 25 ? "bad" : c.bmi >= 23 ? "warn" : "good";
+const bmiLabel = c.bmi >= 25 ? "อ้วน (เกณฑ์เอเชีย)" : c.bmi >= 23 ? "น้ำหนักเกิน" : "ปกติ";
+const waistCut = p.sex === "male" ? 90 : 80;
+const bpTone = p.sbp >= 140 || p.dbp >= 90 ? "bad" : p.sbp >= 130 || p.dbp >= 85 ? "warn" : "good";
+const bpLabel = bpTone === "bad" ? "สูง" : bpTone === "warn" ? "สูงกว่าปกติ" : "ปกติ";
+const cards = [
+  { icon: Ruler, label: "ส่วนสูง", value: p.height_cm, unit: "ซม.", tone: "neutral", chip: "—" },
+  { icon: Scale, label: "น้ำหนัก", value: p.weight_kg, unit: "กก.", tone: "neutral", chip: "—" },
+  { icon: Scale, label: "BMI", value: c.bmi, unit: "kg/m²", tone: bmiTone, chip: bmiLabel, sub: "ปกติ 18.5–22.9" },
+  { icon: Target, label: "รอบเอว", value: p.waist_cm, unit: "ซม.", tone: p.waist_cm >= waistCut ? "warn" : "good", chip: p.waist_cm >= waistCut ? "เกินเกณฑ์" : "ปกติ", sub: `เกณฑ์ < ${waistCut}` },
+  { icon: HeartPulse, label: "ความดันโลหิต", value: `${p.sbp}/${p.dbp}`, unit: "mmHg", tone: bpTone, chip: bpLabel, sub: "ปกติ < 130/85" },
+] as const;
 ---
-<Base title="ภาพรวม" current="home">
-  <div class="container">
-    <section class="hero">
-      <p class="eyebrow">ต้นแบบสำหรับ pharmacy hackathon</p>
-      <h1>ผลตรวจที่คนไข้มีอยู่แล้ว<br />ควรถูกใช้ทุกครั้งที่สั่งยา</h1>
-      <p class="lead">PrecisionRx รวมผล NMR, cfDNA, ผลแล็บจากระบบโรงพยาบาล และยาที่ใช้ เป็นความเสี่ยงโรค NCDs ที่แพทย์และเภสัชกรตรวจสอบเหตุผลได้ ทุกข้อความมีแหล่งอ้างอิง และเตือนเฉพาะเรื่องที่ต้องทำ</p>
-      <div class="cta">
-        <a class="btn btn-primary" href="/ncd/?patient=P002">ดูหน้าแพทย์</a>
-        <a class="btn" href="/dashboard/?case=1&visit=2">ดูหน้าเภสัชกร</a>
+<MainLayout title="ข้อมูลพื้นฐาน" current="baseline">
+  <p class="eyebrow">ข้อมูลพื้นฐาน · ตัวอย่าง</p>
+  <h1 class="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">{p.name}</h1>
+  <p class="mt-1 text-ink-2">{p.age} ปี · {p.sex === "male" ? "ชาย" : "หญิง"}</p>
 
-      </div>
-    </section>
+  <section aria-label="สัญญาณชีพ" class="mt-8 grid grid-cols-2 lg:grid-cols-5 gap-3">
+    {cards.map((k) => (
+      <article class="card flex flex-col gap-2">
+        <div class="flex items-center justify-between text-ink-3"><span class="text-sm">{k.label}</span><k.icon size={18} aria-hidden="true" /></div>
+        <p class="num text-3xl font-medium tracking-tight">{k.value}<span class="ml-1 text-sm text-ink-3 font-normal">{k.unit}</span></p>
+        {k.tone !== "neutral" && <div><StatusChip tone={k.tone} label={k.chip} /></div>}
+        {"sub" in k && <p class="text-xs text-ink-3">{k.sub}</p>}
+      </article>
+    ))}
+  </section>
+  <p class="mt-3 text-xs text-ink-3">เกณฑ์ BMI และรอบเอวของคนไทย · ความดันตามแนวทางสมาคมความดันโลหิตสูงแห่งประเทศไทย 2024 · <Sources ids={["THAI-OBESITY", "THAI-HT-2024-NA"]} /></p>
 
-    <section class="block" aria-labelledby="h-eval">
-      <h2 id="h-eval">ผลชุดทดสอบ</h2>
-      <div class="gap"></div>
-      <EvalStats client:load />
-    </section>
-
-    <section class="block" aria-labelledby="h-how">
-      <h2 id="h-how">ทำงานอย่างไร</h2>
-      <ol class="steps">
-        {steps.map(([t, d], i) => (
-          <li><span class="n">{String(i + 1).padStart(2, "0")}</span><h3>{t}</h3><p>{d}</p></li>
-        ))}
-      </ol>
-    </section>
-
-    <section class="block" aria-labelledby="h-try">
-      <h2 id="h-try">ลองใช้งาน</h2>
-      <ul class="links">
-        {links.map(([href, t, d]) => (
-          <li><a href={href}><span class="t">{t}</span><span class="d">{d}</span><span class="arr" aria-hidden="true">→</span></a></li>
+  <section aria-labelledby="h-life" class="mt-8 grid gap-3 md:grid-cols-2">
+    <article class="card">
+      <h2 id="h-life" class="eyebrow">ไลฟ์สไตล์</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Cigarette size={16} aria-hidden="true" />{p.smoking === "ex-smoker" ? "เคยสูบบุหรี่ (เลิกแล้ว)" : p.smoking === "current" ? "สูบบุหรี่" : "ไม่สูบบุหรี่"}</li>
+        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Wine size={16} aria-hidden="true" />แอลกอฮอล์ {p.alcohol}</li>
+        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><Pill size={16} aria-hidden="true" />{p.medications.length ? p.medications.join(", ") : "ไม่มียาประจำ"}</li>
+        <li class="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 text-sm"><HeartPulse size={16} aria-hidden="true" />ออกกำลังกาย {p.activity_min_week} นาที/สัปดาห์</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h2 class="eyebrow">ประวัติครอบครัว</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {p.family_history.map((f) => (
+          <li class="inline-flex items-center gap-2 rounded-full bg-warn-soft px-3 py-1.5 text-sm"><Users size={16} aria-hidden="true" />{f.relation} · {f.condition}</li>
         ))}
       </ul>
-    </section>
-  </div>
-</Base>
+      <p class="mt-4 text-sm text-ink-2">ประวัติเบาหวานในพ่อแม่หรือพี่น้องเพิ่มคะแนนเสี่ยงเบาหวาน 4 จาก 17 คะแนน</p>
+    </article>
+  </section>
 
-<style>
-  .hero { padding: 96px 0 80px; max-width: 820px; }
-  .eyebrow { font-size: 14px; color: var(--ink-3); margin-bottom: 20px; }
-  h1 { font-size: clamp(36px, 5.6vw, 64px); line-height: 1.15; font-weight: 600; letter-spacing: -0.025em; }
-  .lead { font-size: clamp(17px, 1.6vw, 20px); color: var(--ink-2); margin-top: 24px; max-width: 56ch; }
-  .cta { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
-  .cta .btn { min-height: 48px; padding: 12px 26px; font-size: 16px; }
-  .block { border-top: 1px solid var(--line); padding: 48px 0 56px; }
-  .gap { height: 24px; }
-  .steps { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
-  .n { font-size: 14px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-  .steps h3 { margin: 10px 0 6px; font-size: 17px; }
-  .steps p { color: var(--ink-2); font-size: 15px; }
-  .links { list-style: none; margin: 20px 0 0; padding: 0; }
-  .links a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 16px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; }
-  .links li:first-child a { border-top: 1px solid var(--line); }
-  .links .t { font-size: 20px; font-weight: 500; }
-  .links .d { color: var(--ink-3); }
-  .links .arr { transition: transform .2s var(--ease); color: var(--ink-3); }
-  .links a:hover .arr { transform: translateX(4px); color: var(--ink); }
-  @media (max-width: 860px) {
-    .hero { padding: 56px 0 48px; }
-    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .links a { grid-template-columns: minmax(0, 1fr) auto; }
-    .links .d { grid-column: 1; grid-row: 2; }
-    .links .arr { grid-row: 1 / 3; grid-column: 2; align-self: center; }
-  }
-  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
-</style>
+  <a href="/overview/" class="btn btn-primary mt-8 no-underline">ดูภาพรวมความเสี่ยง →</a>
+</MainLayout>

@@ -1,0 +1,26 @@
+---
+// Toggle between consumer insight (level meters) and exact laboratory readings.
+// Both views are in the HTML; the button only switches visibility (works without JS: insight shown).
+interface Props { id: string }
+const { id } = Astro.props;
+---
+<div class="raw-toggle" data-toggle={id}>
+  <div class="inline-flex rounded-full bg-subtle p-1" role="group" aria-label="เลือกมุมมอง">
+    <button type="button" data-view="insight" aria-pressed="true" class="rounded-full px-4 py-1.5 text-sm text-ink-2 aria-pressed:bg-card aria-pressed:text-ink aria-pressed:shadow-sm cursor-pointer">ความหมายต่อร่างกาย</button>
+    <button type="button" data-view="raw" aria-pressed="false" class="rounded-full px-4 py-1.5 text-sm text-ink-2 aria-pressed:bg-card aria-pressed:text-ink aria-pressed:shadow-sm cursor-pointer">ค่าดิบจากแล็บ</button>
+  </div>
+  <div class="mt-5" data-panel="insight"><slot name="insight" /></div>
+  <div class="mt-5" data-panel="raw" hidden><slot name="raw" /></div>
+</div>
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>("[data-toggle]")) {
+    const key = `view:${root.dataset.toggle}`;
+    const set = (v: string) => {
+      root.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === v)));
+      root.querySelectorAll<HTMLElement>("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== v));
+      try { localStorage.setItem(key, v); } catch { /* ignore */ }
+    };
+    root.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => b.addEventListener("click", () => set(b.dataset.view!)));
+    try { const saved = localStorage.getItem(key); if (saved) set(saved); } catch { /* ignore */ }
+  }
+</script>

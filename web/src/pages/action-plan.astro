@@ -1,0 +1,138 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Sources from "../components/Sources.astro";
+import mock from "../data/mockPatient.json";
+import c from "../data/computed.json";
+import { CalendarPlus, FileDown } from "@lucide/astro";
+
+const p = mock.profile;
+const r = c.risks;
+const activity = [
+  { id: "aerobic", title: "แอโรบิก 150–300 นาที/สัปดาห์", sub: `ตอนนี้ ${p.activity_min_week} นาที — เพิ่มทีละ 30 นาที/สัปดาห์`, facts: ["WHO-PA-2020"] },
+  { id: "resistance", title: "เวทเทรนนิ่ง 2–3 วัน/สัปดาห์", sub: "ทุกกล้ามเนื้อหลัก (WHO: อย่างน้อย 2 วัน)", facts: ["WHO-PA-2020"] },
+  { id: "sedentary", title: "ลุกขยับทุก 45 นาที", sub: "เป้าหมายส่วนตัว — WHO แนะนำลดเวลานั่งนาน ๆ", facts: ["WHO-SEDENTARY-2020"] },
+  { id: "weight", title: "ลดน้ำหนัก 5–7% ใน 6 เดือน", sub: `ประมาณ ${(p.weight_kg * 0.05).toFixed(1)}–${(p.weight_kg * 0.07).toFixed(1)} กก.`, facts: ["ADA-2026-PREV"] },
+];
+const nutrition = [
+  { label: "ผักทุกมื้อ", good: true }, { label: "ผลไม้สด", good: true }, { label: "ธัญพืชไม่ขัดสี", good: true },
+  { label: "ถั่วและเมล็ดพืช", good: true }, { label: "ปลา 2 ครั้ง/สัปดาห์", good: true }, { label: "น้ำมันมะกอก / ไขมันไม่อิ่มตัว", good: true },
+  { label: "ลดเนื้อแดงและเนื้อแปรรูป", good: false }, { label: "น้ำตาล < 10% ของพลังงาน", good: false }, { label: "งดแอลกอฮอล์ (TG สูง)", good: false },
+  { label: "โซเดียม < 2 กรัม/วัน", good: false },
+];
+const followUps = [
+  { id: "fpg", title: "ตรวจน้ำตาลขณะอดอาหาร + HbA1c ยืนยัน", weeks: 12, facts: ["ADA-2026-DX"] },
+  { id: "lipid", title: "ตรวจไขมันและ NMR ซ้ำ ดูว่าดีขึ้นจริงไหม", weeks: 12, facts: ["RCPT-2024-FOLLOWUP"] },
+  { id: "doctor", title: "นัดคุยกับแพทย์เรื่องไขมันพอกตับและสัญญาณ cfDNA", weeks: 2, facts: ["FLI-2006", "CFDNA-FRAGMENTOMICS-SEQ"] },
+];
+const brief = {
+  name: p.name, age: p.age,
+  lines: [
+    `Thai Diabetes Risk Score ${r.diabetes.display} (${r.diabetes.label}) · FPG ${mock.labs.glucose_mg_dl} mg/dL · HbA1c ${mock.labs.hba1c_pct}%`,
+    `Thai CV Risk Score ${r.cvd.display} (${r.cvd.label}) · BP ${p.sbp}/${p.dbp}`,
+    `Metabolic syndrome ${r.mets.met}/5 criteria (${r.mets.label})`,
+    `Fatty Liver Index ${Math.round(r.liver.fli)} · ${r.liver.notes[1] ?? ""}`,
+    `NMR: BCAA high (${c.bcaa_high.join(", ")}), small LDL-P ${mock.nmr.small_ldl_p.value} nmol/L`,
+    "cfDNA: demo report values only (not produced by PrecisionRx) — liver-associated signal, discuss need for further testing",
+  ],
+};
+---
+<MainLayout title="แผนดูแล" current="action-plan">
+  <div class="no-print">
+    <p class="eyebrow">แผนดูแลส่วนตัว</p>
+    <h1 class="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">Longevity plan</h1>
+
+    <div class="mt-6 flex flex-wrap gap-2">
+      <button type="button" id="export" class="btn btn-primary"><FileDown size={18} aria-hidden="true" />ส่งออก PDF ให้แพทย์</button>
+      <button type="button" id="calendar" class="btn"><CalendarPlus size={18} aria-hidden="true" />บันทึกลงปฏิทิน</button>
+      <span id="saved" class="self-center text-sm text-ink-3" role="status" aria-live="polite"></span>
+    </div>
+
+    <section class="card mt-6" aria-labelledby="h-act">
+      <div class="flex items-baseline justify-between gap-3"><h2 id="h-act" class="eyebrow">กิจกรรมทางกาย</h2><span class="text-sm text-ink-3" id="progress"></span></div>
+      <ul class="mt-4 divide-y divide-line">
+        {activity.map((a) => (
+          <li class="py-3 first:pt-0">
+            <label class="flex cursor-pointer items-start gap-3">
+              <input type="checkbox" data-task={a.id} class="mt-1 h-5 w-5 shrink-0 accent-[var(--ink)]" />
+              <span><span class="font-medium">{a.title}</span><span class="block text-sm text-ink-2">{a.sub}</span></span>
+            </label>
+            <p class="ml-8 mt-1 text-xs text-ink-3"><Sources ids={a.facts} /></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="card mt-3" aria-labelledby="h-food">
+      <h2 id="h-food" class="eyebrow">อาหารแบบเมดิเตอร์เรเนียน</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {nutrition.map((n) => (
+          <li class:list={["rounded-full px-3 py-1.5 text-sm", n.good ? "bg-good-soft" : "bg-warn-soft"]}>{n.good ? "+ " : "− "}{n.label}</li>
+        ))}
+      </ul>
+      <p class="mt-4 text-xs text-ink-3"><Sources ids={["ESC-2021-DIET", "RCPT-2024-TG", "THAI-HT-2024-NA"]} /></p>
+    </section>
+
+    <section class="card mt-3" aria-labelledby="h-fu">
+      <h2 id="h-fu" class="eyebrow">นัดติดตาม</h2>
+      <ul class="mt-4 divide-y divide-line">
+        {followUps.map((f) => (
+          <li class="flex items-baseline justify-between gap-3 py-3 first:pt-0"><span>{f.title}</span><span class="num shrink-0 text-sm text-ink-3">ใน {f.weeks} สัปดาห์ · <Sources ids={f.facts} /></span></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <!-- print-only brief for the doctor -->
+  <section class="print-brief hidden print:block" aria-hidden="true">
+    <h1 class="text-2xl font-semibold">PrecisionRx — สรุปสำหรับแพทย์</h1>
+    <p class="mt-1">{brief.name} · {brief.age} ปี · ข้อมูลตัวอย่าง (synthetic)</p>
+    <ul class="mt-4 list-disc pl-5 space-y-1">{brief.lines.map((l) => <li>{l}</li>)}</ul>
+    <h2 class="mt-6 font-semibold">แผนที่ผู้ใช้เลือก</h2>
+    <ul class="mt-2 list-disc pl-5" id="brief-plan"></ul>
+    <p class="mt-6 text-xs">คะแนนความเสี่ยงคำนวณด้วยสูตรที่ validate แล้ว (Thai CV Risk, Thai Diabetes Risk Score, harmonized MetS, FLI, FIB-4) · ไม่ใช่การวินิจฉัย</p>
+  </section>
+</MainLayout>
+
+<script define:vars={{ followUps, activity }}>
+  const KEY = "plan:tasks";
+  const boxes = [...document.querySelectorAll("[data-task]")];
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; } };
+  const state = load();
+  const progress = () => {
+    const done = boxes.filter((b) => b.checked).length;
+    document.getElementById("progress").textContent = `ทำแล้ว ${done}/${boxes.length}`;
+    document.getElementById("brief-plan").innerHTML = "";
+    for (const a of activity) {
+      const li = document.createElement("li");
+      li.textContent = `${state[a.id] ? "✓" : "○"} ${a.title}`;
+      document.getElementById("brief-plan").append(li);
+    }
+  };
+  boxes.forEach((b) => {
+    b.checked = !!state[b.dataset.task];
+    b.addEventListener("change", () => { state[b.dataset.task] = b.checked; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} progress(); });
+  });
+  progress();
+
+  document.getElementById("export").addEventListener("click", () => window.print());
+
+  document.getElementById("calendar").addEventListener("click", () => {
+    const pad = (n) => String(n).padStart(2, "0");
+    const day = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+    const now = new Date();
+    const stamp = now.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const ev = [];
+    for (const f of followUps) {
+      const d = new Date(now); d.setDate(d.getDate() + f.weeks * 7);
+      ev.push(["BEGIN:VEVENT", `UID:${f.id}-${stamp}@precisionrx`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(d)}`, `SUMMARY:${f.title}`, "END:VEVENT"].join("\r\n"));
+    }
+    const mon = new Date(now); mon.setDate(mon.getDate() + ((8 - mon.getDay()) % 7 || 7));
+    ev.push(["BEGIN:VEVENT", `UID:aerobic-${stamp}@precisionrx`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(mon)}`,
+             "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=36", "SUMMARY:แอโรบิก 50 นาที (เป้า 150 นาที/สัปดาห์)", "END:VEVENT"].join("\r\n"));
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PrecisionRx//Plan//TH", ...ev, "END:VCALENDAR"].join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+    a.download = "precisionrx-plan.ics"; a.click(); URL.revokeObjectURL(a.href);
+    document.getElementById("saved").textContent = `ดาวน์โหลดไฟล์ปฏิทิน ${ev.length} นัดแล้ว`;
+  });
+</script>

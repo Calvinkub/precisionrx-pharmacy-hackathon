@@ -1,0 +1,81 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Meter from "../components/Meter.astro";
+import RawToInsightToggle from "../components/RawToInsightToggle.astro";
+import Sources from "../components/Sources.astro";
+import StatusChip from "../components/StatusChip.astro";
+import mock from "../data/mockPatient.json";
+import c from "../data/computed.json";
+import { TriangleAlert } from "@lucide/astro";
+
+const n = mock.nmr, L = mock.labs;
+type Row = { label: string; value: number; unit: string; high: number; max: number; ref: string; source: string; body: string; ticks?: number[] };
+const groups: { title: string; note: string; rows: Row[]; facts: string[] }[] = [
+  { title: "กรดอะมิโนกลุ่ม BCAA", note: "สูงพร้อมกันมักพบร่วมกับภาวะดื้ออินซูลิน", facts: ["BCAA-T2D"], rows: [
+    { label: "Valine", value: n.valine.value, unit: n.valine.unit, high: n.valine.high_above, max: n.valine.high_above * 1.5, ref: n.valine.ref, source: "NMR", body: "เหนือช่วงประชากร" },
+    { label: "Isoleucine", value: n.isoleucine.value, unit: n.isoleucine.unit, high: n.isoleucine.high_above, max: n.isoleucine.high_above * 1.5, ref: n.isoleucine.ref, source: "NMR", body: "เหนือช่วงประชากร" },
+    { label: "Leucine", value: n.leucine.value, unit: n.leucine.unit, high: n.leucine.high_above, max: n.leucine.high_above * 1.5, ref: n.leucine.ref, source: "NMR", body: "เหนือช่วงประชากร" },
+  ]},
+  { title: "ตัวชี้วัดน้ำตาล", note: "อยู่ในช่วงก่อนเบาหวานตามเกณฑ์ ADA", facts: ["ADA-2026-DX"], rows: [
+    { label: "น้ำตาลขณะอดอาหาร", value: L.glucose_mg_dl, unit: "mg/dL", high: 99, max: 140, ref: "ปกติ < 100 · ก่อนเบาหวาน 100–125 · เบาหวาน ≥ 126", source: "แล็บ", body: "ช่วงก่อนเบาหวาน", ticks: [100, 126] },
+    { label: "HbA1c", value: L.hba1c_pct, unit: "%", high: 5.6, max: 7.5, ref: "ปกติ < 5.7 · ก่อนเบาหวาน 5.7–6.4 · เบาหวาน ≥ 6.5", source: "แล็บ", body: "ช่วงก่อนเบาหวาน", ticks: [5.7, 6.5] },
+  ]},
+  { title: "ไขมันเชิงลึก", note: "อนุภาค LDL ขนาดเล็กกับไตรกลีเซอไรด์สูงไปด้วยกัน", facts: ["OTVOS-2011-DISCORDANCE", "METS-HARMONIZED-2009"], rows: [
+    { label: "Small LDL-P", value: n.small_ldl_p.value, unit: n.small_ldl_p.unit, high: n.small_ldl_p.high_above, max: 1300, ref: n.small_ldl_p.ref, source: "NMR", body: "สูง" },
+    { label: "ไตรกลีเซอไรด์", value: L.tg_mg_dl, unit: "mg/dL", high: 149, max: 300, ref: "ปกติ < 150", source: "แล็บ", body: "สูง", ticks: [150] },
+    { label: "HDL-C", value: L.hdl_mg_dl, unit: "mg/dL", high: 999, max: 80, ref: "ผู้ชาย ≥ 40", source: "แล็บ", body: "อยู่ในเกณฑ์", ticks: [40] },
+  ]},
+];
+const out = (r: Row) => r.value > r.high;
+---
+<MainLayout title="Metabolomics" current="metabolomics">
+  <p class="eyebrow">ผลตรวจ NMR และแล็บ</p>
+  <h1 class="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">Metabolic insight</h1>
+
+  {c.insulin_resistance_pattern && (
+    <section class="mt-6 rounded-3xl bg-warn-soft p-5 sm:p-6" aria-labelledby="h-hero">
+      <div class="flex items-start gap-3">
+        <TriangleAlert size={22} class="mt-1 shrink-0 text-warn" aria-hidden="true" />
+        <div>
+          <h2 id="h-hero" class="text-xl sm:text-2xl font-semibold">พบรูปแบบคล้ายภาวะดื้ออินซูลินระยะแรก</h2>
+          <p class="mt-1 text-ink-2">BCAA สูง {c.bcaa_high.length} ตัว และน้ำตาลกับ HbA1c อยู่ในช่วงก่อนเบาหวาน — สัญญาณนี้สัมพันธ์กับความเสี่ยงเบาหวานในอนาคต ปรับได้ด้วยการลดน้ำหนักและออกกำลังกาย</p>
+          <p class="mt-2 text-xs text-ink-3">หลักฐานระดับเบื้องต้น ไม่ใช่การวินิจฉัย · <Sources ids={["BCAA-T2D", "ADA-2026-DX", "ADA-2026-PREV"]} /></p>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="mt-8">
+    <RawToInsightToggle id="metabolomics">
+      <div slot="insight" class="grid gap-3 lg:grid-cols-3">
+        {groups.map((g) => (
+          <article class="card">
+            <h2 class="font-semibold">{g.title}</h2>
+            <p class="mt-1 text-sm text-ink-2">{g.note}</p>
+            <ul class="mt-5 space-y-5">
+              {g.rows.map((r) => (
+                <li>
+                  <div class="flex items-center justify-between gap-2"><span class="text-sm">{r.label}</span><StatusChip tone={out(r) ? "warn" : "good"} label={r.body} /></div>
+                  <div class="mt-2"><Meter value={r.value} max={r.max} tone={out(r) ? "warn" : "good"} ticks={r.ticks ?? [r.high]} label={`${r.label} ${r.body}`} /></div>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-5 text-xs text-ink-3"><Sources ids={g.facts} /></p>
+          </article>
+        ))}
+      </div>
+      <div slot="raw" class="card overflow-x-auto">
+        <table class="w-full text-sm">
+          <caption class="sr-only">ค่าดิบจากแล็บ</caption>
+          <thead><tr class="text-left text-ink-3"><th class="py-2 pr-3 font-medium">รายการ</th><th class="py-2 pr-3 font-medium text-right">ค่า</th><th class="py-2 pr-3 font-medium">หน่วย</th><th class="py-2 pr-3 font-medium">ค่าอ้างอิง</th><th class="py-2 font-medium">ที่มา</th></tr></thead>
+          <tbody class="divide-y divide-line">
+            {groups.flatMap((g) => g.rows).map((r) => (
+              <tr><th scope="row" class="py-3 pr-3 text-left font-medium">{r.label}</th><td class="num py-3 pr-3 text-right">{r.value}{out(r) ? " ▲" : ""}</td><td class="py-3 pr-3 text-ink-2">{r.unit}</td><td class="py-3 pr-3 text-ink-2">{r.ref}</td><td class="py-3 text-ink-3">{r.source}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="mt-4 text-xs text-ink-3">ช่วงอ้างอิง NMR มาจากประชากร UK Biobank และ MESA ยังไม่ใช่ค่าของคนไทย · <Sources ids={["BCAA-T2D", "OTVOS-2011-DISCORDANCE"]} /></p>
+      </div>
+    </RawToInsightToggle>
+  </div>
+</MainLayout>

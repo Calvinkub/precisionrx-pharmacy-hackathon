@@ -1,0 +1,81 @@
+---
+import "../styles/app.css";
+import { Activity, CalendarCheck, Dna, FlaskConical, Gauge, UserRound } from "@lucide/astro";
+
+interface Props { title: string; current: "baseline" | "overview" | "metabolomics" | "molecular" | "action-plan"; description?: string }
+const { title, current, description = "PrecisionRx — ภาพรวมสุขภาพจากผล NMR และ cfDNA (ข้อมูลตัวอย่าง)" } = Astro.props;
+const tabs = [
+  { id: "baseline", href: "/", label: "ข้อมูลพื้นฐาน", short: "พื้นฐาน", icon: UserRound },
+  { id: "overview", href: "/overview/", label: "ภาพรวมความเสี่ยง", short: "ภาพรวม", icon: Gauge },
+  { id: "metabolomics", href: "/metabolomics/", label: "Metabolomics", short: "Metabolic", icon: FlaskConical },
+  { id: "molecular", href: "/molecular/", label: "cfDNA", short: "cfDNA", icon: Dna },
+  { id: "action-plan", href: "/action-plan/", label: "แผนดูแล", short: "แผนดูแล", icon: CalendarCheck },
+];
+---
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} · PrecisionRx</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23151515'/><circle cx='16' cy='16' r='5' fill='%23f6f6f4'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script is:inline>try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-ink focus:px-4 focus:py-2 focus:text-bg">ข้ามไปยังเนื้อหาหลัก</a>
+    <header class="no-print sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md">
+      <div class="mx-auto flex max-w-5xl items-center gap-3 px-4 sm:px-6 h-16">
+        <a href="/" class="flex items-center gap-2 font-semibold text-ink no-underline shrink-0">
+          <Activity size={20} aria-hidden="true" /> PrecisionRx
+        </a>
+        <nav aria-label="เมนูหลัก" class="ml-auto hidden md:block">
+          <ul class="flex gap-1">
+            {tabs.map((t) => (
+              <li>
+                <a href={t.href} aria-current={current === t.id ? "page" : undefined}
+                   class:list={["flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-sm no-underline transition-colors",
+                     current === t.id ? "bg-ink text-bg" : "text-ink-2 hover:bg-subtle hover:text-ink"]}>
+                  <t.icon size={16} aria-hidden="true" />{t.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <button id="theme-toggle" type="button" class="ml-auto md:ml-0 shrink-0 grid h-10 w-10 place-items-center rounded-full text-ink-3 hover:bg-subtle hover:text-ink" aria-label="สลับโหมดสว่างหรือมืด">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </header>
+    <!-- mobile: bottom tab bar -->
+    <nav aria-label="เมนูหลัก (มือถือ)" class="no-print md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
+      <ul class="grid grid-cols-5">
+        {tabs.map((t) => (
+          <li>
+            <a href={t.href} aria-current={current === t.id ? "page" : undefined}
+               class:list={["flex flex-col items-center gap-0.5 py-2 text-[11px] no-underline", current === t.id ? "text-ink font-semibold" : "text-ink-3"]}>
+              <t.icon size={22} aria-hidden="true" />{t.short}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <main id="main" tabindex="-1" class="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-10 pb-28 md:pb-10 outline-none">
+      <slot />
+    </main>
+    <footer class="mx-auto max-w-5xl px-4 sm:px-6 pb-24 md:pb-12">
+      <p class="border-t border-line pt-6 text-xs text-ink-3">ข้อมูลตัวอย่างเพื่อสาธิต ไม่ใช่การวินิจฉัย · ความเสี่ยงคำนวณด้วยสูตรที่ validate แล้ว · ปรึกษาแพทย์หรือเภสัชกรก่อนปรับยาหรือพฤติกรรม</p>
+    </footer>
+    <script>
+      document.getElementById("theme-toggle")?.addEventListener("click", () => {
+        const root = document.documentElement;
+        const dark = root.dataset.theme === "dark" || (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+        root.dataset.theme = dark ? "light" : "dark";
+        try { localStorage.setItem("theme", root.dataset.theme); } catch { /* storage unavailable */ }
+      });
+    </script>
+  </body>
+</html>

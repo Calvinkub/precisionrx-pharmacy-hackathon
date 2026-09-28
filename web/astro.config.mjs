@@ -1,16 +1,15 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import svelte from "@astrojs/svelte";
+import tailwindcss from "@tailwindcss/vite";
 
 const API = "http://localhost:8765";
 
-// Static build served by FastAPI (app/main.py). In dev, API calls are proxied to the Python server.
+// Static build served by FastAPI (app/main.py) or Vercel. Risk numbers are precomputed from the
+// Python engines into src/data/computed.json (uv run python -m scripts.build_consumer_data).
 export default defineConfig({
-  integrations: [svelte()],
   output: "static",
   vite: {
-    server: {
-      proxy: { "/api": API, "/cds-services": API },
-    },
+    plugins: [tailwindcss()],
+    server: { proxy: { "/api": API, "/cds-services": API } },
   },
 });

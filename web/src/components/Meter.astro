@@ -1,0 +1,11 @@
+---
+// Horizontal level meter. value/max in the score's own units; bands = category boundaries.
+interface Props { value: number; max: number; tone: "good" | "warn" | "bad" | "info"; label?: string; ticks?: number[] }
+const { value, max, tone, label, ticks = [] } = Astro.props;
+const pct = Math.max(2, Math.min(100, (value / max) * 100));
+const fill = { good: "bg-good", warn: "bg-warn-dot", bad: "bg-bad-dot", info: "bg-info" }[tone];
+---
+<div class="relative h-2.5 rounded-full bg-band" role="img" aria-label={label ?? `${value} จาก ${max}`}>
+  <div class:list={["absolute inset-y-0 left-0 rounded-full", fill]} style={`width:${pct}%`}></div>
+  {ticks.map((t) => <span class="absolute -top-1 h-4.5 w-px bg-ink-3/60" style={`left:${(t / max) * 100}%`} aria-hidden="true"></span>)}
+</div>

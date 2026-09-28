@@ -16,7 +16,8 @@ uv run pytest                               # engine + API + CDS Hooks tests + e
 uv run python -m eval.run_eval --sheet      # eval report → eval/report.md
 ```
 
-Pages: `/` overview · `/ncd/?patient=P002` doctor NCD screening (NMR + cfDNA + EHR, LangGraph agents, exact XAI, care plan → FHIR) · `/dashboard/?case=1&visit=2` NMR results + medication findings · `/medications/` regular meds pulled from the dispensing record and how each shifts NMR markers · `/care/` risk + self-care summary (printable) · `/cfdna/?case=o1` oncology ctDNA + germline PGx + TKI interactions.
+Pages (consumer app, one sample person `web/src/data/mockPatient.json`): `/` baseline profile · `/overview/` risk overview (MetS x/5, Thai diabetes score, Thai CV Risk, FLI) · `/metabolomics/` NMR insight ↔ raw toggle · `/molecular/` cfDNA (**labelled mock values**) · `/action-plan/` checklist, PDF brief, .ics calendar.
+Risk numbers are computed by the Python engines: after changing the profile run `uv run python -m scripts.build_consumer_data` (writes `web/src/data/computed.json`; a test fails if it drifts). The doctor/pharmacist APIs (`/api/v2/*`, `/api/cfdna/*`, `/api/oncology/*`, CDS Hooks) remain; their old pages were removed.
 UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → http://localhost:4321 (proxies `/api` and `/cds-services` to port 8765). Type/a11y check: `pnpm check`.
 
 | Path | Content |
@@ -26,7 +27,7 @@ UI dev with hot reload: run the Python server, then `cd web && pnpm dev` → htt
 | `app/engines/dispensing.py`, `drug_effects.py` | Regular meds + PDC from refill history; which NMR markers each drug moves (`evidence/drug_effects.yaml`) |
 | `app/engines/oncology.py` | cfDNA module: CHIP / possible-germline flags, ctDNA-negative caveat, T790M → osimertinib, TKI + PPI, DPYD / UGT1A1 |
 | `app/evidence/` | `facts.yaml` (every output cites a fact id + source), `analytes.yaml` (NMR catalog: reference band, CVa, CVi) |
-| `web/` | Astro 7 + Svelte 5 UI (`src/pages`, `src/components`, `src/styles/global.css` tokens). `public/sample_panel.csv` = upload example |
+| `web/` | Astro 7 + Tailwind v4 + lucide (`src/pages`, `src/components`, `src/layouts/MainLayout.astro`, `src/styles/app.css` tokens). `public/sample_panel.csv` = upload example |
 | `data/synthetic/` | 3 cardiometabolic cases (with dispensing history) + `oncology/` 3 cfDNA cases |
 | `eval/` | 45-case gold-standard eval set, runner, report, pharmacist review sheet |
 | `docs/` | Research notes behind the numbers (verify before pitching) |

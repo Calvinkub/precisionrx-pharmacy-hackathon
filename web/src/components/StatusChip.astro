@@ -1,0 +1,10 @@
+---
+// Status is always dot + word (never colour alone).
+interface Props { tone: "good" | "warn" | "bad" | "info" | "neutral"; label: string }
+const { tone, label } = Astro.props;
+const bg = { good: "bg-good-soft", warn: "bg-warn-soft", bad: "bg-bad-soft", info: "bg-info-soft", neutral: "bg-subtle" }[tone];
+const dot = { good: "bg-good", warn: "bg-warn-dot", bad: "bg-bad-dot", info: "bg-info", neutral: "bg-ink-3" }[tone];
+---
+<span class:list={["inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium text-ink whitespace-nowrap", bg]}>
+  <span class:list={["h-2 w-2 rounded-full", dot]} aria-hidden="true"></span>{label}
+</span>

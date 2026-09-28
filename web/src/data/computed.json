@@ -1,0 +1,262 @@
+{
+ "bmi": 26.8,
+ "prediabetes": true,
+ "risks": {
+  "diabetes": {
+   "method": "Thai Diabetes Risk Score",
+   "value": 12,
+   "display": "12/17",
+   "category": "very_high",
+   "label": "สูงมาก",
+   "band": "โอกาสเป็นเบาหวานใน 12 ปี > 20%",
+   "contributions": [
+    {
+     "label": "อายุ",
+     "points": 1
+    },
+    {
+     "label": "เพศชาย",
+     "points": 2
+    },
+    {
+     "label": "ดัชนีมวลกาย",
+     "points": 3
+    },
+    {
+     "label": "รอบเอว",
+     "points": 2
+    },
+    {
+     "label": "พ่อแม่/พี่น้องเป็นเบาหวาน",
+     "points": 4
+    }
+   ],
+   "fact_ids": [
+    "TDRS-2006"
+   ]
+  },
+  "cvd": {
+   "method": "Thai CV Risk Score (สูตรไม่ใช้ผลเลือด (รอบเอว/ส่วนสูง))",
+   "value": 5.09,
+   "display": "5.1%",
+   "category": "low",
+   "label": "ต่ำ",
+   "fact_ids": [
+    "TCVRS-2021"
+   ]
+  },
+  "liver": {
+   "method": "Fatty Liver Index + FIB-4",
+   "fli": 66.1,
+   "category": "moderate",
+   "label": "มีไขมันพอกตับ",
+   "notes": [
+    "FLI 66: ไขมันพอกตับน่าจะมี",
+    "FIB-4 0.89: พังผืดน้อย"
+   ],
+   "fact_ids": [
+    "FLI-2006",
+    "FIB4-MASLD"
+   ]
+  },
+  "mets": {
+   "met": 4,
+   "category": "present",
+   "label": "เข้าเกณฑ์",
+   "criteria": [
+    {
+     "label": "รอบเอว",
+     "value": 92,
+     "unit": "cm",
+     "met": true,
+     "rule": "≥ 90 ซม. (เกณฑ์เอเชีย)"
+    },
+    {
+     "label": "ไตรกลีเซอไรด์",
+     "value": 185,
+     "unit": "mg/dL",
+     "met": true,
+     "rule": "≥ 150 mg/dL หรือใช้ยา"
+    },
+    {
+     "label": "HDL-C",
+     "value": 42,
+     "unit": "mg/dL",
+     "met": false,
+     "rule": "< 40 mg/dL"
+    },
+    {
+     "label": "ความดัน",
+     "value": "132/85",
+     "unit": "mmHg",
+     "met": true,
+     "rule": "≥ 130/85 หรือใช้ยาลดความดัน"
+    },
+    {
+     "label": "น้ำตาลขณะอดอาหาร",
+     "value": 108,
+     "unit": "mg/dL",
+     "met": true,
+     "rule": "≥ 100 mg/dL หรือใช้ยา"
+    }
+   ],
+   "fact_ids": [
+    "METS-HARMONIZED-2009"
+   ]
+  }
+ },
+ "nmr_high": [
+  "small_ldl_p",
+  "valine",
+  "isoleucine",
+  "leucine"
+ ],
+ "insulin_resistance_pattern": true,
+ "bcaa_high": [
+  "valine",
+  "isoleucine",
+  "leucine"
+ ],
+ "facts": {
+  "ADA-2026-DX": {
+   "text": "Prediabetes: FPG 5.6–6.9 mmol/L (100–125 mg/dL); diabetes: FPG ≥7.0 mmol/L (≥126 mg/dL)",
+   "source": "ADA Standards of Care 2026, Section 2",
+   "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+   "level": "guideline",
+   "verified": true
+  },
+  "ADA-2026-PREV": {
+   "text": "Prediabetes: weight reduction of at least 5–7% and ≥150 min/week moderate-intensity physical activity",
+   "source": "ADA Standards of Care 2026, Section 3 (rec. 3.3)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12690170/",
+   "level": "guideline",
+   "verified": true
+  },
+  "BCAA-T2D": {
+   "text": "Branched-chain amino acids (NMR) predicted type 2 diabetes, OR 1.31–1.33 per SD after adjusting for BMI and fasting glucose (young Finns, n=11,896)",
+   "source": "Ahola-Olli 2019 Diabetologia",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/31584131/",
+   "level": "emerging",
+   "verified": true
+  },
+  "CFDNA-FRAGMENTOMICS-SEQ": {
+   "text": "Validated fragmentomics cancer detection (DELFI) uses low-coverage whole-genome sequencing (1–2×), not capillary electrophoresis. A Thai CE-feature + AFP machine-learning study for liver-cancer surveillance (n=69 external validation, AUC 0.93) is single-centre research without regulatory clearance; no validated CE-only multi-cancer screening method was found",
+   "source": "Cristiano S et al. Nature 2019; CEliver, Communications Medicine 2026",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6774252/",
+   "level": "emerging",
+   "verified": true
+  },
+  "ESC-2021-DIET": {
+   "text": "Adopting a Mediterranean or similar diet is recommended to lower the risk of cardiovascular disease (more vegetables, fruit, whole grains, legumes, nuts, fish and olive oil; less red/processed meat and sugar)",
+   "source": "2021 ESC Guidelines on cardiovascular disease prevention in clinical practice",
+   "url": "https://academic.oup.com/eurheartj/article/42/34/3227/6358713",
+   "level": "guideline",
+   "verified": false
+  },
+  "FIB4-MASLD": {
+   "text": "FIB-4 = age × AST / (platelets [10^9/L] × √ALT). Below 1.3 low risk of advanced fibrosis (re-assess every 1–3 years); 1.3–2.67 intermediate; above 2.67 high; in people older than 65 the lower cut-off is 2.0",
+   "source": "EASL-EASD-EASO Clinical Practice Guidelines on MASLD 2024",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11299976/",
+   "level": "guideline",
+   "verified": true
+  },
+  "FLI-2006": {
+   "text": "Fatty Liver Index = e^y/(1+e^y) × 100, y = 0.953·ln(TG mg/dL) + 0.139·BMI + 0.718·ln(GGT U/L) + 0.053·waist(cm) − 15.745; FLI <30 rules out (LR− 0.2), ≥60 rules in fatty liver (LR+ 4.3). Developed in an Italian cohort",
+   "source": "Bedogni G et al. BMC Gastroenterology 2006;6:33",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1636651/",
+   "level": "validated_score",
+   "verified": true
+  },
+  "METS-HARMONIZED-2009": {
+   "text": "Harmonized metabolic syndrome: ≥3 of 5 — waist (Asian ≥90 cm men / ≥80 cm women), TG ≥150 mg/dL or treatment, HDL <40 (men) / <50 (women) mg/dL or treatment, BP ≥130/85 or treatment, fasting glucose ≥100 mg/dL or treatment",
+   "source": "Alberti KGMM et al. Circulation 2009;120:1640 (thresholds confirmed from abstract and secondary sources; original Table 1 not opened)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/19805654/",
+   "level": "guideline",
+   "verified": false
+  },
+  "OTVOS-2011-DISCORDANCE": {
+   "text": "MESA (n=6,814): when LDL-C and LDL-P are discordant, only LDL-P predicted CVD (HR 1.45 per SD vs 1.07)",
+   "source": "Otvos JD et al. J Clin Lipidol 2011",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/21392724/",
+   "level": "emerging",
+   "verified": true
+  },
+  "RCPT-2024-DIET": {
+   "text": "High LDL-C: saturated fat <7% of daily energy, replace with unsaturated oils, avoid trans fat, more fibre",
+   "source": "RCPT dyslipidemia guideline 2024",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11650434/",
+   "level": "guideline",
+   "verified": true
+  },
+  "RCPT-2024-FOLLOWUP": {
+   "text": "Follow-up lipid test within 4–12 weeks after starting a statin to evaluate effectiveness and assess adherence",
+   "source": "RCPT dyslipidemia guideline 2024",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11650434/",
+   "level": "guideline",
+   "verified": true
+  },
+  "RCPT-2024-SMOKING": {
+   "text": "Quit smoking or refer to a smoking cessation clinic",
+   "source": "RCPT dyslipidemia guideline 2024; Thai Hypertension guideline 2024",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11650434/",
+   "level": "guideline",
+   "verified": true
+  },
+  "RCPT-2024-TG": {
+   "text": "High TG: abstain from alcohol, reduce carbohydrate, sugar <10% of energy",
+   "source": "RCPT dyslipidemia guideline 2024",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11650434/",
+   "level": "guideline",
+   "verified": true
+  },
+  "TCVRS-2021": {
+   "text": "Thai CV Risk Score 2.5 (Rama-EGAT): 10-year CVD risk; <10% low, 10–<20% moderate, 20–30% high, >30% very high",
+   "source": "Ramathibodi Thai CV risk calculator (formular.js, 2021)",
+   "url": "https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/tcvrs_en.html",
+   "level": "validated_score",
+   "verified": true
+  },
+  "TDRS-2006": {
+   "text": "Thai diabetes risk score (0–17). ≥6 = high risk, add blood glucose test (sens 77%, spec 60%, AUC 0.74)",
+   "source": "Aekplakorn W et al. Diabetes Care 2006;29:1872",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/16873795/",
+   "level": "validated_score",
+   "verified": true
+  },
+  "THAI-HT-2024-NA": {
+   "text": "Sodium no more than 2 g/day (≈1 tsp salt or 3 tsp fish sauce/soy sauce)",
+   "source": "Thai Hypertension Society guideline 2024",
+   "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12919385/",
+   "level": "guideline",
+   "verified": true
+  },
+  "THAI-OBESITY": {
+   "text": "Thai normal BMI 18.5–22.9; obesity BMI ≥25 and/or waist ≥90 cm (men) / ≥80 cm (women) or waist > height/2",
+   "source": "Thai Hypertension guideline 2024; Diabetes Association of Thailand",
+   "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12919385/",
+   "level": "guideline",
+   "verified": true
+  },
+  "WHO-2005-PREVENTABLE": {
+   "text": "If the major risk factors for chronic disease were eliminated, at least 80% of heart disease, stroke and type 2 diabetes would be prevented; and 40% of cancer would be prevented",
+   "source": "WHO 2005, Preventing chronic diseases: a vital investment (wording from secondary copies; WHO PDF not opened)",
+   "url": "https://www.who.int/publications/i/item/9241563001",
+   "level": "guideline",
+   "verified": false
+  },
+  "WHO-PA-2020": {
+   "text": "Adults: 150–300 min/week moderate or 75–150 min/week vigorous aerobic activity + muscle strengthening ≥2 days/week",
+   "source": "WHO guidelines on physical activity and sedentary behaviour 2020",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33239350/",
+   "level": "guideline",
+   "verified": true
+  },
+  "WHO-SEDENTARY-2020": {
+   "text": "Adults should limit the amount of time spent being sedentary; replacing sedentary time with physical activity of any intensity (including light intensity) provides health benefits",
+   "source": "WHO guidelines on physical activity and sedentary behaviour 2020",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33239350/",
+   "level": "guideline",
+   "verified": false
+  }
+ }
+}

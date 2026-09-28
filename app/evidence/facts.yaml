@@ -387,4 +387,16 @@ facts:
     url: "https://research.nightingalehealth.com/products/metabolomics"
     level: guideline
     verified: true
+  ESC-2021-DIET:
+    text: "Adopting a Mediterranean or similar diet is recommended to lower the risk of cardiovascular disease (more vegetables, fruit, whole grains, legumes, nuts, fish and olive oil; less red/processed meat and sugar)"
+    source: "2021 ESC Guidelines on cardiovascular disease prevention in clinical practice"
+    url: "https://academic.oup.com/eurheartj/article/42/34/3227/6358713"
+    level: guideline
+    verified: false
+  WHO-SEDENTARY-2020:
+    text: "Adults should limit the amount of time spent being sedentary; replacing sedentary time with physical activity of any intensity (including light intensity) provides health benefits"
+    source: "WHO guidelines on physical activity and sedentary behaviour 2020"
+    url: "https://pubmed.ncbi.nlm.nih.gov/33239350/"
+    level: guideline
+    verified: false
 

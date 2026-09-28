@@ -12,15 +12,15 @@ Status 2026-09-29. Synthetic data only. Every number the system shows comes from
 | RAG | `app/agents/rag.py` | char-3-gram TF-IDF vectors + cosine over the verified evidence store (works for Thai text) | Corpus is our verified facts, not full guideline PDFs (licensing + every chunk must be citable). No external embedding service → deterministic. |
 | **4 Risk analytics & XAI** | `app/engines/calculators.py` | 5 diseases: CVD (Thai CV Risk), T2D (Thai Diabetes Score), MetS (harmonized 2009, Asian waist), CKD (CKD-EPI 2021 + KDIGO 2024 heat map), MASLD (FLI + FIB-4) | **No XGBoost/SHAP**: there is no outcome data to train or calibrate on, so a trained model would be fabricated. Instead the explanations are *exact*: log-hazard terms vs the calculator's reference person (= Shapley values of a linear predictor against a fixed baseline), points, criteria, logit terms. Uncertainty = Monte Carlo over within-person variation (EFLM CVi) of lab inputs. |
 | Audit trail | `Contribution.source`, `ToolCall`, `retrieved_evidence` | each contribution points to document + locator (e.g. `lab_2026-05-06.hl7 · line 9 OBX|4`); each tool call and evidence hit is logged in state | |
-| **5 Doctor UI** | `web/src/components/ncd/` (`/ncd/`) | risk vector, exact waterfall, metabolic radar, cfDNA electropherogram + QC, agent trace, care-plan editor → approve → FHIR `CarePlan` + `ServiceRequest` bundle (`/api/v2/careplan/export`) | cfDNA shows **sample QC** + a research-only short-fragment number. It does **not** raise a cancer alert: CE fragment-size profiles are not a validated cancer screen (validated fragmentomics uses sequencing — `CFDNA-FRAGMENTOMICS-SEQ`). |
+| **5 Doctor UI** | API only (`/api/v2/*`; the `/ncd/` page was replaced by the consumer app, 28 Sep 2026) | risk vector, exact waterfall, metabolic radar, cfDNA electropherogram + QC, agent trace, care-plan editor → approve → FHIR `CarePlan` + `ServiceRequest` bundle (`/api/v2/careplan/export`) | cfDNA shows **sample QC** + a research-only short-fragment number. It does **not** raise a cancer alert: CE fragment-size profiles are not a validated cancer screen (validated fragmentomics uses sequencing — `CFDNA-FRAGMENTOMICS-SEQ`). |
 | API | `app/main.py` | REST `/api/v2/patients`, `/run`, `/tools`, `/careplan/export`; WebSocket `/ws/v2/patients/{id}/run` streams one event per agent node | WebSocket is for local/dev; serverless hosts (Vercel) use the REST route — the UI falls back automatically. |
 
-Pharmacist pages (`/dashboard/`, `/medications/`, `/care/`, `/cfdna/`) are unchanged and share the same evidence store.
+The web UI is now a 5-page consumer app (`/`, `/overview/`, `/metabolomics/`, `/molecular/`, `/action-plan/`) whose risk numbers come from these same engines via `scripts/build_consumer_data.py`; cfDNA values there are a labelled mock.
 
 ## Run
 ```bash
 uv run python -m scripts.make_synthetic_patients   # regenerate P001/P002 multi-source folders
-uv run uvicorn app.main:app --port 8765             # http://localhost:8765/ncd/
+uv run uvicorn app.main:app --port 8765             # http://localhost:8765/  (agent run: POST /api/v2/patients/P002/run)
 ANTHROPIC_API_KEY=... uv run uvicorn app.main:app --port 8765   # enables Claude planner + summarizer
 ```
 

@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Design tokens (light + dark). Tailwind utilities read them via @theme inline. */
+:root {
+  color-scheme: light;
+  --bg: #f6f6f4; --card: #ffffff; --subtle: #f0f0ed; --ink: #151515; --ink-2: #4a4a47; --ink-3: #62625e;
+  --line: #e5e4e0; --band: #e8e7e2; --accent: #0d5c55; --accent-soft: #e3efec;
+  --good: #1f9d55; --good-soft: #e6f4ec; --warn: #b7791f; --warn-dot: #e0a100; --warn-soft: #fbf3e2;
+  --bad: #c2410c; --bad-dot: #e0703f; --bad-soft: #fcece4; --info: #2a78d6; --info-soft: #e8f0fb;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #0f0f0f; --card: #191919; --subtle: #222221; --ink: #f4f4f2; --ink-2: #c6c5c0; --ink-3: #9d9c97;
+    --line: #2b2b2a; --band: #2e2e2c; --accent: #5fc4b8; --accent-soft: #153330;
+    --good: #4ade80; --good-soft: #14301f; --warn: #f5c451; --warn-dot: #e0a100; --warn-soft: #2e2511;
+    --bad: #fb923c; --bad-dot: #e0703f; --bad-soft: #36201a; --info: #6da7ec; --info-soft: #172a44;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f0f0f; --card: #191919; --subtle: #222221; --ink: #f4f4f2; --ink-2: #c6c5c0; --ink-3: #9d9c97;
+  --line: #2b2b2a; --band: #2e2e2c; --accent: #5fc4b8; --accent-soft: #153330;
+  --good: #4ade80; --good-soft: #14301f; --warn: #f5c451; --warn-dot: #e0a100; --warn-soft: #2e2511;
+  --bad: #fb923c; --bad-dot: #e0703f; --bad-soft: #36201a; --info: #6da7ec; --info-soft: #172a44;
+}
+
+@theme inline {
+  --font-sans: "Anuphan", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-bg: var(--bg); --color-card: var(--card); --color-subtle: var(--subtle);
+  --color-ink: var(--ink); --color-ink-2: var(--ink-2); --color-ink-3: var(--ink-3);
+  --color-line: var(--line); --color-band: var(--band); --color-accent: var(--accent); --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good); --color-good-soft: var(--good-soft); --color-warn: var(--warn); --color-warn-dot: var(--warn-dot); --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad); --color-bad-dot: var(--bad-dot); --color-bad-soft: var(--bad-soft); --color-info: var(--info); --color-info-soft: var(--info-soft);
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-bg text-ink font-sans antialiased; font-size: 16px; line-height: 1.6; }
+  :focus-visible { outline: 2px solid var(--info); outline-offset: 3px; border-radius: 6px; }
+  [popover] { inset: 0; margin: auto; height: fit-content; width: min(440px, calc(100vw - 32px)); border: 1px solid var(--line);
+    border-radius: 18px; background: var(--card); color: var(--ink); padding: 22px 24px; box-shadow: 0 24px 60px rgba(0,0,0,.18); }
+  [popover]::backdrop { background: rgba(0, 0, 0, .25); }
+}
+@layer components {
+  .card { @apply bg-card border border-line rounded-3xl p-5 sm:p-6; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.08em] text-ink-3; }
+  .num { font-variant-numeric: tabular-nums; }
+  .btn { @apply inline-flex items-center justify-center gap-2 min-h-11 px-5 rounded-full border border-line font-medium text-ink bg-card hover:bg-subtle transition-colors cursor-pointer; }
+  .btn-primary { @apply bg-ink text-bg border-ink hover:bg-ink hover:opacity-90; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .card { break-inside: avoid; border-color: #ccc; }
+}

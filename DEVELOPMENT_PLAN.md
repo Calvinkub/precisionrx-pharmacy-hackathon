@@ -26,7 +26,7 @@
     + เช็ก adherence ก่อนสรุปว่ายาไม่ได้ผล
 ```
 
-Stack ที่ใช้: Python + FastAPI (engines + API) · UI = Astro 7 + Svelte 5 islands (`web/`) · pytest
+Stack ที่ใช้: Python + FastAPI (engines + API) · UI = Astro 7 + Tailwind v4 (`web/`, 5 หน้าแบบผู้ใช้ทั่วไป) · pytest
 
 ### สถานะ (28 ก.ย. 2026)
 
@@ -48,7 +48,8 @@ Stack ที่ใช้: Python + FastAPI (engines + API) · UI = Astro 7 + Sve
 | หน้ายาที่ใช้ประจำ: ดึงจากประวัติรับยา, PDC อัตโนมัติ, ยาแต่ละตัวเปลี่ยนค่า NMR อะไร และติดป้ายในผล NMR | ✅ `/medications/` |
 | หน้าความเสี่ยงและการดูแลตัวเอง (พิมพ์ได้) + นัดติดตาม | ✅ `/care/` |
 | Eval set 46 เคส + harness + review sheet | ✅ 46/46, omission 0, false flag 0, alert −71% (`eval/`) — รอเภสัชกรตรวจเฉลย |
-| Oncology cfDNA module (CHIP, germline, ctDNA-negative, T790M, TKI+PPI, DPYD, UGT1A1) — ถ้อยคำตรวจกับฉลาก/CPIC แล้ว | ✅ `/cfdna/` 3 เคส |
+| Oncology cfDNA module (CHIP, germline, ctDNA-negative, T790M, TKI+PPI, DPYD, UGT1A1) — ถ้อยคำตรวจกับฉลาก/CPIC แล้ว | ✅ API `/api/oncology/*` 3 เคส |
+| UI ผู้ใช้ทั่วไป 5 หน้า (ข้อมูลพื้นฐาน · ภาพรวมความเสี่ยง · Metabolomics · cfDNA mock · แผนดูแล) แทนหน้าเดิมทั้งหมด; ความเสี่ยงคำนวณจริงจาก engine, axe 0 violation light/dark/mobile | ✅ (28 ก.ย. 2026) — หน้าเดิม `/dashboard/` `/medications/` `/care/` `/cfdna/` `/ncd/` ถูกแทนแล้ว, API ยังอยู่ |
 | LLM summarizer + verifier | ⏳ ยังไม่ทำ |
 
 **ข้อควรระวังที่ต้องพูดบนเวที:** ช่วงอ้างอิง NMR = UK Biobank P10–P90 (ไม่ใช่คนไทย ไม่ใช่ค่าทางคลินิก) · หลักฐาน NMR → โรค เป็นระดับ association · ค่า CVi ของ LDL-P/BCAA ยังหาไม่พบ · clopidogrel rule ใช้กับ ACS/PCI (ระบบยังไม่รู้ข้อบ่งใช้ — แสดงคำแนะนำแยกตามข้อบ่งใช้ในข้อความ) · ตัวเลขอ้างอิงทั้งหมดอยู่ใน `docs/`
