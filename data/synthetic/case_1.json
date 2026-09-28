@@ -1,0 +1,107 @@
+{
+ "id": "1",
+ "label": "เคส 1 · หญิง 52 ปี · เริ่ม statin (SLCO1B1)",
+ "story": "ไขมันสูง ก่อนเบาหวาน เริ่ม simvastatin หลังตรวจครั้งแรก ผล PGx มีอยู่แล้วแต่ไม่มีใครใช้",
+ "profile": {
+  "age": 52,
+  "sex": "female",
+  "sbp": 138,
+  "weight_kg": 67,
+  "height_cm": 155,
+  "waist_cm": 88,
+  "smoker": false,
+  "diabetes": false,
+  "hypertension": false,
+  "family_history_dm": true,
+  "alcohol_drinks_per_day": 0,
+  "activity_min_week": 30
+ },
+ "meds": [
+  {
+   "drug": "simvastatin",
+   "dose_mg": 40,
+   "pdc_pct": 92,
+   "start_visit": 1
+  },
+  {
+   "drug": "omeprazole",
+   "dose_mg": 20,
+   "pdc_pct": 85,
+   "start_visit": null
+  }
+ ],
+ "pgx": {
+  "SLCO1B1": "decreased function",
+  "CYP2C19": "ultrarapid metabolizer"
+ },
+ "visits": [
+  {
+   "date": "2026-03-10",
+   "label": "ก่อนเริ่มยา",
+   "values": {
+    "lactate": 1.4,
+    "citrate": 0.068,
+    "creatinine": 62,
+    "albumin": 41,
+    "acetone": 13,
+    "bohb": 55,
+    "leucine": 135,
+    "isoleucine": 70,
+    "valine": 300,
+    "phenylalanine": 48,
+    "dha": 0.14,
+    "pufa_mufa": 1.3,
+    "apob": 1.38,
+    "apoa1": 1.4,
+    "ldl_p": 1850,
+    "s_ldl_p": 245,
+    "vldl_p": 215,
+    "hdl_p": 14.1,
+    "total_c": 6.6,
+    "ldl_c": 4.4,
+    "hdl_c": 1.15,
+    "non_hdl_c": 5.45,
+    "remnant_c": 1.05,
+    "tg": 2.3,
+    "glyca": 1.04,
+    "glucose": 5.9,
+    "bcaa": 505,
+    "omega3_pct": 2.5
+   }
+  },
+  {
+   "date": "2026-06-12",
+   "label": "simvastatin 40 mg · 3 เดือน",
+   "values": {
+    "lactate": 1.4,
+    "citrate": 0.068,
+    "creatinine": 62,
+    "albumin": 41,
+    "acetone": 13,
+    "bohb": 55,
+    "leucine": 133,
+    "isoleucine": 69,
+    "valine": 296,
+    "phenylalanine": 48,
+    "dha": 0.15,
+    "pufa_mufa": 1.35,
+    "apob": 1.04,
+    "apoa1": 1.43,
+    "ldl_p": 1420,
+    "s_ldl_p": 205,
+    "vldl_p": 196,
+    "hdl_p": 14.6,
+    "total_c": 4.55,
+    "ldl_c": 2.5,
+    "hdl_c": 1.2,
+    "non_hdl_c": 3.35,
+    "remnant_c": 0.85,
+    "tg": 1.92,
+    "glyca": 0.99,
+    "glucose": 6.0,
+    "bcaa": 498,
+    "omega3_pct": 2.6
+   }
+  }
+ ]
+}

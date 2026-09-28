@@ -1,0 +1,42 @@
+# NMR analyte catalog (Nightingale-style panel). Sources: docs/research_nmr_reference.md
+# ref_low/ref_high = UK Biobank population P10–P90 (NOT a Thai reference interval, NOT a clinical cutoff)
+#   unless ref_source says otherwise.
+# cva = Nightingale technical CV (%); cvi = EFLM within-subject CV (%), null = not found -> no RCV verdict.
+# better = which direction is favourable for trend verdicts (null = no preferred direction).
+analytes:
+  # --- Lipoproteins / apolipoproteins
+  - {id: apob, abbr: ApoB, name: Apolipoprotein B, group: Apolipoproteins, unit: g/L, ref_low: 0.61, ref_high: 1.13, cva: 3.0, cvi: 6.2, better: lower}
+  - {id: apoa1, abbr: ApoA1, name: Apolipoprotein A1, group: Apolipoproteins, unit: g/L, ref_low: 1.18, ref_high: 1.81, cva: 2.9, cvi: 4.7, better: higher}
+  - {id: ldl_p, abbr: LDL-P, name: LDL particles, group: Lipoprotein particles, unit: nmol/L, ref_low: 866, ref_high: 1596, cva: 3.1, cvi: null, better: lower, note: "Nightingale scale — do not apply Labcorp cutpoints"}
+  - {id: s_ldl_p, abbr: S-LDL-P, name: Small LDL particles, group: Lipoprotein particles, unit: nmol/L, ref_low: 125, ref_high: 222, cva: 3.2, cvi: null, better: lower}
+  - {id: vldl_p, abbr: VLDL-P, name: VLDL particles, group: Lipoprotein particles, unit: nmol/L, ref_low: 92.9, ref_high: 208, cva: 3.5, cvi: null, better: lower}
+  - {id: hdl_p, abbr: HDL-P, name: HDL particles, group: Lipoprotein particles, unit: µmol/L, ref_low: 12.5, ref_high: 18.7, cva: 3.6, cvi: null, better: higher}
+  # --- Cholesterol & triglycerides
+  - {id: total_c, abbr: Total-C, name: Total cholesterol, group: Lipids, unit: mmol/L, ref_low: 3.50, ref_high: 5.92, cva: 3.6, cvi: 5.3, better: lower}
+  - {id: ldl_c, abbr: LDL-C, name: Clinical LDL cholesterol, group: Lipids, unit: mmol/L, ref_low: 1.68, ref_high: 3.55, cva: 4.8, cvi: 7.4, better: lower}
+  - {id: hdl_c, abbr: HDL-C, name: HDL cholesterol, group: Lipids, unit: mmol/L, ref_low: 0.95, ref_high: 1.80, cva: 3.4, cvi: 5.7, better: higher}
+  - {id: non_hdl_c, abbr: non-HDL-C, name: Non-HDL cholesterol, group: Lipids, unit: mmol/L, ref_low: 2.30, ref_high: 4.47, cva: 3.9, cvi: null, better: lower}
+  - {id: remnant_c, abbr: Remnant-C, name: Remnant cholesterol, group: Lipids, unit: mmol/L, ref_low: 1.06, ref_high: 2.13, cva: 3.7, cvi: null, better: lower}
+  - {id: tg, abbr: TG, name: Total triglycerides, group: Lipids, unit: mmol/L, ref_low: 0.69, ref_high: 2.17, cva: 3.6, cvi: 19.8, better: lower}
+  # --- Inflammation
+  - {id: glyca, abbr: GlycA, name: Glycoprotein acetyls, group: Inflammation, unit: mmol/L, ref_low: 0.67, ref_high: 0.98, cva: 3.4, cvi: 4.3, better: lower, cvi_source: "Otvos 2015 (n=23, weekly x5)"}
+  # --- Glycolysis
+  - {id: glucose, abbr: Glc, name: Glucose (fasting), group: Glycolysis, unit: mmol/L, ref_low: 3.9, ref_high: 5.5, cva: 4.4, cvi: 4.7, better: lower, ref_source: "ADA: normal FPG < 5.6 mmol/L (UK Biobank NMR glucose is non-fasting and not clinical)"}
+  - {id: lactate, abbr: Lac, name: Lactate, group: Glycolysis, unit: mmol/L, ref_low: null, ref_high: null, cva: 5.2, cvi: null, better: null, note: "No usable clinical reference (UK Biobank sample handling)"}
+  - {id: citrate, abbr: Cit, name: Citrate, group: Glycolysis, unit: mmol/L, ref_low: 0.051, ref_high: 0.085, cva: 6.8, cvi: null, better: null}
+  # --- Amino acids
+  - {id: bcaa, abbr: BCAA, name: Total branched-chain amino acids, group: Amino acids, unit: µmol/L, ref_low: 273.6, ref_high: 484.3, cva: 4.9, cvi: null, better: lower}
+  - {id: leucine, abbr: Leu, name: Leucine, group: Amino acids, unit: µmol/L, ref_low: 73.9, ref_high: 142.7, cva: 5.9, cvi: null, better: null}
+  - {id: isoleucine, abbr: Ile, name: Isoleucine, group: Amino acids, unit: µmol/L, ref_low: 33.0, ref_high: 75.7, cva: 9.4, cvi: null, better: null}
+  - {id: valine, abbr: Val, name: Valine, group: Amino acids, unit: µmol/L, ref_low: 162.5, ref_high: 270.1, cva: 4.5, cvi: null, better: null}
+  - {id: phenylalanine, abbr: Phe, name: Phenylalanine, group: Amino acids, unit: µmol/L, ref_low: 35.5, ref_high: 61.9, cva: 10.1, cvi: null, better: null}
+  # --- Fatty acids
+  - {id: omega3_pct, abbr: Omega-3 %, name: Omega-3 % of total fatty acids, group: Fatty acids, unit: "%", ref_low: 2.69, ref_high: 6.29, cva: 4.3, cvi: null, better: higher}
+  - {id: dha, abbr: DHA, name: Docosahexaenoic acid, group: Fatty acids, unit: mmol/L, ref_low: 0.147, ref_high: 0.346, cva: 7.3, cvi: null, better: higher}
+  - {id: pufa_mufa, abbr: PUFA/MUFA, name: PUFA to MUFA ratio, group: Fatty acids, unit: ratio, ref_low: 1.35, ref_high: 2.23, cva: 2.1, cvi: null, better: higher}
+  # --- Ketone bodies
+  - {id: bohb, abbr: bOHB, name: 3-Hydroxybutyrate, group: Ketone bodies, unit: µmol/L, ref_low: 21.2, ref_high: 121.9, cva: 12.5, cvi: null, better: null}
+  - {id: acetone, abbr: Acetone, name: Acetone, group: Ketone bodies, unit: µmol/L, ref_low: 9.9, ref_high: 19.9, cva: 12.6, cvi: null, better: null}
+  # --- Fluid balance / kidney
+  - {id: creatinine, abbr: Crea, name: Creatinine, group: Fluid balance, unit: µmol/L, ref_low: 52.5, ref_high: 85.6, cva: 5.4, cvi: 4.4, better: null}
+  - {id: albumin, abbr: Alb, name: Albumin, group: Fluid balance, unit: g/L, ref_low: 35.6, ref_high: 43.8, cva: 3.2, cvi: 2.5, better: higher}

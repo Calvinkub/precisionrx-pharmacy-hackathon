@@ -1,0 +1,110 @@
+{
+ "id": "2",
+ "label": "เคส 2 · ชาย 61 ปี · เบาหวาน ยาไม่ได้ผล?",
+ "story": "เบาหวาน สูบบุหรี่ ได้ atorvastatin 40 mg แต่ LDL ลดน้อย — ยาไม่ได้ผล หรือกินยาไม่ครบ?",
+ "profile": {
+  "age": 61,
+  "sex": "male",
+  "sbp": 148,
+  "weight_kg": 78,
+  "height_cm": 168,
+  "waist_cm": 97,
+  "smoker": true,
+  "diabetes": true,
+  "hypertension": true,
+  "family_history_dm": false,
+  "alcohol_drinks_per_day": 2.5,
+  "activity_min_week": 0
+ },
+ "meds": [
+  {
+   "drug": "atorvastatin",
+   "dose_mg": 40,
+   "pdc_pct": 55,
+   "start_visit": 1
+  },
+  {
+   "drug": "metformin",
+   "dose_mg": 1000,
+   "pdc_pct": 60,
+   "start_visit": null
+  },
+  {
+   "drug": "amlodipine",
+   "dose_mg": 5,
+   "pdc_pct": 90,
+   "start_visit": null
+  }
+ ],
+ "pgx": {},
+ "visits": [
+  {
+   "date": "2026-02-02",
+   "label": "ก่อนเริ่ม statin",
+   "values": {
+    "lactate": 1.4,
+    "citrate": 0.068,
+    "creatinine": 62,
+    "albumin": 41,
+    "acetone": 13,
+    "bohb": 55,
+    "leucine": 140,
+    "isoleucine": 78,
+    "valine": 312,
+    "phenylalanine": 48,
+    "dha": 0.2,
+    "pufa_mufa": 1.7,
+    "apob": 1.32,
+    "apoa1": 1.21,
+    "ldl_p": 1780,
+    "s_ldl_p": 260,
+    "vldl_p": 240,
+    "hdl_p": 12.8,
+    "total_c": 6.2,
+    "ldl_c": 4.1,
+    "hdl_c": 0.98,
+    "non_hdl_c": 5.22,
+    "remnant_c": 1.12,
+    "tg": 2.6,
+    "glyca": 1.1,
+    "glucose": 8.4,
+    "bcaa": 530,
+    "omega3_pct": 2.9
+   }
+  },
+  {
+   "date": "2026-05-06",
+   "label": "atorvastatin 40 mg · 3 เดือน",
+   "values": {
+    "lactate": 1.4,
+    "citrate": 0.068,
+    "creatinine": 62,
+    "albumin": 41,
+    "acetone": 13,
+    "bohb": 55,
+    "leucine": 139,
+    "isoleucine": 77,
+    "valine": 309,
+    "phenylalanine": 48,
+    "dha": 0.2,
+    "pufa_mufa": 1.7,
+    "apob": 1.22,
+    "apoa1": 1.2,
+    "ldl_p": 1690,
+    "s_ldl_p": 252,
+    "vldl_p": 236,
+    "hdl_p": 12.9,
+    "total_c": 5.8,
+    "ldl_c": 3.7,
+    "hdl_c": 1.0,
+    "non_hdl_c": 4.8,
+    "remnant_c": 1.1,
+    "tg": 2.5,
+    "glyca": 1.12,
+    "glucose": 8.1,
+    "bcaa": 525,
+    "omega3_pct": 2.8
+   }
+  }
+ ]
+}

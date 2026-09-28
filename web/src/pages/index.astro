@@ -1,0 +1,106 @@
+---
+import Base from "../layouts/Base.astro";
+import EvalStats from "../components/EvalStats.svelte";
+
+const flow = [
+  { n: "1", title: "ผล NMR จากแล็บ", body: "รับค่าที่ห้องแล็บคำนวณแล้ว 28 สาร แสดงเทียบช่วงอ้างอิงและผลครั้งก่อน" },
+  { n: "2", title: "ประวัติ + ยาที่ใช้", body: "อายุ ความดัน รอบเอว ยาและขนาด ความสม่ำเสมอในการกินยา (PDC) และผล PGx" },
+  { n: "3", title: "ความเสี่ยง + เรื่องยา", body: "Thai CV Risk, Thai Diabetes Score, PGx/ยาตีกัน, statin ได้ผลไหม และคำแนะนำพฤติกรรม" },
+  { n: "4", title: "ติดตามผล", body: "ตรวจครั้งใหม่ เทียบด้วย RCV ว่าดีขึ้นจริง หรือแค่แกว่งตามธรรมชาติ" },
+];
+const entries = [
+  { href: "/dashboard/", title: "NMR Dashboard", who: "สำหรับเภสัชกร", body: "ผล NMR + ประวัติ → ความเสี่ยงรายโรค เรื่องยา และคำแนะนำ พร้อมเทียบกับการตรวจครั้งก่อน", cta: "เปิด dashboard" },
+  { href: "/his/", title: "หน้าสั่งยา (HIS จำลอง)", who: "สำหรับแพทย์", body: "PrecisionRx เตือนผ่าน CDS Hooks ตอนสั่งยา — hard stop HLA-B, PGx และยาตีกัน เฉพาะเรื่องที่มี action", cta: "ลองสั่งยา" },
+  { href: "/queue/", title: "คิวเภสัชกร", who: "สำหรับเภสัชกร", body: "เมื่อแพทย์ override คำเตือน เรื่องจะเข้าคิวให้เภสัชกรทบทวนทันที", cta: "ดูคิว" },
+];
+---
+<Base title="ภาพรวม" current="home">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="pitch">
+        <p class="eyebrow">Pharmacy hackathon prototype · ข้อมูลจำลอง</p>
+        <h1>ผลแล็บที่คนไข้ตรวจไปแล้ว<br />ต้องถูกใช้ทุกครั้งที่สั่งยา</h1>
+        <p class="lead">
+          PrecisionRx รวมผล NMR, ผลยีน (PGx) และยาที่ใช้ เป็นข้อเสนอที่เภสัชกรตัดสินใจได้ —
+          ทุกข้อความชี้ไปที่ guideline จริง และเตือนเฉพาะเรื่องที่ต้องทำ
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="/dashboard/?case=1&visit=2">ดูเคสตัวอย่าง →</a>
+          <a class="btn" href="/his/?hn=HN-0001&drug=carbamazepine&dose=200">ลองให้ระบบเตือนตอนสั่งยา</a>
+        </div>
+        <ul class="facts">
+          <li><strong>ไม่ใช่ AI วินิจฉัยโรค</strong> — เป็น clinical decision support ที่เภสัชกร/แพทย์ตัดสินใจ</li>
+          <li><strong>ไม่คิดสูตรความเสี่ยงเอง</strong> — ใช้คะแนนที่ validate แล้วในคนไทย</li>
+          <li><strong>ไม่เดาว่า "ดีขึ้น"</strong> — ใช้ RCV และบอกตรง ๆ เมื่อข้อมูลไม่พอ</li>
+        </ul>
+      </div>
+      <aside class="card eval" aria-labelledby="h-eval">
+        <h2 id="h-eval">ผลชุดทดสอบ</h2>
+        <EvalStats client:load />
+      </aside>
+    </div>
+  </section>
+
+  <section class="container block" aria-labelledby="h-flow">
+    <h2 id="h-flow" class="block-title">ทำงานอย่างไร</h2>
+    <ol class="flow">
+      {flow.map((f) => (
+        <li class="card">
+          <span class="num-badge" aria-hidden="true">{f.n}</span>
+          <h3>{f.title}</h3>
+          <p>{f.body}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="container block" aria-labelledby="h-try">
+    <h2 id="h-try" class="block-title">ลองใช้งาน</h2>
+    <ul class="entries">
+      {entries.map((e) => (
+        <li>
+          <a class="card entry" href={e.href}>
+            <span class="who">{e.who}</span>
+            <h3>{e.title}</h3>
+            <p>{e.body}</p>
+            <span class="go">{e.cta} <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: 48px 0 24px; background: radial-gradient(1200px 400px at 10% -10%, var(--accent-soft), transparent 70%); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .eyebrow { font: 600 12.5px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  h1 { font-size: clamp(30px, 4.2vw, 48px); line-height: 1.2; }
+  .lead { font-size: 17px; color: var(--ink-2); margin-top: 16px; max-width: 60ch; }
+  .cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+  .cta .btn { min-height: 46px; padding: 10px 20px; font-size: 15px; }
+  .facts { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 10px; }
+  .facts li { font-size: 14.5px; color: var(--ink-2); padding-left: 22px; position: relative; }
+  .facts li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .facts strong { color: var(--ink); }
+  .eval h2 { margin-bottom: 14px; }
+  .block { padding-top: 32px; }
+  .block-title { font-size: 20px; margin-bottom: 14px; }
+  .flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .flow h3 { margin: 10px 0 4px; font-size: 16px; }
+  .flow p { font-size: 14px; color: var(--ink-2); }
+  .num-badge { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .entries { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .entry { display: grid; gap: 6px; height: 100%; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+  .entry:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .entry h3 { font-size: 17px; }
+  .entry p { font-size: 14px; color: var(--ink-2); }
+  .who { font-size: 12.5px; color: var(--ink-3); }
+  .go { color: var(--accent); font-weight: 600; margin-top: 6px; }
+  @media (max-width: 960px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .entries { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) { .flow { grid-template-columns: 1fr; } .hero { padding-top: 28px; } }
+</style>

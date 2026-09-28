@@ -1,0 +1,13 @@
+---
+import Base from "../../layouts/Base.astro";
+import Dashboard from "../../components/Dashboard.svelte";
+---
+<Base title="NMR Dashboard" current="dashboard" description="ผล NMR + ประวัติผู้ป่วย → ความเสี่ยงรายโรค เรื่องยา และคำแนะนำ">
+  <div class="container page">
+    <header class="page-head">
+      <h1>NMR Response Dashboard</h1>
+      <p>ผล NMR + ประวัติและยาที่ใช้ → ความเสี่ยงรายโรค ประเด็นเรื่องยาสำหรับเภสัชกร และคำแนะนำการดูแลตัวเอง</p>
+    </header>
+    <Dashboard client:load />
+  </div>
+</Base>
