@@ -90,17 +90,24 @@ def pgx_findings(meds: list[Medication], pgx: dict[str, str]) -> list[Finding]:
     cyp = pheno.get("CYP2C19")
     if "clopidogrel" in keys and cyp == "poor metabolizer":
         out.append(Finding("pgx-cyp2c19-clop", "pgx", "action", "Clopidogrel — CYP2C19 poor metabolizer",
-                           "CPIC 2022 (ACS/PCI): เลี่ยง clopidogrel ถ้าทำได้ ใช้ prasugrel หรือ ticagrelor ขนาดมาตรฐานถ้าไม่มีข้อห้าม",
+                           "CPIC 2022 — ACS/PCI: เลี่ยง clopidogrel ถ้าทำได้ ใช้ prasugrel หรือ ticagrelor ขนาดมาตรฐานถ้าไม่มีข้อห้าม · "
+                           "stroke/TIA: พิจารณา P2Y12 ตัวอื่น (ห้าม prasugrel หลัง stroke)",
                            ["CPIC-CYP2C19-CLOP-2022"], ["ยา: clopidogrel", "CYP2C19 = poor metabolizer"]))
     if "clopidogrel" in keys and cyp == "intermediate metabolizer":
         out.append(Finding("pgx-cyp2c19-clop", "pgx", "action", "Clopidogrel — CYP2C19 intermediate metabolizer",
-                           "CPIC 2022 (ACS/PCI): เลี่ยง clopidogrel ขนาดมาตรฐานถ้าทำได้ ใช้ prasugrel หรือ ticagrelor ถ้าไม่มีข้อห้าม",
+                           "CPIC 2022 — ACS/PCI: เลี่ยง clopidogrel ขนาดมาตรฐาน (75 mg) ถ้าทำได้ ใช้ prasugrel หรือ ticagrelor ถ้าไม่มีข้อห้าม · "
+                           "PAD/CAD คงที่: CPIC ไม่มีคำแนะนำ · stroke/TIA: พิจารณา P2Y12 ตัวอื่น",
                            ["CPIC-CYP2C19-CLOP-IM-2022"], ["ยา: clopidogrel", "CYP2C19 = intermediate metabolizer"]))
     for ppi in sorted(CPIC_PPIS & keys.keys()):
-        if cyp in {"ultrarapid metabolizer", "rapid metabolizer"}:
+        # rapid metabolizer: CPIC recommendation is identical to normal metabolizer -> no alert
+        if cyp == "ultrarapid metabolizer":
             out.append(Finding(f"pgx-cyp2c19-{ppi}", "pgx", "action", f"{ppi.capitalize()} — CYP2C19 {cyp}",
-                               "CPIC: พิจารณาเพิ่มขนาดเริ่มต้นของ PPI ถ้ายังคุมอาการไม่ได้ (ถ้อยคำยังไม่ได้ตรวจกับต้นฉบับ)",
+                               "CPIC 2020: เพิ่มขนาดเริ่มต้นต่อวัน 100% (แบ่งให้ได้) และติดตามประสิทธิผล (Optional)",
                                ["CPIC-CYP2C19-PPI-2020"], [f"ยา: {ppi}", f"CYP2C19 = {cyp}"]))
+        elif cyp == "poor metabolizer":
+            out.append(Finding(f"pgx-cyp2c19-{ppi}", "pgx", "monitor", f"{ppi.capitalize()} — CYP2C19 {cyp}",
+                               "CPIC 2020: ใช้ขนาดมาตรฐาน ถ้าใช้ต่อเนื่อง > 12 สัปดาห์และคุมอาการได้ พิจารณาลดขนาด 50%",
+                               ["CPIC-CYP2C19-PPI-PM-2020"], [f"ยา: {ppi}", f"CYP2C19 = {cyp}"]))
     return out
 
 

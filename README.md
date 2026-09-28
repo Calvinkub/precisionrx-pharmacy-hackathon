@@ -10,7 +10,9 @@ NMR Response Dashboard: NMR panel (left) + patient history and medications (righ
 
 ```bash
 uv sync
-uv run uvicorn app.main:app --port 8765   # open http://localhost:8765  (?case=1&visit=2 jumps to a case/visit)
+uv run uvicorn app.main:app --port 8765   # http://localhost:8765 (NMR dashboard, ?case=1&visit=2)
+                                           # http://localhost:8765/his (mock HIS ordering, ?hn=HN-0003&drug=clopidogrel&dose=75)
+                                           # http://localhost:8765/queue (pharmacist queue)
 uv run pytest                              # engine + API tests + eval gate
 uv run python -m eval.run_eval --sheet     # eval report → eval/report.md
 ```
@@ -18,6 +20,7 @@ uv run python -m eval.run_eval --sheet     # eval report → eval/report.md
 | Path | Content |
 |---|---|
 | `app/engines/` | Deterministic engines: `risk.py` (Thai CV Risk, Thai diabetes score), `rcv.py`, `panel.py`, `nmr_factors.py`, `meds.py` (PGx, DDI, statin response, adherence), `lifestyle.py` |
+| `app/cds_hooks.py` | CDS Hooks service: discovery, `order-select`, `order-sign`, feedback → pharmacist queue |
 | `app/evidence/` | `facts.yaml` (every output cites a fact id + source), `analytes.yaml` (NMR catalog: reference band, CVa, CVi) |
 | `app/static/` | Single-page UI; `sample_panel.csv` = upload example (visit 3 of case 1) |
 | `data/synthetic/` | 3 demo cases |

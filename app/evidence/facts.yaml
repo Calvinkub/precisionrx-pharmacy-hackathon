@@ -1,7 +1,7 @@
 # Evidence store (versioned snapshot). Every output of the engines points to a fact id here.
 # level: guideline | label | validated_score | emerging | assumption
 # verified: false = wording not yet checked against the primary source (shown on screen)
-snapshot: "2026-09-28"
+snapshot: "2026-09-28b"
 facts:
   TCVRS-2021:
     text: "Thai CV Risk Score 2.5 (Rama-EGAT): 10-year CVD risk; <10% low, 10–<20% moderate, 20–30% high, >30% very high"
@@ -94,47 +94,53 @@ facts:
     level: guideline
     verified: true
   CPIC-CYP2C19-CLOP-2022:
-    text: "CYP2C19 poor metabolizer, ACS/PCI: avoid clopidogrel if possible; use prasugrel or ticagrelor at standard dose if no contraindication"
-    source: "CPIC guideline for CYP2C19 and clopidogrel (2022)"
-    url: "https://cpicpgx.org/guidelines/guideline-for-clopidogrel-and-cyp2c19/"
+    text: "CYP2C19 poor metabolizer, ACS and/or PCI: Avoid clopidogrel if possible. Use prasugrel or ticagrelor at standard dose if no contraindication (Strong; Moderate for non-ACS/non-PCI CV indications). Stroke/TIA: avoid clopidogrel, consider an alternative P2Y12 inhibitor (Moderate)"
+    source: "CPIC guideline for CYP2C19 and clopidogrel (Lee CR et al., Clin Pharmacol Ther 2022), Tables 2–3"
+    url: "https://files.cpicpgx.org/data/guideline/publication/clopidogrel/2022/35034351.pdf"
     level: guideline
     verified: true
   CPIC-CYP2C19-PPI-2020:
-    text: "CYP2C19 ultrarapid/rapid metabolizer + PPI: consider increasing starting daily dose (check exact CPIC wording)"
-    source: "CPIC guideline for CYP2C19 and PPIs (2020)"
-    url: "https://cpicpgx.org/guidelines/cpic-guideline-for-proton-pump-inhibitors-and-cyp2c19/"
+    text: "CYP2C19 ultrarapid metabolizer (omeprazole, lansoprazole, pantoprazole, dexlansoprazole): Increase starting daily dose by 100%. Daily dose may be given in divided doses. Monitor for efficacy (Optional). Rapid metabolizer: same as normal — initiate standard starting daily dose. No recommendation for esomeprazole or rabeprazole (level C)"
+    source: "CPIC guideline for CYP2C19 and PPIs (Lima JJ et al., Clin Pharmacol Ther 2021;109:1417), Table 2"
+    url: "https://files.cpicpgx.org/data/guideline/publication/PPI/2020/32770672.pdf"
     level: guideline
-    verified: false
+    verified: true
+  CPIC-CYP2C19-PPI-PM-2020:
+    text: "CYP2C19 intermediate/poor metabolizer: Initiate standard starting daily dose. For chronic therapy (> 12 weeks) and efficacy achieved, consider 50% reduction in daily dose and monitor for continued efficacy (IM Optional; PM Moderate for first-generation PPIs)"
+    source: "CPIC guideline for CYP2C19 and PPIs (Lima JJ et al., Clin Pharmacol Ther 2021;109:1417), Table 2"
+    url: "https://files.cpicpgx.org/data/guideline/publication/PPI/2020/32770672.pdf"
+    level: guideline
+    verified: true
   CPIC-HLAB1502:
-    text: "HLA-B*15:02 positive: do not use carbamazepine/oxcarbazepine (risk of SJS/TEN)"
-    source: "CPIC guideline for HLA genotype and carbamazepine/oxcarbazepine"
-    url: "https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-hla-b/"
+    text: "HLA-B*15:02 positive: if patient is carbamazepine-naïve, do not use carbamazepine; if oxcarbazepine-naïve, do not use oxcarbazepine (Strong)"
+    source: "CPIC guideline for HLA genotype and carbamazepine/oxcarbazepine (Phillips EJ et al., 2017), Tables 2–3"
+    url: "https://files.cpicpgx.org/data/guideline/publication/carbamazepine/2017/CPIC_HLA_CBZ_OXC.pdf"
     level: guideline
     verified: true
   CPIC-HLAB5801:
-    text: "HLA-B*58:01 positive: allopurinol is contraindicated (risk of SCAR)"
-    source: "CPIC guideline for HLA-B and allopurinol"
-    url: "https://cpicpgx.org/guidelines/guideline-for-allopurinol-and-hla-b/"
+    text: "HLA-B*58:01 carrier: allopurinol is contraindicated (Strong)"
+    source: "CPIC guideline for HLA-B and allopurinol (Hershfield MS et al. 2013; confirmed current in 2015 update)"
+    url: "https://files.cpicpgx.org/data/guideline/publication/allopurinol/2013/23232549.pdf"
     level: guideline
     verified: true
   CPIC-CYP2C19-CLOP-IM-2022:
-    text: "CYP2C19 intermediate metabolizer, ACS/PCI: avoid standard-dose clopidogrel if possible; use prasugrel or ticagrelor at standard dose if no contraindication"
-    source: "CPIC guideline for CYP2C19 and clopidogrel (2022)"
-    url: "https://cpicpgx.org/guidelines/guideline-for-clopidogrel-and-cyp2c19/"
+    text: "CYP2C19 intermediate metabolizer, ACS and/or PCI: Avoid standard dose (75 mg) clopidogrel if possible. Use prasugrel or ticagrelor at standard dose if no contraindication (Strong). Non-ACS/non-PCI CV indications: no recommendation. Stroke/TIA: consider an alternative P2Y12 inhibitor (Moderate); prasugrel contraindicated after stroke/TIA"
+    source: "CPIC guideline for CYP2C19 and clopidogrel (Lee CR et al., Clin Pharmacol Ther 2022), Tables 2–3"
+    url: "https://files.cpicpgx.org/data/guideline/publication/clopidogrel/2022/35034351.pdf"
     level: guideline
-    verified: false
+    verified: true
   LABEL-CBZ-HLA:
-    text: "Patients with ancestry in genetically at-risk populations should be screened for HLA-B*1502 prior to initiating carbamazepine"
+    text: "Patients with ancestry in genetically at-risk populations should be screened for the presence of HLA-B*1502 prior to initiating treatment with Tegretol. Patients testing positive for the allele should not be treated with Tegretol unless the benefit clearly outweighs the risk (boxed warning)"
     source: "Tegretol (carbamazepine) US prescribing information, boxed warning"
-    url: "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=BasicSearch.process"
+    url: "https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/020234s57lbl.pdf"
     level: label
-    verified: false
+    verified: true
   ACR-2020-HLAB5801:
-    text: "Conditionally recommend HLA-B*58:01 testing before starting allopurinol in patients of Southeast Asian descent (e.g. Han Chinese, Korean, Thai) and African American patients"
-    source: "2020 American College of Rheumatology Guideline for the Management of Gout"
-    url: "https://pubmed.ncbi.nlm.nih.gov/32391934/"
+    text: "We conditionally recommend testing HLA–B*5801 prior to starting allopurinol for patients of Southeast Asian descent (e.g., Han Chinese, Korean, Thai) and African American patients, who have a higher prevalence of HLA–B*5801 (conditional; very low certainty)"
+    source: "2020 ACR Guideline for the Management of Gout (FitzGerald JD et al., Arthritis Care Res 2020;72:744), Table 4"
+    url: "https://acrjournals.onlinelibrary.wiley.com/doi/10.1002/acr.24180"
     level: guideline
-    verified: false
+    verified: true
   LABEL-CLOP-PPI:
     text: "Clopidogrel: avoid concomitant use with omeprazole or esomeprazole"
     source: "Plavix (clopidogrel) US prescribing information"

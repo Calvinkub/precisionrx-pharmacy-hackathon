@@ -41,13 +41,14 @@ Stack ที่ใช้: Python + FastAPI (engines + API) · หน้าเว
 | เทียบครั้งก่อนด้วย RCV (สารที่ไม่มี CVi → "ประเมินไม่ได้") | ✅ |
 | อัปโหลด CSV เป็นผลตรวจครั้งใหม่ | ✅ |
 | ปุ่ม Why? + fact chip แสดงแหล่ง | ✅ |
-| Test | ✅ 36 ผ่าน (รวม eval gate) |
-| Mock หน้าสั่งยา HIS (CDS Hooks) | ⏳ ยังไม่ทำ |
-| Eval set 45 เคส + harness + review sheet | ✅ 45/45, omission 0, false flag 0, alert −70% (`eval/`) — รอเภสัชกรตรวจเฉลย |
+| Test | ✅ 43 ผ่าน (รวม eval gate + CDS Hooks) |
+| ตรวจถ้อยคำ guideline กับต้นฉบับ | ✅ ทุก fact ที่ระบบอ้าง `verified: true` (CPIC PDF, FDA label 2026, ACR 2020) |
+| Mock HIS หน้าสั่งยา + CDS Hooks service (order-select / order-sign / feedback) + คิวเภสัชกร | ✅ `/his`, `/queue` — เตือนเฉพาะที่เกิดจากคำสั่งใหม่, hard stop บล็อก sign, override ต้องมีเหตุผล |
+| Eval set 46 เคส + harness + review sheet | ✅ 46/46, omission 0, false flag 0, alert −71% (`eval/`) — รอเภสัชกรตรวจเฉลย |
 | Oncology module | ⏳ ยังไม่ทำ |
 | LLM summarizer + verifier | ⏳ ยังไม่ทำ |
 
-**ข้อควรระวังที่ต้องพูดบนเวที:** ช่วงอ้างอิง NMR = UK Biobank P10–P90 (ไม่ใช่คนไทย ไม่ใช่ค่าทางคลินิก) · หลักฐาน NMR → โรค เป็นระดับ association · ค่า CVi ของ LDL-P/BCAA ยังหาไม่พบ · ถ้อยคำ CPIC PPI ยังไม่ได้ตรวจ (แสดงขอบประบนหน้าจอ) · ตัวเลขอ้างอิงทั้งหมดอยู่ใน `docs/`
+**ข้อควรระวังที่ต้องพูดบนเวที:** ช่วงอ้างอิง NMR = UK Biobank P10–P90 (ไม่ใช่คนไทย ไม่ใช่ค่าทางคลินิก) · หลักฐาน NMR → โรค เป็นระดับ association · ค่า CVi ของ LDL-P/BCAA ยังหาไม่พบ · clopidogrel rule ใช้กับ ACS/PCI (ระบบยังไม่รู้ข้อบ่งใช้ — แสดงคำแนะนำแยกตามข้อบ่งใช้ในข้อความ) · ตัวเลขอ้างอิงทั้งหมดอยู่ใน `docs/`
 
 ---
 

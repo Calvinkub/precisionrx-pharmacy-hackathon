@@ -22,7 +22,18 @@ First run: 40/45. The eval caught real engine gaps, which were then fixed:
 
 Second run: 45/45, 0 omissions, 0 false flags, alerts per case 1.78 (naive) → 0.53 (−70%).
 
+### Primary-source wording check (same day)
+All cited facts were checked against CPIC PDFs, the 2026 Tegretol FDA label and the ACR 2020 gout guideline. One more label and rule were wrong:
+
+| Case | Problem | Fix |
+|---|---|---|
+| E20 | CYP2C19 **rapid** metabolizer + PPI was labelled as an alert, but CPIC 2020 gives the same recommendation as for normal metabolizers | Label → no alert; rule removed for RM |
+| — | Ultrarapid wording was "consider increasing dose"; CPIC says "Increase starting daily dose by 100%" (Optional) | Wording fixed; new case E46 |
+| — | Poor metabolizer + PPI had no rule (CPIC: consider 50% reduction for chronic therapy) | Added as monitor-level item |
+
+Current: 46/46, 0 omissions, 0 false flags, 0 unverified facts cited, alerts per case 1.78 → 0.52 (−71%).
+
 ## Limits (say these on stage)
 - Synthetic cases test that rules behave as specified. They do **not** measure clinical accuracy.
 - Labels are one author's reading of the guidelines until pharmacists review them; inter-rater agreement is not yet measured.
-- 4 cited fact ids are still `verified: false` (wording from memory / secondary source) — see report.
+- Clopidogrel CPIC rules depend on the indication (ACS/PCI vs stroke vs PAD); the engine does not yet read the indication, so the card text lists each.

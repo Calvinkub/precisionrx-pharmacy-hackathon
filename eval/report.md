@@ -5,14 +5,14 @@
 
 | Metric | Value |
 |---|---|
-| Cases passed | 45/45 |
-| Omissions of expected findings (target 0) | 0 of 21 (0.0%) |
+| Cases passed | 46/46 |
+| Omissions of expected findings (target 0) | 0 of 22 (0.0%) |
 | False flags (stop/action + NMR factors) | 0 |
 | Risk category agreement | 7/7 |
 | RCV trend verdict agreement | 3/3 |
-| Citations checked / missing fact ids | 134 / 0 |
-| Unverified fact ids still cited | ACR-2020-HLAB5801, CPIC-CYP2C19-CLOP-IM-2022, CPIC-CYP2C19-PPI-2020, LABEL-CBZ-HLA |
-| Alerts per case: naive baseline → PrecisionRx | 1.78 → 0.53 (−70.0%) |
+| Citations checked / missing fact ids | 137 / 0 |
+| Unverified fact ids still cited | — |
+| Alerts per case: naive baseline → PrecisionRx | 1.78 → 0.52 (−70.7%) |
 
 Naive baseline = alert on every drug with an available PGx result, every clopidogrel+PPI pair, and every analyte outside its reference band.
 
@@ -40,8 +40,9 @@ Naive baseline = alert on every drug with an available PGx result, every clopido
 | E18 | CYP2C19 PM + clopidogrel + omeprazole — PGx + DDI both shown | ✅ | 4 → 2 |
 | E19 | CYP2C19 ultrarapid + omeprazole | ✅ | 2 → 1 |
 | E45 | CYP2C19 ultrarapid + esomeprazole — CPIC PPI guideline gives no recommendation for esomeprazole | ✅ | 2 → 0 |
-| E20 | CYP2C19 rapid + pantoprazole | ✅ | 2 → 1 |
+| E20 | CYP2C19 rapid + pantoprazole — CPIC recommendation identical to normal metabolizer, no alert | ✅ | 2 → 0 |
 | E21 | CYP2C19 normal + omeprazole (no alert) | ✅ | 2 → 0 |
+| E46 | CYP2C19 ultrarapid + pantoprazole — increase starting dose 100% | ✅ | 2 → 1 |
 | E22 | Simvastatin 40 (moderate), LDL-C −41%, PDC 92 — responding as expected | ✅ | 1 → 0 |
 | E23 | Atorvastatin 40 (high), LDL-C −20%, PDC 95 — true non-response | ✅ | 1 → 1 |
 | E24 | Atorvastatin 40, LDL-C −10%, PDC 50 — adherence first, not "drug failure" | ✅ | 2 → 1 |

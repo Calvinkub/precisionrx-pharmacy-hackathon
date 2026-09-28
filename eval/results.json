@@ -1,25 +1,20 @@
 {
  "summary": {
-  "cases": 45,
-  "passed": 45,
-  "expected_findings": 21,
+  "cases": 46,
+  "passed": 46,
+  "expected_findings": 22,
   "omissions": 0,
   "omission_rate": 0.0,
   "false_flags": 0,
   "factor_misses": 0,
   "risk_cases_agree": "7/7",
   "trend_cases_agree": "3/3",
-  "citations": 134,
+  "citations": 137,
   "citations_missing": 0,
-  "unverified_fact_ids_cited": [
-   "ACR-2020-HLAB5801",
-   "CPIC-CYP2C19-CLOP-IM-2022",
-   "CPIC-CYP2C19-PPI-2020",
-   "LABEL-CBZ-HLA"
-  ],
+  "unverified_fact_ids_cited": [],
   "alerts_per_case_naive": 1.78,
-  "alerts_per_case_precisionrx": 0.53,
-  "alert_reduction_pct": 70.0
+  "alerts_per_case_precisionrx": 0.52,
+  "alert_reduction_pct": 70.7
  },
  "cases": [
   {
@@ -73,9 +68,7 @@
    "expected_findings": 1,
    "citations": 4,
    "citations_missing": [],
-   "citations_unverified": [
-    "LABEL-CBZ-HLA"
-   ],
+   "citations_unverified": [],
    "alerts_precisionrx": 1,
    "alerts_naive": 1,
    "pass": true
@@ -117,9 +110,7 @@
    "expected_findings": 1,
    "citations": 4,
    "citations_missing": [],
-   "citations_unverified": [
-    "ACR-2020-HLAB5801"
-   ],
+   "citations_unverified": [],
    "alerts_precisionrx": 1,
    "alerts_naive": 1,
    "pass": true
@@ -203,9 +194,7 @@
    "expected_findings": 1,
    "citations": 3,
    "citations_missing": [],
-   "citations_unverified": [
-    "CPIC-CYP2C19-CLOP-IM-2022"
-   ],
+   "citations_unverified": [],
    "alerts_precisionrx": 1,
    "alerts_naive": 2,
    "pass": true
@@ -272,8 +261,8 @@
    "problems": [],
    "omissions": [],
    "false_flags": [],
-   "expected_findings": 2,
-   "citations": 4,
+   "expected_findings": 3,
+   "citations": 5,
    "citations_missing": [],
    "citations_unverified": [],
    "alerts_precisionrx": 2,
@@ -289,9 +278,7 @@
    "expected_findings": 1,
    "citations": 3,
    "citations_missing": [],
-   "citations_unverified": [
-    "CPIC-CYP2C19-PPI-2020"
-   ],
+   "citations_unverified": [],
    "alerts_precisionrx": 1,
    "alerts_naive": 2,
    "pass": true
@@ -312,17 +299,15 @@
   },
   {
    "id": "E20",
-   "scenario": "CYP2C19 rapid + pantoprazole",
+   "scenario": "CYP2C19 rapid + pantoprazole — CPIC recommendation identical to normal metabolizer, no alert",
    "problems": [],
    "omissions": [],
    "false_flags": [],
-   "expected_findings": 1,
-   "citations": 3,
+   "expected_findings": 0,
+   "citations": 2,
    "citations_missing": [],
-   "citations_unverified": [
-    "CPIC-CYP2C19-PPI-2020"
-   ],
-   "alerts_precisionrx": 1,
+   "citations_unverified": [],
+   "alerts_precisionrx": 0,
    "alerts_naive": 2,
    "pass": true
   },
@@ -337,6 +322,20 @@
    "citations_missing": [],
    "citations_unverified": [],
    "alerts_precisionrx": 0,
+   "alerts_naive": 2,
+   "pass": true
+  },
+  {
+   "id": "E46",
+   "scenario": "CYP2C19 ultrarapid + pantoprazole — increase starting dose 100%",
+   "problems": [],
+   "omissions": [],
+   "false_flags": [],
+   "expected_findings": 1,
+   "citations": 3,
+   "citations_missing": [],
+   "citations_unverified": [],
+   "alerts_precisionrx": 1,
    "alerts_naive": 2,
    "pass": true
   },

@@ -1,0 +1,20 @@
+[
+ {"id": "HN-0001", "name": "ผู้ป่วยจำลอง ก.", "age": 34, "sex": "ชาย", "dx": "Epilepsy (focal)", "allergy": "ไม่มี",
+  "active": [],
+  "pgx": [{"gene": "HLA-B*15:02", "result": "positive", "source": "ผูกพันธุ์", "date": "2024-03-12"}],
+  "try": "สั่ง carbamazepine 200 mg → hard stop"},
+ {"id": "HN-0002", "name": "ผู้ป่วยจำลอง ข.", "age": 52, "sex": "หญิง", "dx": "Dyslipidemia, GERD", "allergy": "ไม่มี",
+  "active": [{"drug": "omeprazole", "dose_mg": 20, "sig": "วันละครั้ง ก่อนอาหารเช้า"}],
+  "pgx": [{"gene": "SLCO1B1", "result": "decreased function", "source": "Lab PGx panel", "date": "2025-11-02"},
+          {"gene": "CYP2C19", "result": "ultrarapid metabolizer", "source": "Lab PGx panel", "date": "2025-11-02"}],
+  "try": "สั่ง simvastatin 40 mg → card เตือน · สั่ง amlodipine → ไม่มี card"},
+ {"id": "HN-0003", "name": "ผู้ป่วยจำลอง ค.", "age": 58, "sex": "ชาย", "dx": "NSTEMI s/p PCI (2 วัน)", "allergy": "ไม่มี",
+  "active": [{"drug": "aspirin", "dose_mg": 81, "sig": "วันละครั้ง"}, {"drug": "omeprazole", "dose_mg": 20, "sig": "วันละครั้ง"},
+             {"drug": "atorvastatin", "dose_mg": 80, "sig": "วันละครั้ง ก่อนนอน"}],
+  "pgx": [{"gene": "CYP2C19", "result": "poor metabolizer", "source": "ผูกพันธุ์", "date": "2023-08-20"}],
+  "try": "สั่ง clopidogrel 75 mg → 2 cards (PGx + DDI) พร้อมปุ่มเปลี่ยน PPI"},
+ {"id": "HN-0004", "name": "ผู้ป่วยจำลอง ง.", "age": 70, "sex": "ชาย", "dx": "Gout, CKD stage 3a", "allergy": "ไม่มี",
+  "active": [{"drug": "amlodipine", "dose_mg": 5, "sig": "วันละครั้ง"}],
+  "pgx": [],
+  "try": "สั่ง allopurinol 100 mg → เตือนให้ส่งตรวจ HLA-B*58:01 ก่อน"}
+]

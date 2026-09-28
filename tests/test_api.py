@@ -70,5 +70,7 @@ def test_csv_parse():
     assert r["unknown"] == ["foo"] and r["date"] == "2026-09-20"
 
 
-def test_unverified_facts_are_flagged():
-    assert facts()["facts"]["CPIC-CYP2C19-PPI-2020"]["verified"] is False
+def test_every_fact_has_source_url_and_verification_flag():
+    for fid, f in facts()["facts"].items():
+        assert f["source"] and f["url"].startswith("http"), fid
+        assert isinstance(f["verified"], bool), fid

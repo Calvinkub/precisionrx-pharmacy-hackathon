@@ -99,7 +99,7 @@ cases:
     scenario: CYP2C19 PM + clopidogrel + omeprazole — PGx + DDI both shown
     meds: [{drug: clopidogrel, dose_mg: 75}, {drug: omeprazole, dose_mg: 20}]
     pgx: {CYP2C19: poor metabolizer}
-    expected: {findings: [pgx-cyp2c19-clop, ddi-clop-omeprazole]}
+    expected: {findings: [pgx-cyp2c19-clop, ddi-clop-omeprazole, pgx-cyp2c19-omeprazole]}  # PPI item is monitor-level
   - id: E19
     scenario: CYP2C19 ultrarapid + omeprazole
     meds: [{drug: omeprazole, dose_mg: 20}]
@@ -111,15 +111,22 @@ cases:
     pgx: {CYP2C19: ultrarapid metabolizer}
     expected: {findings: []}
   - id: E20
-    scenario: CYP2C19 rapid + pantoprazole
+    scenario: CYP2C19 rapid + pantoprazole — CPIC recommendation identical to normal metabolizer, no alert
+    # label fix 2026-09-28 after primary-source check (CPIC 2020 Table 2): originally labelled as an alert
     meds: [{drug: pantoprazole, dose_mg: 40}]
     pgx: {CYP2C19: rapid metabolizer}
-    expected: {findings: [pgx-cyp2c19-pantoprazole]}
+    expected: {findings: []}
   - id: E21
     scenario: CYP2C19 normal + omeprazole (no alert)
     meds: [{drug: omeprazole, dose_mg: 20}]
     pgx: {CYP2C19: normal metabolizer}
     expected: {findings: []}
+
+  - id: E46
+    scenario: CYP2C19 ultrarapid + pantoprazole — increase starting dose 100%
+    meds: [{drug: pantoprazole, dose_mg: 40}]
+    pgx: {CYP2C19: ultrarapid metabolizer}
+    expected: {findings: [pgx-cyp2c19-pantoprazole]}
 
   # ---------------- Statin response, target, adherence (2 visits; statin started at visit 2)
   - id: E22

@@ -8,18 +8,35 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.assess import AssessIn, assess
+from app.cds_hooks import router as cds_router
 from app.engines.panel import catalog, facts, parse_csv
 
 ROOT = Path(__file__).resolve().parent
 CASES = ROOT.parent / "data" / "synthetic"
 
 app = FastAPI(title="PrecisionRx prototype (synthetic data only)")
+app.include_router(cds_router)
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
 @app.get("/")
 def index():
     return FileResponse(ROOT / "static" / "index.html")
+
+
+@app.get("/his")
+def his():
+    return FileResponse(ROOT / "static" / "his.html")
+
+
+@app.get("/queue")
+def queue_page():
+    return FileResponse(ROOT / "static" / "queue.html")
+
+
+@app.get("/api/his/patients")
+def his_patients():
+    return json.loads((CASES / "his_patients.json").read_text(encoding="utf-8"))
 
 
 @app.get("/api/catalog")

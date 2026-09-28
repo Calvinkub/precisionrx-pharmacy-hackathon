@@ -1,0 +1,83 @@
+/* Mock HIS + pharmacist queue. Builds on styles.css tokens. */
+.his-logo { background: var(--monitor); }
+.his-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 16px; padding: 16px 24px; }
+.his-main { display: grid; gap: 16px; min-width: 0; }
+.his-patients h2 { margin-bottom: 8px; }
+.his-patients ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.his-patients button {
+  width: 100%; text-align: left; font: inherit; color: var(--text); cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface-2); border-radius: 8px; padding: 8px 10px;
+}
+.his-patients button[aria-current="true"] { border-color: var(--monitor); background: var(--monitor-soft); }
+.his-patients small { display: block; color: var(--muted); font-size: 11.5px; }
+
+.banner { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; }
+.banner .who { font-size: 16px; font-weight: 600; }
+.banner .kv { font-size: 13px; color: var(--muted); }
+.banner .kv b { color: var(--text); font-weight: 500; }
+.pgx-chips { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
+.pgx-chip {
+  font: 500 12px/1 "IBM Plex Mono", monospace; padding: 5px 8px; border-radius: 6px;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.pgx-chip.hot { border-color: var(--stop); color: var(--stop); background: var(--stop-soft); }
+.pgx-none { font-size: 12.5px; color: var(--muted); }
+
+.his-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.his-table th { text-align: left; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); padding: 6px; }
+.his-table td { padding: 6px; border-bottom: 1px solid var(--border); }
+.his-table tr.new td { background: var(--info-soft); }
+.lab-orders { margin-top: 8px; font-size: 13px; }
+
+.order-form { display: grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 10px; align-items: end; }
+.order-form label { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted); }
+.order-form input { color: var(--text); }
+.sign-btn { width: auto; padding: 10px 16px; font-size: 14px; }
+.hook-status { font: 12px/1.4 "IBM Plex Mono", monospace; color: var(--muted); margin: 8px 0; min-height: 17px; }
+
+.cds-cards { display: grid; gap: 10px; }
+.cds-card { border-radius: 10px; border: 1px solid var(--border); border-left: 5px solid var(--border); padding: 12px 14px; background: var(--surface-2); }
+.cds-card.critical { border-left-color: var(--stop); background: var(--stop-soft); }
+.cds-card.warning { border-left-color: var(--action); background: var(--action-soft); }
+.cds-card.info { border-left-color: var(--monitor); background: var(--monitor-soft); }
+.cds-card.resolved { opacity: .6; }
+.cds-card .sum { font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; gap: 10px; }
+.cds-card .ind { font: 600 11px/1 "IBM Plex Mono", monospace; letter-spacing: .05em; white-space: nowrap; }
+.cds-card .det { font-size: 13px; margin-top: 6px; }
+.cds-card .det p { margin: 4px 0; }
+.cds-card .det ul { margin: 4px 0; padding-left: 18px; }
+.cds-card .det code { font-size: 11.5px; }
+.cds-card .src { font-size: 12px; margin-top: 6px; }
+.cds-card .src a { color: var(--accent); }
+.cds-card .row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; }
+.cds-card button {
+  font: 500 12.5px/1 inherit; padding: 7px 10px; border-radius: 7px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.cds-card button.sugg { border-color: var(--accent); color: var(--accent); }
+.cds-card select, .cds-card input { font-size: 12.5px; padding: 5px 7px; }
+.cds-card .state { font-size: 12.5px; font-weight: 600; margin-top: 8px; }
+.no-cards { font-size: 13px; color: var(--normal); padding: 6px 0; }
+
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 20;
+  background: var(--text); color: var(--surface); padding: 10px 16px; border-radius: 9px; font-size: 13.5px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2); max-width: calc(100vw - 32px);
+}
+.toast.bad { background: var(--stop); color: #fff; }
+
+/* pharmacist queue */
+.queue-wrap { padding: 16px 24px; display: grid; gap: 10px; max-width: 980px; margin: 0 auto; }
+.q-item { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; }
+.q-item .meta { font-size: 12px; color: var(--muted); }
+.q-item .why { font-size: 13px; }
+.q-status { font: 600 11px/1 "IBM Plex Mono", monospace; padding: 4px 7px; border-radius: 5px; background: var(--surface-2); }
+.q-status.open { background: var(--action-soft); color: var(--action); }
+
+@media (max-width: 860px) {
+  .his-layout { grid-template-columns: 1fr; padding: 12px 16px; }
+  .order-form { grid-template-columns: 1fr 1fr; }
+  .order-form label:first-child, .sign-btn { grid-column: 1 / -1; }
+  .queue-wrap { padding: 12px 16px; }
+  .topbar-right .link { font-size: 12px; }
+}

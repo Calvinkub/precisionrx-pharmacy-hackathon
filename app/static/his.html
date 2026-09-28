@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mock HIS — สั่งยา</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/his.css">
+</head>
+<body class="his">
+  <header class="topbar his-top">
+    <div class="brand">
+      <span class="logo his-logo">H</span>
+      <div>
+        <h1>Mock HIS · หน้าจอสั่งยา</h1>
+        <p>ระบบโรงพยาบาลจำลอง — PrecisionRx ทำงานเบื้องหลังผ่าน CDS Hooks</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a class="link" href="/queue" target="_blank">คิวเภสัชกร ↗</a>
+      <a class="link" href="/">NMR dashboard</a>
+      <span class="badge-synth">SYNTHETIC DATA</span>
+    </div>
+  </header>
+
+  <div class="his-layout">
+    <aside class="card his-patients">
+      <h2>ผู้ป่วยวันนี้</h2>
+      <ul id="patientList"></ul>
+    </aside>
+
+    <main class="his-main">
+      <section class="card banner" id="banner"></section>
+
+      <section class="card">
+        <div class="card-head"><h2>ยาที่ใช้อยู่</h2><span class="muted" id="activeCount"></span></div>
+        <table class="his-table">
+          <thead><tr><th>ยา</th><th>ขนาด</th><th>วิธีใช้</th><th>สถานะ</th></tr></thead>
+          <tbody id="activeRows"></tbody>
+        </table>
+        <div id="labOrders" class="lab-orders"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>สั่งยาใหม่</h2><span class="muted" id="tryHint"></span></div>
+        <form id="orderForm" class="order-form" autocomplete="off">
+          <label>ยา<input name="drug" list="drugList" placeholder="พิมพ์ชื่อยา เช่น carbamazepine" required></label>
+          <label>ขนาด (mg)<input name="dose" type="number" step="any"></label>
+          <label>วิธีใช้<input name="sig" placeholder="วันละครั้ง หลังอาหารเช้า"></label>
+          <button type="submit" class="btn-primary sign-btn">ยืนยันคำสั่ง (Sign)</button>
+        </form>
+        <datalist id="drugList"></datalist>
+        <p class="hint">เลือกชื่อยาแล้วระบบจะส่ง <code>order-select</code> ไปที่ PrecisionRx · กดยืนยันจะส่ง <code>order-sign</code></p>
+        <div id="hookStatus" class="hook-status"></div>
+        <div id="cards" class="cds-cards"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="/static/his.js"></script>
+</body>
+</html>
