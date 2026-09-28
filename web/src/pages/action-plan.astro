@@ -1,6 +1,8 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import Sources from "../components/Sources.astro";
+import WeekBlocks from "../components/WeekBlocks.astro";
+import { SCHEDULE } from "../lib/plan";
 import mock from "../data/mockPatient.json";
 import c from "../data/computed.json";
 import { CalendarPlus, FileDown, Stethoscope } from "@lucide/astro";
@@ -57,6 +59,12 @@ const brief = {
       <p class="mt-4 text-xs text-ink-3"><Sources ids={["FIB4-MASLD", "CFDNA-FRAGMENTOMICS-SEQ"]} /></p>
     </section>
 
+    <section class="card mt-3" aria-labelledby="h-week">
+      <h2 id="h-week" class="eyebrow">ตารางกิจกรรมรายสัปดาห์</h2>
+      <div class="mt-4"><WeekBlocks /></div>
+      <p class="mt-2 text-xs text-ink-3"><Sources ids={["WHO-PA-2020", "WHO-SEDENTARY-2020"]} /></p>
+    </section>
+
     <section class="card mt-3" aria-labelledby="h-act">
       <div class="flex items-baseline justify-between gap-3"><h2 id="h-act" class="eyebrow">กิจกรรมทางกาย</h2><span class="text-sm text-ink-3" id="progress"></span></div>
       <ul class="mt-4 divide-y divide-line">
@@ -103,7 +111,7 @@ const brief = {
   </section>
 </MainLayout>
 
-<script define:vars={{ followUps, activity }}>
+<script define:vars={{ followUps, activity, SCHEDULE }}>
   const KEY = "plan:tasks";
   const boxes = [...document.querySelectorAll("[data-task]")];
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; } };
@@ -134,15 +142,21 @@ const brief = {
     const ev = [];
     for (const f of followUps) {
       const d = new Date(now); d.setDate(d.getDate() + f.weeks * 7);
-      ev.push(["BEGIN:VEVENT", `UID:${f.id}-${stamp}@precisionrx`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(d)}`, `SUMMARY:${f.title}`, "END:VEVENT"].join("\r\n"));
+      ev.push(["BEGIN:VEVENT", `UID:${f.id}-${stamp}@multiomics`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(d)}`, `SUMMARY:${f.title}`, "END:VEVENT"].join("\r\n"));
     }
-    const mon = new Date(now); mon.setDate(mon.getDate() + ((8 - mon.getDay()) % 7 || 7));
-    ev.push(["BEGIN:VEVENT", `UID:aerobic-${stamp}@precisionrx`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(mon)}`,
-             "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=36", "SUMMARY:แอโรบิก 50 นาที (เป้า 150 นาที/สัปดาห์)", "END:VEVENT"].join("\r\n"));
+    // weekly blocks: first occurrence on/after tomorrow, repeating for 12 weeks (floating local time)
+    const DAYS = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+    const hm = (t) => t.replace(":", "") + "00";
+    SCHEDULE.forEach((b, n) => {
+      const first = new Date(now); first.setDate(first.getDate() + 1);
+      while (!b.days.includes(DAYS[(first.getDay() + 6) % 7])) first.setDate(first.getDate() + 1);
+      ev.push(["BEGIN:VEVENT", `UID:block-${n}-${stamp}@multiomics`, `DTSTAMP:${stamp}`, `DTSTART:${day(first)}T${hm(b.start)}`, `DTEND:${day(first)}T${hm(b.end)}`,
+               `RRULE:FREQ=WEEKLY;BYDAY=${b.days.join(",")};COUNT=${b.days.length * 12}`, `SUMMARY:${b.title}`, "END:VEVENT"].join("\r\n"));
+    });
     const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Multi-omics//Plan//TH", ...ev, "END:VCALENDAR"].join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
-    a.download = "precisionrx-plan.ics"; a.click(); URL.revokeObjectURL(a.href);
+    a.download = "multiomics-plan.ics"; a.click(); URL.revokeObjectURL(a.href);
     document.getElementById("saved").textContent = `ดาวน์โหลดไฟล์ปฏิทิน ${ev.length} นัดแล้ว`;
   });
 </script>

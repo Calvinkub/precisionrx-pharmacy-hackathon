@@ -1,0 +1,63 @@
+---
+// Weekly time-block calendar (Mon–Sun, 06:00–21:00). Today's column and the current time are marked client-side.
+import { DAYS, DAY_TH, HOURS, KINDS, SCHEDULE, toMin, weeklyMinutes, type Kind } from "../lib/plan";
+const [H0, H1] = HOURS;
+const span = (H1 - H0) * 60;
+const top = (t: string) => ((toMin(t) - H0 * 60) / span) * 100;
+const hours = Array.from({ length: H1 - H0 + 1 }, (_, i) => H0 + i);
+const kinds = Object.keys(KINDS) as Kind[];
+---
+<figure class="m-0">
+  <ul class="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-ink-2">
+    {kinds.map((k) => (
+      <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm" style={`background:${KINDS[k].color}`}></span>{KINDS[k].label} <span class="num text-ink-3">{weeklyMinutes(k)} นาที/สัปดาห์</span></li>
+    ))}
+  </ul>
+  <div class="mt-4 grid grid-cols-[2rem_repeat(7,minmax(0,1fr))] gap-x-1 sm:grid-cols-[2.75rem_repeat(7,minmax(0,1fr))] sm:gap-x-1.5">
+    <div></div>
+    {DAY_TH.map((label, i) => <div data-day-head={i} class="rounded-lg py-1 text-center text-xs font-medium text-ink-2">{label}</div>)}
+
+    <div class="relative h-[34rem] sm:h-[38rem]" aria-hidden="true">
+      {hours.map((h) => <span class="num absolute -translate-y-1/2 text-[10px] text-ink-3" style={`top:${((h - H0) / (H1 - H0)) * 100}%`}>{String(h).padStart(2, "0")}</span>)}
+    </div>
+    {DAYS.map((d, i) => (
+      <ul data-day={i} class="week-col relative h-[34rem] rounded-xl bg-subtle/60 sm:h-[38rem]" aria-label={`วัน${DAY_TH[i]}`}>
+        {hours.slice(1, -1).map((h) => <li aria-hidden="true" class="pointer-events-none absolute inset-x-0 border-t border-line/70" style={`top:${((h - H0) / (H1 - H0)) * 100}%`}></li>)}
+        {SCHEDULE.filter((b) => b.days.includes(d)).map((b) => {
+          const tall = toMin(b.end) - toMin(b.start) >= 30;
+          return (
+            <li class="block-item absolute inset-x-0.5 overflow-hidden rounded-md border-l-[3px] px-1 sm:px-1.5"
+                style={`top:${top(b.start)}%;height:max(${top(b.end) - top(b.start)}%, 6px);background:${KINDS[b.kind].soft};border-color:${KINDS[b.kind].color}`}
+                title={`${b.title} · ${b.start}–${b.end}`}>
+              <span class="sr-only">{b.title} {b.start} ถึง {b.end}</span>
+              {tall && <span aria-hidden="true" class="block pt-0.5 text-[10px] leading-tight sm:text-xs"><span class="num block text-ink-3">{b.start}</span><span class="hidden font-medium text-ink sm:block">{KINDS[b.kind].label}</span></span>}
+            </li>
+          );
+        })}
+        <li data-now aria-hidden="true" class="now-line pointer-events-none absolute inset-x-0 hidden h-0.5 bg-bad-dot"></li>
+      </ul>
+    ))}
+  </div>
+  <figcaption class="mt-3 text-xs text-ink-3">เวลาเป็นตัวอย่าง ปรับให้เข้ากับตารางชีวิตได้ · เส้นสีแดง = เวลาตอนนี้</figcaption>
+</figure>
+<style>
+  .now-line::before { content: ""; position: absolute; left: -3px; top: -3px; width: 8px; height: 8px; border-radius: 999px; background: var(--bad-dot); }
+</style>
+<script>
+  import { HOURS } from "../lib/plan";
+  const mark = () => {
+    const now = new Date(), i = (now.getDay() + 6) % 7; // Monday = 0
+    const min = now.getHours() * 60 + now.getMinutes(), [H0, H1] = HOURS;
+    document.querySelectorAll<HTMLElement>("[data-day-head]").forEach((el) => el.classList.toggle("today", Number(el.dataset.dayHead) === i));
+    document.querySelectorAll<HTMLElement>("[data-day]").forEach((col) => {
+      const line = col.querySelector<HTMLElement>("[data-now]")!;
+      const show = Number(col.dataset.day) === i && min >= H0 * 60 && min <= H1 * 60;
+      line.classList.toggle("hidden", !show);
+      if (show) line.style.top = `${((min - H0 * 60) / ((H1 - H0) * 60)) * 100}%`;
+    });
+  };
+  mark(); setInterval(mark, 60_000);
+</script>
+<style is:global>
+  [data-day-head].today { background: var(--accent); color: var(--bg); }
+</style>
