@@ -63,7 +63,6 @@ def build() -> dict:
         },
         "traces": traces(m, src, bmi, family_dm, cv, cv_ref, dm, mets, liver, prediabetes, bcaa_high),
         "cfdna_run": cfdna_view(run),
-        "whatif": whatif(m, male, family_dm, dm, cv),
         "nmr_high": nmr_high,
         "insulin_resistance_pattern": bool(bcaa_high) and prediabetes,
         "bcaa_high": bcaa_high,
@@ -118,24 +117,6 @@ def traces(m, src, bmi, family_dm, cv, cv_ref, dm, mets, liver, prediabetes, bca
             {"label": "น้ำตาลขณะอดอาหาร", "value": f"{L['glucose_mg_dl']}", "unit": "mg/dL", "src": src["glucose_mg_dl"], "met": 100 <= L["glucose_mg_dl"] < 126, "rule": "100–125"},
             {"label": "HbA1c", "value": f"{L['hba1c_pct']}", "unit": "%", "src": src["hba1c_pct"], "met": 5.7 <= L["hba1c_pct"] < 6.5, "rule": "5.7–6.4"}]},
     }
-
-
-# Targets a person can act on (Thai obesity: BMI < 23, waist < 90 M / < 80 F; Thai HT 2024: SBP < 120 optimal)
-TARGETS = {"bmi": 22.9, "waist_m": 89, "waist_f": 79, "sbp": 120}
-
-
-def whatif(m, male, family_dm, dm, cv) -> dict:
-    """Same validated formulas, re-run with the modifiable inputs at target. Nothing else changes."""
-    p = m["profile"]
-    waist = TARGETS["waist_m"] if male else TARGETS["waist_f"]
-    dm2 = C.thai_diabetes_score(p["age"], male, min(TARGETS["bmi"], p["weight_kg"] / (p["height_cm"] / 100) ** 2), min(waist, p["waist_cm"]), False, family_dm, False)
-    cv2 = thai_cv_risk(Profile(age=p["age"], sex=p["sex"], sbp=min(TARGETS["sbp"], p["sbp"]), smoker=False, diabetes=False,
-                               waist_cm=min(waist, p["waist_cm"]), height_cm=p["height_cm"]))
-    return {"targets": {"bmi": TARGETS["bmi"], "waist": waist, "sbp": TARGETS["sbp"],
-                        "weight_kg": round(TARGETS["bmi"] * (p["height_cm"] / 100) ** 2, 1)},
-            "diabetes": {"now": dm.value, "after": dm2.value, "max": 17, "now_label": dm.category_label, "after_label": dm2.category_label,
-                         "after_band": dm2.notes[0] if dm2.notes else ""},
-            "cvd": {"now": cv.value, "after": cv2.value, "unit": "%"}}
 
 
 def cfdna_view(run: dict) -> dict:

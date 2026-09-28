@@ -1,0 +1,65 @@
+---
+// Decorative hero art (no patient data): a drifting DNA double helix inside slow orbit rings.
+const W = 800, H = 520, CY = 260, A = 70, PERIOD = 200;
+const N = 240, X0 = -PERIOD, X1 = W + PERIOD;
+const strand = (phase: number) => Array.from({ length: N + 1 }, (_, i) => {
+  const x = X0 + ((X1 - X0) * i) / N;
+  return `${i ? "L" : "M"}${x.toFixed(1)},${(CY + A * Math.sin((2 * Math.PI * x) / PERIOD + phase)).toFixed(1)}`;
+}).join("");
+const rungs = Array.from({ length: Math.round((X1 - X0) / 20) }, (_, i) => {
+  const x = X0 + i * 20, t = (2 * Math.PI * x) / PERIOD;
+  return { x, y1: CY + A * Math.sin(t), y2: CY + A * Math.sin(t + Math.PI), o: 0.25 + 0.55 * Math.abs(Math.cos(t)) };
+});
+const stars = Array.from({ length: 60 }, (_, i) => ({ x: (i * 131.7) % W, y: (i * 77.9 + 23) % H, r: i % 6 ? 1 : 1.8, d: (i % 9) * 0.5 }));
+const molecules = [
+  { x: 140, y: 110, s: 1, d: 0 }, { x: 650, y: 90, s: 0.8, d: 1.2 }, { x: 610, y: 430, s: 1.1, d: 2.1 }, { x: 170, y: 420, s: 0.7, d: 0.7 },
+];
+---
+<svg viewBox={`0 0 ${W} ${H}`} class="h-auto w-full" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="oh-a" x1="0" x2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0" /><stop offset=".25" stop-color="var(--accent)" /><stop offset=".75" stop-color="var(--good)" /><stop offset="1" stop-color="var(--good)" stop-opacity="0" /></linearGradient>
+    <linearGradient id="oh-b" x1="0" x2="1"><stop offset="0" stop-color="var(--good)" stop-opacity="0" /><stop offset=".25" stop-color="var(--good)" /><stop offset=".75" stop-color="var(--accent)" /><stop offset="1" stop-color="var(--accent)" stop-opacity="0" /></linearGradient>
+    <radialGradient id="oh-glow"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35" /><stop offset="1" stop-color="var(--accent)" stop-opacity="0" /></radialGradient>
+    <mask id="oh-fade"><rect width={W} height={H} fill="url(#oh-mask-g)" /></mask>
+    <linearGradient id="oh-mask-g" x1="0" x2="1"><stop offset="0" stop-color="#000" /><stop offset=".15" stop-color="#fff" /><stop offset=".85" stop-color="#fff" /><stop offset="1" stop-color="#000" /></linearGradient>
+  </defs>
+  {stars.map((s) => <circle cx={s.x} cy={s.y} r={s.r} class="oh-star" style={`animation-delay:${s.d}s`} />)}
+  <ellipse cx={W / 2} cy={CY} rx="330" ry="210" fill="url(#oh-glow)" class="oh-pulse" />
+  <g class="oh-spin"><ellipse cx={W / 2} cy={CY} rx="300" ry="120" class="oh-ring" /></g>
+  <g class="oh-spin-r"><ellipse cx={W / 2} cy={CY} rx="250" ry="190" class="oh-ring oh-ring-2" /></g>
+  <g mask="url(#oh-fade)">
+    <g class="oh-drift">
+      {rungs.map((r) => <line x1={r.x} x2={r.x} y1={r.y1} y2={r.y2} stroke="var(--ink-3)" stroke-opacity={r.o * 0.6} stroke-width="2" />)}
+      <path d={strand(0)} fill="none" stroke="url(#oh-a)" stroke-width="4" stroke-linecap="round" class="oh-strand" />
+      <path d={strand(Math.PI)} fill="none" stroke="url(#oh-b)" stroke-width="4" stroke-linecap="round" class="oh-strand" />
+      {rungs.filter((_, i) => i % 2 === 0).map((r) => <circle cx={r.x} cy={r.y1} r="3.5" fill="var(--accent)" opacity={r.o} />)}
+    </g>
+  </g>
+  {molecules.map((m) => (
+    <g class="oh-bob" style={`animation-delay:${m.d}s;transform-origin:${m.x}px ${m.y}px`}>
+      <g transform={`translate(${m.x} ${m.y}) scale(${m.s})`}>
+        <line x1="0" y1="0" x2="26" y2="-14" class="oh-bond" /><line x1="0" y1="0" x2="-22" y2="-18" class="oh-bond" /><line x1="0" y1="0" x2="6" y2="26" class="oh-bond" />
+        <circle r="7" fill="var(--warn)" class="oh-atom" /><circle cx="26" cy="-14" r="4.5" fill="var(--accent)" /><circle cx="-22" cy="-18" r="4" fill="var(--good)" /><circle cx="6" cy="26" r="4" fill="var(--accent)" />
+      </g>
+    </g>
+  ))}
+</svg>
+<style>
+  .oh-star { fill: var(--ink-3); opacity: calc(.12 + var(--glow) * .3); animation: oh-tw 4.5s ease-in-out infinite; }
+  @keyframes oh-tw { 50% { opacity: .05; } }
+  .oh-pulse { opacity: calc(.3 + var(--glow) * .7); animation: oh-pulse 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes oh-pulse { 50% { transform: scale(1.06); } }
+  .oh-ring { fill: none; stroke: var(--accent); stroke-opacity: .28; stroke-width: 1.2; stroke-dasharray: 2 9; }
+  .oh-ring-2 { stroke: var(--good); stroke-dasharray: 1 12; }
+  .oh-spin, .oh-spin-r { transform-box: fill-box; transform-origin: center; }
+  .oh-spin { animation: oh-rot 60s linear infinite; }
+  .oh-spin-r { animation: oh-rot 80s linear infinite reverse; }
+  @keyframes oh-rot { to { transform: rotate(360deg); } }
+  .oh-drift { animation: oh-drift 9s linear infinite; }
+  @keyframes oh-drift { to { transform: translateX(-200px); } }
+  .oh-strand { filter: drop-shadow(0 0 calc(var(--glow) * 6px) var(--accent)); }
+  .oh-bond { stroke: var(--ink-3); stroke-opacity: .5; stroke-width: 1.5; }
+  .oh-atom { filter: drop-shadow(0 0 calc(var(--glow) * 8px) var(--warn)); }
+  .oh-bob { animation: oh-bob 6s ease-in-out infinite; }
+  @keyframes oh-bob { 50% { transform: translateY(-10px) rotate(8deg); } }
+</style>

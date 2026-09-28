@@ -3,15 +3,15 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Sources from "../components/Sources.astro";
 import mock from "../data/mockPatient.json";
 import c from "../data/computed.json";
-import { CalendarPlus, FileDown } from "@lucide/astro";
+import { CalendarPlus, FileDown, Stethoscope } from "@lucide/astro";
 
 const p = mock.profile;
-const r = c.risks;
+const run = c.cfdna_run;
 const activity = [
-  { id: "aerobic", title: "แอโรบิก 150–300 นาที/สัปดาห์", sub: `ตอนนี้ ${p.activity_min_week} นาที — เพิ่มทีละ 30 นาที/สัปดาห์`, facts: ["WHO-PA-2020"] },
+  { id: "aerobic", title: "แอโรบิก 150–300 นาที/สัปดาห์", sub: "เพิ่มทีละ 30 นาที/สัปดาห์จนถึงเป้าหมาย", facts: ["WHO-PA-2020"] },
   { id: "resistance", title: "เวทเทรนนิ่ง 2–3 วัน/สัปดาห์", sub: "ทุกกล้ามเนื้อหลัก (WHO: อย่างน้อย 2 วัน)", facts: ["WHO-PA-2020"] },
   { id: "sedentary", title: "ลุกขยับทุก 45 นาที", sub: "เป้าหมายส่วนตัว — WHO แนะนำลดเวลานั่งนาน ๆ", facts: ["WHO-SEDENTARY-2020"] },
-  { id: "weight", title: "ลดน้ำหนัก 5–7% ใน 6 เดือน", sub: `ประมาณ ${(p.weight_kg * 0.05).toFixed(1)}–${(p.weight_kg * 0.07).toFixed(1)} กก.`, facts: ["ADA-2026-PREV"] },
+  { id: "weight", title: "ลดน้ำหนัก 5–7% ใน 6 เดือน", sub: "ของน้ำหนักตัวปัจจุบัน", facts: ["ADA-2026-PREV"] },
 ];
 const nutrition = [
   { label: "ผักทุกมื้อ", good: true }, { label: "ผลไม้สด", good: true }, { label: "ธัญพืชไม่ขัดสี", good: true },
@@ -20,19 +20,19 @@ const nutrition = [
   { label: "โซเดียม < 2 กรัม/วัน", good: false },
 ];
 const followUps = [
-  { id: "fpg", title: "ตรวจน้ำตาลขณะอดอาหาร + HbA1c ยืนยัน", weeks: 12, facts: ["ADA-2026-DX"] },
-  { id: "lipid", title: "ตรวจไขมันและ NMR ซ้ำ ดูว่าดีขึ้นจริงไหม", weeks: 12, facts: ["RCPT-2024-FOLLOWUP"] },
-  { id: "doctor", title: "นัดคุยกับแพทย์เรื่องไขมันพอกตับและสัญญาณ cfDNA", weeks: 2, facts: ["FLI-2006", "CFDNA-FRAGMENTOMICS-SEQ"] },
+  { id: "fpg", title: "ตรวจ fasting plasma glucose และ HbA1c ซ้ำเพื่อยืนยัน", weeks: 12, facts: ["ADA-2026-DX"] },
+  { id: "lipid", title: "ตรวจ lipid profile และ NMR metabolomics ซ้ำเพื่อติดตามผล", weeks: 12, facts: ["RCPT-2024-FOLLOWUP"] },
+  { id: "doctor", title: "ปรึกษาแพทย์เรื่อง liver-associated cfDNA signal", weeks: 2, facts: ["CFDNA-FRAGMENTOMICS-SEQ"] },
 ];
 const brief = {
   name: p.name, age: p.age,
   lines: [
-    `Thai Diabetes Risk Score ${r.diabetes.display} (${r.diabetes.label}) · FPG ${mock.labs.glucose_mg_dl} mg/dL · HbA1c ${mock.labs.hba1c_pct}%`,
-    `Thai CV Risk Score ${r.cvd.display} (${r.cvd.label}) · BP ${p.sbp}/${p.dbp}`,
-    `Metabolic syndrome ${r.mets.met}/5 criteria (${r.mets.label})`,
-    `Fatty Liver Index ${Math.round(r.liver.fli)} · ${r.liver.notes[1] ?? ""}`,
-    `NMR: BCAA high (${c.bcaa_high.join(", ")}), small LDL-P ${mock.nmr.small_ldl_p.value} nmol/L`,
-    "cfDNA: demo report values only (not produced by PrecisionRx) — liver-associated signal, discuss need for further testing",
+    `FPG ${mock.labs.glucose_mg_dl} mg/dL · HbA1c ${mock.labs.hba1c_pct}% (prediabetes range, ADA)`,
+    `BP ${p.sbp}/${p.dbp} mmHg · BMI ${p.bmi} kg/m² · waist ${p.waist_cm} cm · ${p.smoking}`,
+    `TG ${mock.labs.tg_mg_dl} mg/dL · small LDL-P ${mock.nmr.small_ldl_p.value} nmol/L`,
+    `NMR: BCAA above population P90 (${c.bcaa_high.join(", ")})`,
+    `cfDNA (CE): mean fragment ${run.average_size_bp} bp, sample QC ${run.qc_status}`,
+    "cfDNA methylation / tissue of origin: demo values only — liver-associated signal, further testing at physician's discretion",
   ],
 };
 ---
@@ -47,7 +47,17 @@ const brief = {
       <span id="saved" class="self-center text-sm text-ink-3" role="status" aria-live="polite"></span>
     </div>
 
-    <section class="card mt-6" aria-labelledby="h-act">
+    <section class="card mt-6" aria-labelledby="h-next">
+      <h2 id="h-next" class="eyebrow flex items-center gap-2"><Stethoscope size={16} aria-hidden="true" />Next steps</h2>
+      <ol class="mt-4 space-y-3">
+        <li class="flex gap-3"><span class="num grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">1</span><span><span class="font-medium">Physician consultation</span><span class="block text-sm text-ink-2">นำรายงานนี้ไปด้วย (ปุ่มส่งออก PDF)</span></span></li>
+        <li class="flex gap-3"><span class="num grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">2</span><span><span class="font-medium">Abdominal ultrasound</span><span class="block text-sm text-ink-2">ตามดุลยพินิจของแพทย์</span></span></li>
+        <li class="flex gap-3"><span class="num grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">3</span><span><span class="font-medium">Transient elastography (FibroScan)</span><span class="block text-sm text-ink-2">หากแพทย์เห็นว่ามีข้อบ่งชี้</span></span></li>
+      </ol>
+      <p class="mt-4 text-xs text-ink-3"><Sources ids={["FIB4-MASLD", "CFDNA-FRAGMENTOMICS-SEQ"]} /></p>
+    </section>
+
+    <section class="card mt-3" aria-labelledby="h-act">
       <div class="flex items-baseline justify-between gap-3"><h2 id="h-act" class="eyebrow">กิจกรรมทางกาย</h2><span class="text-sm text-ink-3" id="progress"></span></div>
       <ul class="mt-4 divide-y divide-line">
         {activity.map((a) => (
@@ -84,12 +94,12 @@ const brief = {
 
   <!-- print-only brief for the doctor -->
   <section class="print-brief hidden print:block" aria-hidden="true">
-    <h1 class="text-2xl font-semibold">PrecisionRx — สรุปสำหรับแพทย์</h1>
+    <h1 class="text-2xl font-semibold">Multi-omics — Physician summary</h1>
     <p class="mt-1">{brief.name} · {brief.age} ปี · ข้อมูลตัวอย่าง (synthetic)</p>
     <ul class="mt-4 list-disc pl-5 space-y-1">{brief.lines.map((l) => <li>{l}</li>)}</ul>
     <h2 class="mt-6 font-semibold">แผนที่ผู้ใช้เลือก</h2>
     <ul class="mt-2 list-disc pl-5" id="brief-plan"></ul>
-    <p class="mt-6 text-xs">คะแนนความเสี่ยงคำนวณด้วยสูตรที่ validate แล้ว (Thai CV Risk, Thai Diabetes Risk Score, harmonized MetS, FLI, FIB-4) · ไม่ใช่การวินิจฉัย</p>
+    <p class="mt-6 text-xs">ค่าที่วัดได้จาก NMR metabolomics และ cfDNA electropherogram · ไม่ใช่ผลการวินิจฉัย</p>
   </section>
 </MainLayout>
 
@@ -129,7 +139,7 @@ const brief = {
     const mon = new Date(now); mon.setDate(mon.getDate() + ((8 - mon.getDay()) % 7 || 7));
     ev.push(["BEGIN:VEVENT", `UID:aerobic-${stamp}@precisionrx`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(mon)}`,
              "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=36", "SUMMARY:แอโรบิก 50 นาที (เป้า 150 นาที/สัปดาห์)", "END:VEVENT"].join("\r\n"));
-    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PrecisionRx//Plan//TH", ...ev, "END:VCALENDAR"].join("\r\n");
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Multi-omics//Plan//TH", ...ev, "END:VCALENDAR"].join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
     a.download = "precisionrx-plan.ics"; a.click(); URL.revokeObjectURL(a.href);

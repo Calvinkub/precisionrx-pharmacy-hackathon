@@ -32,8 +32,3 @@ def test_traces_add_up_to_the_result():
     assert all(1 <= i["src"] <= 5 for k in ("diabetes", "cvd", "liver", "fib4", "mets", "insulin_resistance") for i in t[k]["inputs"])
     assert d["cfdna_run"]["qc_status"] == "pass" and len(d["cfdna_run"]["replicates"]) == 3
 
-
-def test_whatif_reruns_the_same_formulas_with_targets():
-    w = build()["whatif"]
-    assert w["diabetes"] == {**w["diabetes"], "now": 12, "after": 7}  # BMI 26.8→<23 (−3), waist 92→<90 (−2)
-    assert w["cvd"]["after"] < w["cvd"]["now"]

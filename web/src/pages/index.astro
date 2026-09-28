@@ -1,100 +1,12 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import MetabolicNexus from "../components/MetabolicNexus.astro";
-import RiskOverview from "../components/RiskOverview.astro";
-import SourceBadge from "../components/SourceBadge.astro";
-import Sources from "../components/Sources.astro";
-import mock from "../data/mockPatient.json";
-import c from "../data/computed.json";
-import { ArrowRight, Dna } from "@lucide/astro";
-
-const p = mock.profile, w = c.whatif, run = c.cfdna_run, d = mock.cfdna_mock;
-const ir = c.traces.insulin_resistance;
-const drivers = [
-  { label: `BCAA สูง ${c.bcaa_high.length}/3`, src: 4 },
-  ...(c.nmr_high.includes("small_ldl_p") ? [{ label: "Small LDL-P สูง", src: 4 }] : []),
-  ...(c.prediabetes ? [{ label: "น้ำตาลช่วงก่อนเบาหวาน", src: 3 }] : []),
-];
-const irMet = ir.inputs.filter((i) => i.met).length;
-const bars = [
-  { label: "เบาหวาน (คะแนน)", now: w.diabetes.now, after: w.diabetes.after, max: w.diabetes.max, fmt: (v: number) => `${v}` },
-  { label: "หัวใจ 10 ปี", now: w.cvd.now, after: w.cvd.after, max: 10, fmt: (v: number) => `${v.toFixed(1)}%` },
-];
+import OmicsHero from "../components/OmicsHero.astro";
 ---
-<MainLayout title="Metabolic Nexus" current="home">
-  <section class="grid items-center gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)]" aria-labelledby="h-hero">
-    <div>
-      <p class="eyebrow">Personal biomolecular twin · ตัวอย่าง</p>
-      <h1 id="h-hero" class="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight">Metabolic Nexus</h1>
-      <p class="mt-3 text-ink-2">{p.name} · {p.age} ปี · ค่าจาก 5 แหล่งข้อมูล รวมเป็นภาพเดียว</p>
-      <ul class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink-2">
-        <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-warn shadow-[0_0_8px_var(--warn)]"></span>เกินเกณฑ์</li>
-        <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]"></span>วัดแล้ว · ผ่าน</li>
-        <li class="flex items-center gap-1.5"><SourceBadge no="mock" />ค่าสมมติ</li>
-      </ul>
-      <p class="mt-4 hidden text-xs text-ink-3 lg:block">ชี้หรือแตะที่โหนดเพื่อดูค่าจริงและแหล่งที่มา</p>
-    </div>
-    <div>
-      <MetabolicNexus />
-      <p class="mt-2 text-center text-xs text-ink-3 lg:hidden">แตะที่โหนดเพื่อดูค่า</p>
-    </div>
+<MainLayout title="Multi-omics" current="home">
+  <section class="flex min-h-[70vh] flex-col items-center justify-center text-center" aria-labelledby="h-hero">
+    <div class="w-full max-w-3xl"><OmicsHero /></div>
+    <h1 id="h-hero" class="-mt-4 text-5xl sm:text-7xl font-semibold tracking-tight">Multi-omics</h1>
+    <p class="mt-3 text-lg text-ink-2">Metabolomics · cfDNA</p>
+    <p class="mt-6 text-sm text-ink-3"><span class="hidden md:inline">เลือกดูผลจากแถบเมนูด้านบน</span><span class="md:hidden">เลือกดูผลจากแถบเมนูด้านล่าง</span></p>
   </section>
-
-  <section aria-label="สรุปผล" class="mt-6 grid gap-3 md:grid-cols-3">
-    <article class="card flex flex-col">
-      <p class="eyebrow">Metabolic state</p>
-      <h2 class="mt-2 text-xl font-semibold leading-snug">{c.insulin_resistance_pattern ? "รูปแบบคล้ายภาวะดื้ออินซูลิน" : "ไม่พบรูปแบบดื้ออินซูลิน"}</h2>
-      <div class="mt-3 flex gap-1" role="img" aria-label={`เข้าเกณฑ์ ${irMet} จาก ${ir.inputs.length} ข้อ`}>
-        {ir.inputs.map((i) => <span class:list={["h-1.5 flex-1 rounded-full", i.met ? "bg-warn shadow-[0_0_8px_var(--warn)]" : "bg-band"]}></span>)}
-      </div>
-      <ul class="mt-3 flex flex-wrap gap-1.5">
-        {drivers.map((x) => <li class="inline-flex items-center gap-1.5 rounded-full bg-warn-soft px-2.5 py-1 text-xs"><SourceBadge no={x.src} />{x.label}</li>)}
-      </ul>
-      <p class="mt-3 text-sm text-ink-2">{c.risks.diabetes.band} · {c.risks.liver.notes[0]}</p>
-      <p class="mt-auto pt-3 text-xs text-ink-3"><Sources ids={["BCAA-T2D", "TDRS-2006", "FLI-2006"]} /></p>
-    </article>
-
-    <article class="card flex flex-col">
-      <p class="eyebrow">Cellular surveillance</p>
-      <div class="mt-2 flex items-center gap-3">
-        <Dna size={30} class="helix shrink-0 text-accent" aria-hidden="true" />
-        <h2 class="text-xl font-semibold leading-snug">{run.qc_status === "pass" ? "ตัวอย่างผ่าน QC" : "ตัวอย่างไม่ผ่าน QC"} <span class="num text-ink-3 font-normal">· {run.average_size_bp} bp</span></h2>
-      </div>
-      <p class="mt-2 flex items-center gap-1.5 text-xs text-ink-3"><SourceBadge no={5} />{run.instrument} · {run.replicates.length} ครั้ง</p>
-      <div class="mt-3 rounded-2xl border border-dashed border-ink-3 p-3">
-        <p class="flex items-center gap-1.5 text-sm"><SourceBadge no="mock" />Liver-associated signal <span class="num font-semibold">{d.origin_confidence_pct}%</span></p>
-        <p class="mt-1 text-xs text-ink-3">ค่าตัวอย่าง · ต้องใช้ sequencing จริง · คุยกับแพทย์ก่อนตรวจเพิ่ม</p>
-      </div>
-      <p class="mt-auto pt-3 text-xs text-ink-3"><Sources ids={["CFDNA-HMW-QC", "CFDNA-FRAGMENTOMICS-SEQ"]} /></p>
-    </article>
-
-    <article class="card flex flex-col">
-      <p class="eyebrow">Actionable forecast</p>
-      <h2 class="mt-2 text-xl font-semibold leading-snug">เบาหวาน <span class="num">{w.diabetes.now} → {w.diabetes.after}</span> คะแนน</h2>
-      <ul class="mt-3 space-y-2.5">
-        {bars.map((b) => (
-          <li class="text-xs">
-            <p class="text-ink-2">{b.label}</p>
-            <div class="mt-1 grid grid-cols-[3rem_minmax(0,1fr)_2.75rem] items-center gap-2">
-              <span class="text-ink-3">ตอนนี้</span>
-              <span class="h-2 rounded-full bg-band"><span class="block h-2 rounded-full bg-warn" style={`width:${Math.min(b.now / b.max, 1) * 100}%`}></span></span>
-              <span class="num text-right">{b.fmt(b.now)}</span>
-              <span class="text-ink-3">ปรับแล้ว</span>
-              <span class="h-2 rounded-full bg-band"><span class="block h-2 rounded-full bg-good shadow-[0_0_8px_var(--good)]" style={`width:${Math.min(b.after / b.max, 1) * 100}%`}></span></span>
-              <span class="num text-right">{b.fmt(b.after)}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <p class="mt-3 text-xs text-ink-2">ถ้า BMI &lt; 23 (≈ {w.targets.weight_kg} กก.) · เอว &lt; {w.targets.waist} · ความดัน {w.targets.sbp} — สูตรเดิมคำนวณใหม่</p>
-      <p class="mt-1 text-xs text-ink-3">WHO: ระดับประชากร ≥ 80% ของโรคหัวใจและเบาหวานชนิด 2 ป้องกันได้ · <Sources ids={["WHO-2005-PREVENTABLE", "TDRS-2006", "TCVRS-2021"]} /></p>
-      <a href="/metabolomics/" class="btn btn-primary mt-4 no-underline">สำรวจผลตรวจเชิงลึก <ArrowRight size={16} aria-hidden="true" /></a>
-    </article>
-  </section>
-
-  <div class="mt-12"><RiskOverview /></div>
 </MainLayout>
-<style>
-  .helix { animation: helix 4s linear infinite; }
-  @keyframes helix { to { transform: rotateY(360deg); } }
-</style>

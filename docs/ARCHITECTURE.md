@@ -15,7 +15,7 @@ Status 2026-09-29. Synthetic data only. Every number the system shows comes from
 | **5 Doctor UI** | API only (`/api/v2/*`; the `/ncd/` page was replaced by the consumer app, 28 Sep 2026) | risk vector, exact waterfall, metabolic radar, cfDNA electropherogram + QC, agent trace, care-plan editor → approve → FHIR `CarePlan` + `ServiceRequest` bundle (`/api/v2/careplan/export`) | cfDNA shows **sample QC** + a research-only short-fragment number. It does **not** raise a cancer alert: CE fragment-size profiles are not a validated cancer screen (validated fragmentomics uses sequencing — `CFDNA-FRAGMENTOMICS-SEQ`). |
 | API | `app/main.py` | REST `/api/v2/patients`, `/run`, `/tools`, `/careplan/export`; WebSocket `/ws/v2/patients/{id}/run` streams one event per agent node | WebSocket is for local/dev; serverless hosts (Vercel) use the REST route — the UI falls back automatically. |
 
-The web UI is now a 5-page consumer app (`/` hero + risk traces, `/identification/`, `/metabolomics/`, `/molecular/`, `/action-plan/`) whose risk numbers come from these same engines via `scripts/build_consumer_data.py`; cfDNA values there are a labelled mock.
+The web UI is now a 5-page consumer app (`/`, `/identification/`, `/metabolomics/`, `/molecular/`, `/action-plan/`) whose derived values (BCAA/prediabetes pattern, cfDNA QC) come from these same engines via `scripts/build_consumer_data.py`; cfDNA values there are a labelled mock.
 
 ## Run
 ```bash
